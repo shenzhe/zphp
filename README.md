@@ -27,5 +27,7 @@ zphp是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
 
 1) 性能强悍  （游戏场景中的大部分api可以在5ms内左右处理完）
 
-2）socket, http, rpc 完美融合，自由切换
+2) socket, http, rpc 完美融合，自由切换
+
+3) 通信协议自由扩展 （框架会提供 xml json phptpl amf protobuf）
 
