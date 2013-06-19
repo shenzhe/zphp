@@ -91,7 +91,7 @@ class ZPHP
         if (!empty($_SERVER['HTTP_HOST'])) {
             $configPath = $_SERVER['HTTP_HOST'];
         } elseif (!empty($_SERVER['argv'][1])) {
-            $configPath = $_SERVER['1'];
+            $configPath = $_SERVER['argv'][1];
         }
         if (!empty($configPath)) {
             self::setConfigPath($configPath);

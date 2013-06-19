@@ -33,7 +33,7 @@ class React implements IClient
             return;
         }
         $socketConfig = Core\Config::get('socket');
-        $server = Protocol\Factory::getInstance($socketConfig['protocol']);
+        $server = Protocol\Factory::getInstance($socketConfig['protocol'], $data);
         Core\Route::route($server);
         $conn->write($server->getData());
     }
