@@ -41,12 +41,11 @@ class React implements IServer
             });
 
             $conn->on('end', function () use ($conn, $client) {
-                $client->onClose($conn);
                 $conn->end();
             });
 
             $conn->on('close', function () use ($client) {
-                $client->onShutdown();
+                $client->onClose();
             });
         });
         $this->serv->listen($this->config['port'], $this->config['host']);
