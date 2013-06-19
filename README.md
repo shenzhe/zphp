@@ -1,7 +1,6 @@
 zphp
 ====
 
-框架重构中，敬请期待！
 ===================================================
 
 @author: shenzhe (泽泽，半桶水)
@@ -21,6 +20,11 @@ zphp是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
     daemon     (cli模式下，加 -d 即可)
 
 要求：php5.3+， 建议使用php5.4+  (如果使用react做为socket，  必需php5.4+)
+
+流程图
+=======
+![zphp](https://github.com/shenzhe/zphp/blob/master/zphp_jg.jpg "zphp流程图") 
+
 
 特色
 ======================
