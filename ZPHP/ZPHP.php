@@ -36,7 +36,11 @@ class ZPHP
 
     public static function getConfigPath()
     {
-        return self::getRootPath(). DS. 'config'. DS. self::$configPath;
+        $dir =  self::getRootPath(). DS. 'config'. DS. self::$configPath;
+        if(\is_dir($dir)) {
+            return $dir;
+        }
+        return self::getRootPath(). DS. 'config'. DS. 'default';
     }
 
     public static function setConfigPath($path)
@@ -56,16 +60,18 @@ class ZPHP
 
     final public static function autoLoader($class)
     {
-        $baseClasspath = str_replace('\\', DS, $class) . '.php';
-        if(is_file(self::$rootPath. DS. $baseClasspath)) {  //框架文件
-            $classpath = self::$rootPath. DS. $baseClasspath;
-        }elseif(is_file(self::$rootPath. DS. self::$appPath. DS . $baseClasspath)){  //classes文件
-            $classpath = self::$rootPath . DS . self::$appPath. DS . $baseClasspath;
-        } else {    //第三方库文件
-            $classpath = self::$rootPath. DS. 'lib' . DS. $baseClasspath;
-        }
-        if(is_file($classpath)) {
-            require "{$classpath}";
+        $baseClasspath = \str_replace('\\', DS, $class) . '.php';
+        $libs = array(
+            '',
+            self::$appPath. DS,
+            'lib'.DS
+        );
+        foreach($libs as $lib) {
+            $classpath = self::$rootPath. DS. $lib. $baseClasspath;
+            if(\is_file($classpath)) {
+                require "{$classpath}";
+                return;
+            }
         }
     }
 
@@ -75,24 +81,26 @@ class ZPHP
         $exceptionView->display();
     }
 
-    public static function run($rootPath, $configPath='default', $appPath='apps')
+    public static function run($rootPath)
     {
         if(!defined('DS')) {
             define('DS', DIRECTORY_SEPARATOR);
         }
+        self::setRootPath($rootPath);
         if(!empty($_SERVER['HTTP_HOST'])) {
             $configPath = $_SERVER['HTTP_HOST'];
         } elseif(!empty($_SERVER['argv'][1])) {
             $configPath = $_SERVER['1'];
         }
-        self::setRootPath($rootPath);
-        self::setConfigPath($configPath);
+        if(!empty($configPath)) {
+            self::setConfigPath($configPath);
+        }
         \spl_autoload_register(__CLASS__.'::autoLoader');
         $config = Config::load(self::getConfigPath());
         if(!empty($config['app_path'])) {
             $appPath = $config['app_path'];
+            self::setAppPath($appPath);
         }
-        self::setAppPath($appPath);
         \set_exception_handler(__CLASS__.'::exceptionHandler');
         $timeZone = empty($config['time_zone']) ? 'Asia/Shanghai' : $config['time_zone'];
         \date_default_timezone_set($timeZone);
