@@ -6,7 +6,7 @@
 
 
 namespace ZPHP\Manager;
-class Beanstalk implements ICache
+class Beanstalk
 {
     private static $instances;
     public static function getInstance($config) {

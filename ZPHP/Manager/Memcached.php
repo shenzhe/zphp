@@ -6,7 +6,7 @@
 
 
 namespace ZPHP\Manager;
-class Memcached implements ICache
+class Memcached
 {
     private static $instances;
     public static function getInstance($config) {

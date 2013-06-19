@@ -80,12 +80,20 @@ class ZPHP
         if(!defined('DS')) {
             define('DS', DIRECTORY_SEPARATOR);
         }
+        if(!empty($_SERVER['HTTP_HOST'])) {
+            $configPath = $_SERVER['HTTP_HOST'];
+        } elseif(!empty($_SERVER['argv'][1])) {
+            $configPath = $_SERVER['1'];
+        }
         self::setRootPath($rootPath);
         self::setConfigPath($configPath);
-        self::setAppPath($appPath);
         \spl_autoload_register(__CLASS__.'::autoLoader');
-        \set_exception_handler(__CLASS__.'::exceptionHandler');
         $config = Config::load(self::getConfigPath());
+        if(!empty($config['app_path'])) {
+            $appPath = $config['app_path'];
+        }
+        self::setAppPath($appPath);
+        \set_exception_handler(__CLASS__.'::exceptionHandler');
         $timeZone = empty($config['time_zone']) ? 'Asia/Shanghai' : $config['time_zone'];
         \date_default_timezone_set($timeZone);
         $serverMode = empty($config['server_mode']) ? 'Http' : $config['server_mode'];

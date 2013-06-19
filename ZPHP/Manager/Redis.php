@@ -6,7 +6,7 @@
 
 
 namespace ZPHP\Manager;
-class Redis implements ICache
+class Redis
 {
     private static $instances;
     public static function getInstance($config) {
