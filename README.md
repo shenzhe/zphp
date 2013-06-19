@@ -25,7 +25,14 @@ zphp是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
 =======
 ![点击查看zphp流程图](https://github.com/shenzhe/zphp/blob/master/zphp_jg.jpg "zphp流程图") 
 
+运行demo
+====
+    http模式：
+        1) 域名绑定到目录webroot
+        2) 运行：http://域名/main.php?a=apps/ctrl/main&name=zphp
 
+    socket模块:
+        //TODO
 特色
 ======================
 
