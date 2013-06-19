@@ -7,9 +7,9 @@ namespace ZPHP\Cache;
 
 class Factory
 {
-    public static function getInstance($adapter='Json', $config=null)
+    public static function getInstance($adapter = 'Json', $config = null)
     {
-        $className = __NAMESPACE__."\\Adapter\\{$adapter}";
+        $className = __NAMESPACE__ . "\\Adapter\\{$adapter}";
         return CFactory::getInstance($className, $config);
     }
 }

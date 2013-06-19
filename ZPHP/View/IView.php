@@ -8,6 +8,8 @@ namespace ZPHP\View;
 interface IView
 {
     function setModel($model);
+
     function getModel();
+
     function output();
 }

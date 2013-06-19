@@ -8,7 +8,8 @@ namespace ZPHP\Core;
 class Factory
 {
     private static $instances = array();
-    public static function getInstance($className, $params=null)
+
+    public static function getInstance($className, $params = null)
     {
         if (isset(self::$instances[$className])) {
             return self::$instances[$className];

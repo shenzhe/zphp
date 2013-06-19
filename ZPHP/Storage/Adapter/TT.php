@@ -15,19 +15,22 @@ class TT implements IStorage
     private $stt = null;
     private $suffix = "";
 
-    public function __construct($name, $config) {
+    public function __construct($name, $config)
+    {
         if (!empty($this->tt)) {
             $this->tt = Manager\Memcached::getInstance($config);
         }
     }
 
-    public function setSlave($config) {
+    public function setSlave($config)
+    {
         if (empty($this->stt)) {
             $this->stt = Manager\Memcached::getInstance($config);
         }
     }
 
-    public function getMutilMD($userId, $keys) {
+    public function getMutilMD($userId, $keys)
+    {
         $newKeys = array();
         foreach ($keys as $key) {
             $newKeys[] = $this->uKey($userId, $key);
@@ -35,7 +38,8 @@ class TT implements IStorage
         return $this->tt->getMulti($newKeys);
     }
 
-    public function getMD($userId, $key, $slaveName = "") {
+    public function getMD($userId, $key, $slaveName = "")
+    {
         $key = $this->uKey($userId, $key);
         $data = $this->tt->get($key);
 
@@ -59,12 +63,14 @@ class TT implements IStorage
         return $data;
     }
 
-    public function del($userId, $key) {
+    public function del($userId, $key)
+    {
         $key = $this->uKey($userId, $key);
         return $this->tt->del($key);
     }
 
-    public function getSD($userId, $key, $slaveName = "") {
+    public function getSD($userId, $key, $slaveName = "")
+    {
         $key = $this->uKey($userId, $key);
         $this->setSlave($slaveName);
         $data = $this->stt->get($key);
@@ -80,29 +86,34 @@ class TT implements IStorage
         return $data;
     }
 
-    public function setSD($userId, $key, $data, $slaveName = "") {
+    public function setSD($userId, $key, $data, $slaveName = "")
+    {
         $key = $this->uKey($userId, $key);
         $this->setSlave($slaveName);
         return $this->stt->set($key, $data);
     }
 
-    public function delSD($userId, $key, $slaveName = "") {
+    public function delSD($userId, $key, $slaveName = "")
+    {
         $key = $this->uKey($userId, $key);
         $this->setSlave($slaveName);
         return $this->stt->delete($key);
     }
 
-    public function setMD($userId, $key, $data) {
+    public function setMD($userId, $key, $data)
+    {
         $key = $this->uKey($userId, $key);
         return $this->tt->set($key, $data);
     }
 
-    public function setMDCAS($userId, $key, $data) {
+    public function setMDCAS($userId, $key, $data)
+    {
         $key = $this->uKey($userId, $key);
         return $this->tt->set($key, $data);
     }
 
-    public function setMultiMD($userId, $keys) {
+    public function setMultiMD($userId, $keys)
+    {
         foreach ($keys as $key => $value) {
             $newKey = $this->uKey($userId, $key);
             $keys[$newKey] = $value;
@@ -112,15 +123,18 @@ class TT implements IStorage
     }
 
 
-    public function setKeySuffix($suffix) {
+    public function setKeySuffix($suffix)
+    {
         $this->suffix = $suffix;
     }
 
-    private function uKey($userId, $key) {
+    private function uKey($userId, $key)
+    {
         return $userId . "_" . $this->suffix . "__" . $key;
     }
 
-    public function close() {
+    public function close()
+    {
         return true;
     }
 

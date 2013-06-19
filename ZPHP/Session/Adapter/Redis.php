@@ -13,37 +13,44 @@ class Redis
     private $redis;
     private $gcTime = 1800;
 
-    public function __construct($config) {
+    public function __construct($config)
+    {
         if (empty(self::$redis)) {
             $this->redis = Manager\Redis::getInstance($config);
         }
     }
 
-    public function open($path, $sid) {
+    public function open($path, $sid)
+    {
         return !empty($this->redis);
     }
 
-    public function close() {
+    public function close()
+    {
         return true;
     }
 
-    public function gc($time) {
+    public function gc($time)
+    {
         return true;
     }
 
-    public function read($sid) {
-        $data =  $this->redis->get($sid);
-        if(!empty($data)) {
+    public function read($sid)
+    {
+        $data = $this->redis->get($sid);
+        if (!empty($data)) {
             $this->redis->setTimeout($sid, $this->gcTime);
         }
         return $data;
     }
 
-    public function write($sid, $data) {
+    public function write($sid, $data)
+    {
         return $this->redis->setex($sid, $this->gcTime, $data);
     }
 
-    public function destroy($sid) {
+    public function destroy($sid)
+    {
         return $this->redis->delete($sid);
     }
 }

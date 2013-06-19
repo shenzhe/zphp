@@ -6,9 +6,11 @@
 
 namespace ZPHP\Common;
 
-class Formater {
+class Formater
+{
 
-    public static function exception(\Exception $exception, $trace=true) {
+    public static function exception(\Exception $exception, $trace = true)
+    {
         $exceptionHash = array(
             'className' => 'Exception',
             'message' => $exception->getMessage(),

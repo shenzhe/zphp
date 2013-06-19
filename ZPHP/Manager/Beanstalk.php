@@ -9,7 +9,9 @@ namespace ZPHP\Manager;
 class Beanstalk
 {
     private static $instances;
-    public static function getInstance($config) {
+
+    public static function getInstance($config)
+    {
         $name = $config['name'];
         if (empty(self::$instance[$name])) {
             $beanstalk = new \Beanstalk();

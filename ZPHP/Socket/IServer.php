@@ -8,5 +8,6 @@ namespace ZPHP\Socket;
 interface IServer
 {
     function setClient($client);
+
     function run();
 }

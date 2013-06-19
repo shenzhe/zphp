@@ -6,7 +6,8 @@
 
 namespace ZPHP\Rank;
 
-interface IRank {
+interface IRank
+{
     /**
      * 添加一个排行
      * @param $rankType   排行类别
@@ -16,6 +17,7 @@ interface IRank {
      * @return bool
      */
     public function addRank($rankType, $key, $score, $length = 0);
+
     /**
      * 获取一段排行
      * @param $rankType     排行类别
@@ -36,7 +38,7 @@ interface IRank {
      * @param $count        总数
      * @return mixed
      */
-    public function getRankByScore($rankType, $start, $end, $scores=true, $offset=0, $count=0);
+    public function getRankByScore($rankType, $start, $end, $scores = true, $offset = 0, $count = 0);
 
     /**
      * 返回某一区间分数 排行的人数

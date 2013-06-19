@@ -6,7 +6,8 @@
 
 namespace ZPHP\Storage;
 
-interface IStorage {
+interface IStorage
+{
     //设置从库
     public function setSlave($name);
 

@@ -17,18 +17,21 @@ class React implements IServer
     private $serv;
     private $loop;
 
-    public function __construct($config) {
+    public function __construct($config)
+    {
         $loop = eventLoop::create();
         $this->loop = $loop;
         $this->serv = new server($loop);
         $this->config = $config;
     }
 
-    public function setClient($client) {
+    public function setClient($client)
+    {
         $this->client = $client;
     }
 
-    public function run() {
+    public function run()
+    {
         $client = $this->client;
         $client->onStart($this->serv);
         $this->serv->on('connection', function ($conn) use ($client) {
@@ -42,7 +45,7 @@ class React implements IServer
                 $conn->end();
             });
 
-            $conn->on('close', function() use ($client){
+            $conn->on('close', function () use ($client) {
                 $client->onShutdown();
             });
         });

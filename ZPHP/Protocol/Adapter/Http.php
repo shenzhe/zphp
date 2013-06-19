@@ -5,20 +5,27 @@
  */
 
 
-namespace ZPHP\Server\Adapter;
-use ZPHP\Core,
-    ZPHP\Protocol;
+namespace ZPHP\Protocol\Adapter;
+use ZPHP\Core;
+use ZPHP\Protocol\IProtocol;
 
-class Http
+class Http implements IProtocol
 {
     private $_action = 'index';
     private $_method = 'main';
     private $_params = array();
 
-    public function __construct()
+    public function __construct($data)
     {
-        $server = Protocol\Factory::getInstance('Http', $_REQUEST);
-        Core\Route::route($server);
+        if (isset($data['a'])) {
+            $this->_action = \str_replace('/', '\\', $data['a']);
+            unset($data['a']);
+        }
+        if (isset($data['m'])) {
+            $this->_method = $data['m'];
+            unset($data['m']);
+        }
+        $this->_params = $data;
     }
 
     public function getAction()

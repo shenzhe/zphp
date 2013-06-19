@@ -20,7 +20,7 @@ class ZPHP
      * 配置目录
      * @var string
      */
-    private static $configPath='default';
+    private static $configPath = 'default';
 
     private static $appPath = 'apps';
 
@@ -36,11 +36,11 @@ class ZPHP
 
     public static function getConfigPath()
     {
-        $dir =  self::getRootPath(). DS. 'config'. DS. self::$configPath;
-        if(\is_dir($dir)) {
+        $dir = self::getRootPath() . DS . 'config' . DS . self::$configPath;
+        if (\is_dir($dir)) {
             return $dir;
         }
-        return self::getRootPath(). DS. 'config'. DS. 'default';
+        return self::getRootPath() . DS . 'config' . DS . 'default';
     }
 
     public static function setConfigPath($path)
@@ -63,19 +63,20 @@ class ZPHP
         $baseClasspath = \str_replace('\\', DS, $class) . '.php';
         $libs = array(
             '',
-            self::$appPath. DS,
-            'lib'.DS
+            self::$appPath . DS,
+            'lib' . DS
         );
-        foreach($libs as $lib) {
-            $classpath = self::$rootPath. DS. $lib. $baseClasspath;
-            if(\is_file($classpath)) {
+        foreach ($libs as $lib) {
+            $classpath = self::$rootPath . DS . $lib . $baseClasspath;
+            if (\is_file($classpath)) {
                 require "{$classpath}";
                 return;
             }
         }
     }
 
-    final public static function exceptionHandler($exception) {
+    final public static function exceptionHandler($exception)
+    {
         $exceptionView = View\Factory::getInstance();
         $exceptionView->setModel(Formater::exception($exception));
         $exceptionView->display();
@@ -83,25 +84,25 @@ class ZPHP
 
     public static function run($rootPath)
     {
-        if(!defined('DS')) {
+        if (!defined('DS')) {
             define('DS', DIRECTORY_SEPARATOR);
         }
         self::setRootPath($rootPath);
-        if(!empty($_SERVER['HTTP_HOST'])) {
+        if (!empty($_SERVER['HTTP_HOST'])) {
             $configPath = $_SERVER['HTTP_HOST'];
-        } elseif(!empty($_SERVER['argv'][1])) {
+        } elseif (!empty($_SERVER['argv'][1])) {
             $configPath = $_SERVER['1'];
         }
-        if(!empty($configPath)) {
+        if (!empty($configPath)) {
             self::setConfigPath($configPath);
         }
-        \spl_autoload_register(__CLASS__.'::autoLoader');
+        \spl_autoload_register(__CLASS__ . '::autoLoader');
         $config = Config::load(self::getConfigPath());
-        if(!empty($config['app_path'])) {
+        if (!empty($config['app_path'])) {
             $appPath = $config['app_path'];
             self::setAppPath($appPath);
         }
-        \set_exception_handler(__CLASS__.'::exceptionHandler');
+        \set_exception_handler(__CLASS__ . '::exceptionHandler');
         $timeZone = empty($config['time_zone']) ? 'Asia/Shanghai' : $config['time_zone'];
         \date_default_timezone_set($timeZone);
         $serverMode = empty($config['server_mode']) ? 'Http' : $config['server_mode'];

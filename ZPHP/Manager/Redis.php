@@ -9,7 +9,9 @@ namespace ZPHP\Manager;
 class Redis
 {
     private static $instances;
-    public static function getInstance($config) {
+
+    public static function getInstance($config)
+    {
         $name = $config['name'];
         $pconnect = $config['pconnect'];
         if (empty(self::$instances[$name])) {
@@ -36,18 +38,19 @@ class Redis
      * @param array $names
      * @return bool
      */
-    public static function closeInstance($pconnect=false, array $names=[]) {
+    public static function closeInstance($pconnect = false, array $names = [])
+    {
         if (empty(self::$instances) || $pconnect) {
             return true;
         }
 
-        if(empty($names)) {
+        if (empty($names)) {
             foreach (self::$instances as $redis) {
                 $redis->close();
             }
         } else {
-            foreach($names as $name) {
-                if(isset(self::$instances[$name])) {
+            foreach ($names as $name) {
+                if (isset(self::$instances[$name])) {
                     self::$instances[$name]->close();
                 }
             }

@@ -9,15 +9,16 @@ namespace ZPHP\Server\Adapter;
 use ZPHP\Socket\Factory as SFactory;
 use ZPHP\Core\Config;
 use ZPHP\Core\Factory as CFactory;
+
 class Socket
 {
     public function __construct()
     {
         $config = Config::get('socket');
-        if(empty($config)){
+        if (empty($config)) {
             throw new \Exception("socket config empty");
         }
-        $socket = SFactory::getInstance($config['dapter'], $config);
+        $socket = SFactory::getInstance($config['adpter'], $config);
         $client = CFactory::getInstance($config['clientClass']);
         $socket->setClient($client);
         $socket->run();

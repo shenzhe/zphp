@@ -8,6 +8,7 @@
 namespace ZPHP\Cache\Adapter;
 use ZPHP\Cache\ICache,
     ZPHP\Manager;
+
 class Memcached implements ICache
 {
     /**
@@ -17,10 +18,13 @@ class Memcached implements ICache
      */
     private $memcached;
 
-    public function __construct($config) {
+    public function __construct($config)
+    {
         $this->memcached = Manager\Memcached::getInstance($config);
     }
-    public function enable() {
+
+    public function enable()
+    {
         return true;
     }
 
@@ -29,11 +33,13 @@ class Memcached implements ICache
      *
      * @return \Memcached
      */
-    function getMemcached() {
+    function getMemcached()
+    {
         return $this->memcached;
     }
 
-    public function selectDb($db) {
+    public function selectDb($db)
+    {
         return true;
     }
 
@@ -45,7 +51,8 @@ class Memcached implements ICache
      * @param int $expiration
      * @return bool
      */
-    public function add($key, $value, $expiration = 0) {
+    public function add($key, $value, $expiration = 0)
+    {
         return $this->memcached ? $this->memcached->add($key, $value, $expiration) : false;
     }
 
@@ -57,7 +64,8 @@ class Memcached implements ICache
      * @param int $expiration
      * @return bool
      */
-    public function replace($key, $value, $expiration = 0) {
+    public function replace($key, $value, $expiration = 0)
+    {
         return $this->memcached ? $this->memcached->replace($key, $value, $expiration) : false;
     }
 
@@ -69,7 +77,8 @@ class Memcached implements ICache
      * @param int $expiration
      * @return bool
      */
-    public function set($key, $value, $expiration = 0) {
+    public function set($key, $value, $expiration = 0)
+    {
         return $this->memcached ? $this->memcached->set($key, $value, $expiration) : false;
     }
 
@@ -80,7 +89,8 @@ class Memcached implements ICache
      * @param int $expiration
      * @return bool
      */
-    public function setMulti($items, $expiration = 0) {
+    public function setMulti($items, $expiration = 0)
+    {
         return $this->memcached ? $this->memcached->setMulti($items, $expiration) : false;
     }
 
@@ -90,7 +100,8 @@ class Memcached implements ICache
      * @param string $key
      * @return mixed
      */
-    public function get($key) {
+    public function get($key)
+    {
         return $this->memcached ? $this->memcached->get($key) : null;
     }
 
@@ -100,7 +111,8 @@ class Memcached implements ICache
      * @param array $keys
      * @return array
      */
-    public function getMulti($keys) {
+    public function getMulti($keys)
+    {
         return $this->memcached ? $this->memcached->getMulti($keys) : null;
     }
 
@@ -111,7 +123,8 @@ class Memcached implements ICache
      * @param int $offset
      * @return bool
      */
-    public function increment($key, $offset = 1) {
+    public function increment($key, $offset = 1)
+    {
         return $this->memcached ? $this->memcached->increment($key, $offset) : false;
     }
 
@@ -122,7 +135,8 @@ class Memcached implements ICache
      * @param int $offset
      * @return bool
      */
-    public function decrement($key, $offset = 1) {
+    public function decrement($key, $offset = 1)
+    {
         return $this->memcached ? $this->memcached->decrement($key, $offset) : false;
     }
 
@@ -132,7 +146,8 @@ class Memcached implements ICache
      * @param string $key
      * @return bool
      */
-    public function delete($key) {
+    public function delete($key)
+    {
         return $this->memcached ? $this->memcached->delete($key) : false;
     }
 
@@ -142,7 +157,8 @@ class Memcached implements ICache
      * @param array $keys
      * @return bool
      */
-    public function deleteMulti($keys) {
+    public function deleteMulti($keys)
+    {
         if (!$this->memcached || empty($keys)) {
             return false;
         }
@@ -159,7 +175,8 @@ class Memcached implements ICache
      *
      * @return bool
      */
-    public function clear() {
+    public function clear()
+    {
         return $this->memcached ? $this->memcached->flush() : false;
     }
 
@@ -168,7 +185,8 @@ class Memcached implements ICache
      *
      * @return array
      */
-    public function stat() {
+    public function stat()
+    {
         return $this->memcached ? $this->memcached->getStats() : null;
     }
 }

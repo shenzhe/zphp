@@ -8,6 +8,8 @@ namespace ZPHP\Controller;
 interface IController
 {
     function setServer($server);
+
     function _before();
+
     function _after();
 }

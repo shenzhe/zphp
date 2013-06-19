@@ -12,12 +12,13 @@ class Config
 {
 
     private static $config;
+
     public static function load($configPath)
     {
         $files = Dir::tree($configPath, "/.php$/");
         $config = array();
-        if(!empty($files)) {
-            foreach($files as $file) {
+        if (!empty($files)) {
+            foreach ($files as $file) {
                 $config += include "{$file}";
             }
         }
@@ -25,7 +26,7 @@ class Config
         return $config;
     }
 
-    public static function get($key, $default=null)
+    public static function get($key, $default = null)
     {
         return isset(self::$config[$key]) ? self::$config[$key] : $default;
     }

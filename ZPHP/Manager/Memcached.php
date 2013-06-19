@@ -9,7 +9,9 @@ namespace ZPHP\Manager;
 class Memcached
 {
     private static $instances;
-    public static function getInstance($config) {
+
+    public static function getInstance($config)
+    {
         $name = $config['name'];
         $pconnect = $config['pconnect'];
         if (empty(self::$instances[$name])) {
@@ -18,7 +20,7 @@ class Memcached
             } else {
                 $memcached = new \Memcached();
             }
-            foreach ($config['servers'] as  $server) {
+            foreach ($config['servers'] as $server) {
                 $memcached->addServer($server['host'], $server['port']);
             }
             self::$instances[$name] = $memcached;
