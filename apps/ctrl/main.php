@@ -14,18 +14,18 @@ class main implements IController
 
     public function _before()
     {
-        echo "before call\n";
+//        echo "before call\n";
         return true;
     }
 
     public function _after()
     {
-        echo "after call\n";
+//        echo "after call\n";
     }
 
     public function main()
     {
-        print_r($this->_server->getParams());
+//        print_r($this->_server->getParams());
         $project = Config::get('project_name');
         $view = View\Factory::getInstance('String');
         $view->setModel($project." runing!\n");

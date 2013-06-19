@@ -79,7 +79,7 @@ class ZPHP
     {
         $exceptionView = View\Factory::getInstance();
         $exceptionView->setModel(Formater::exception($exception));
-        $exceptionView->display();
+        echo $exceptionView->output();
     }
 
     public static function run($rootPath)

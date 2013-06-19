@@ -22,7 +22,11 @@ class Route
         if ($before) {
             try {
                 $method = $server->getMethod();
-                $view = $class->$method();
+                if (method_exists($class, $method)) {
+                    $view = $class->$method();
+                } else {
+                    throw new \Exception("no method {$method}");
+                }
             } catch (\Exception $e) {
                 $exception = $e;
             }
