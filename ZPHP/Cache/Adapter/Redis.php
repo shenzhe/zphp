@@ -10,11 +10,11 @@ use ZPHP\Cache\ICache,
     ZPHP\Manager;
 class Redis implements ICache
 {
-    private static $redis;
+    private $redis;
 
     public function __construct($config) {
-        if (empty(self::$redis)) {
-            self::$redis = Manager\Redis::getInstance($config);
+        if (empty($this->redis)) {
+            $this->redis = Manager\Redis::getInstance($config);
         }
     }
 
@@ -23,18 +23,18 @@ class Redis implements ICache
     }
 
     public function selectDb($db) {
-        self::$redis->select($db);
+        $this->redis->select($db);
     }
 
     public function add($key, $value, $expiration = 0) {
-        return self::$redis->setNex($key, $expiration, $value);
+        return $this->redis->setNex($key, $expiration, $value);
     }
 
     public function set($key, $value, $expiration = 0) {
         if($expiration) {
-            return self::$redis->setex($key, $expiration, $value);
+            return $this->redis->setex($key, $expiration, $value);
         } else {
-            return self::$redis->set($key, $value);
+            return $this->redis->set($key, $value);
         }
     }
 
@@ -43,7 +43,7 @@ class Redis implements ICache
     }
 
     public function get($key) {
-        return self::$redis->get($key);
+        return $this->redis->get($key);
     }
 
     public function getCache($key) {
@@ -51,18 +51,18 @@ class Redis implements ICache
     }
 
     public function delete($key) {
-        return self::$redis->delete($key);
+        return $this->redis->delete($key);
     }
 
     public function increment($key, $offset = 1) {
-        return self::$redis->incrBy($key, $offset);
+        return $this->redis->incrBy($key, $offset);
     }
 
     public function decrement($key, $offset = 1) {
-        return self::$redis->decBy($key, $offset);
+        return $this->redis->decBy($key, $offset);
     }
 
     public function clear() {
-        return self::$redis->flushDB();
+        return $this->redis->flushDB();
     }
 }
