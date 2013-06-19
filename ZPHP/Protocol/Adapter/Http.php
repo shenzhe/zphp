@@ -15,7 +15,7 @@ class Http implements IProtocol
     private $_method = 'main';
     private $_params = array();
 
-    public function __construct($data)
+    public function parse($data)
     {
         if (isset($data['a'])) {
             $this->_action = \str_replace('/', '\\', $data['a']);

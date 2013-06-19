@@ -17,7 +17,8 @@ class Http
 
     public function __construct()
     {
-        $server = Protocol\Factory::getInstance('Http', $_REQUEST);
+        $server = Protocol\Factory::getInstance('Http');
+        $server->parse($_REQUEST);
         Core\Route::route($server);
     }
 
