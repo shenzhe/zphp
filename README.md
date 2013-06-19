@@ -23,7 +23,7 @@ zphp是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
 
 流程图
 =======
-![zphp](https://github.com/shenzhe/zphp/blob/master/zphp_jg.jpg "zphp流程图") 
+![点击查看zphp流程图](https://github.com/shenzhe/zphp/blob/master/zphp_jg.jpg "zphp流程图") 
 
 
 特色
