@@ -35,7 +35,7 @@ class React implements IClient
         $socketConfig = Core\Config::get('socket');
         $server = Protocol\Factory::getInstance($socketConfig['protocol'], $data);
         Core\Route::route($server);
-        $conn->write($server->getData());
+        $conn->write($server->getData()."\n");
     }
 
     public function onClose()

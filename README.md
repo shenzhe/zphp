@@ -32,7 +32,10 @@ zphp是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
         2) 运行：http://域名/main.php?a=apps/ctrl/main&name=zphp
 
     socket模块:
-        //TODO
+        1) php 项目目录/webroot/main.php socket
+        2) telnet 127.0.0.1 8991
+        3) 输入: {"a":"apps/ctrl/main","name":"zphp"} 发送
+        4) 返回: zphp running\n
 特色
 ======================
 
