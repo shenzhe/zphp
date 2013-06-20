@@ -11,10 +11,6 @@ use ZPHP\Core,
 
 class Http
 {
-    private $_action = 'index';
-    private $_method = 'main';
-    private $_params = array();
-
     public function run()
     {
         $server = Protocol\Factory::getInstance('Http');
@@ -22,23 +18,4 @@ class Http
         Core\Route::route($server);
     }
 
-    public function getAction()
-    {
-        return $this->_action;
-    }
-
-    public function getMethod()
-    {
-        return $this->_method;
-    }
-
-    public function getParams()
-    {
-        return $this->_params;
-    }
-
-    public function display($model)
-    {
-        echo $model;
-    }
 }

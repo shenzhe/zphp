@@ -23,8 +23,4 @@ class Socket
         $socket->setClient($client);
         $socket->run();
     }
-
-    public function display($model)
-    {
-    }
 }
