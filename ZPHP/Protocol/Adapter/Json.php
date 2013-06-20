@@ -16,9 +16,9 @@ class Json implements IProtocol
     private $_params = array();
     private $_data;
 
-    public function parse($data)
+    public function parse($_data)
     {
-        $data = \json_decode($data, true);
+        $data = \json_decode($_data, true);
         if (isset($data['a'])) {
             $this->_action = \str_replace('/', '\\', $data['a']);
             unset($data['a']);

@@ -9,19 +9,21 @@ namespace ZPHP\Protocol\Adapter;
 use ZPHP\Core;
 use ZPHP\Protocol\IProtocol;
 
-class Http implements IProtocol
+class Cli implements IProtocol
 {
     private $_action = 'index';
     private $_method = 'main';
     private $_params = array();
 
     /**
-     * 直接 parse $_REQUEST
+     * 会取$_SERVER['argv']最后一个参数
+     * 原始格式： a=action&m=method&param1=val1
      * @param $_data
      */
     public function parse($_data)
     {
-        $data = $_data;
+        $data = \array_pop($_data);
+        $data = \parse_url($data);
         if (isset($data['a'])) {
             $this->_action = \str_replace('/', '\\', $data['a']);
             unset($data['a']);

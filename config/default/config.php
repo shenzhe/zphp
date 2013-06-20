@@ -1,7 +1,7 @@
 <?php
 
     return array(
-        'server_mode' => 'Http',
+        'server_mode' => (PHP_SAPI === 'cli') ? 'Cli' : 'Http',
         'project_name'=>'zphp',
         'pdo'=>array(
             'dns'=>'mysql:host=localhost;port=3306',
@@ -15,7 +15,7 @@
                 'name'=>'master',
                 'pconnect'=>true,
                 'host'=>'127.0.0.1',
-                'port'=>'6379',
+                'port'=>6379,
                 'timeout'=>5
             )
         ),
@@ -27,7 +27,7 @@
                 'name'=>'rank',
                 'pconnect'=>true,
                 'host'=>'127.0.0.1',
-                'port'=>'6379',
+                'port'=>6379,
                 'timeout'=>5
             )
         ),
@@ -36,7 +36,7 @@
                 'name'=>'queue',
                 'pconnect'=>true,
                 'host'=>'127.0.0.1',
-                'port'=>'6379',
+                'port'=>6379,
                 'timeout'=>5
             )
         ),

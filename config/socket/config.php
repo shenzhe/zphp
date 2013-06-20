@@ -6,7 +6,7 @@
         'app_path'=>'apps',
         'socket'=>array(
             'host'=>'0.0.0.0',                          //socket 监听ip
-            'port'=>'8991',                             //socket 监听端口
+            'port'=>8991,                             //socket 监听端口
             'adpter'=>'React',                          //socket 驱动模块
             'daemonize'=>0,                             //是否开启守护进程
             'times'=>array(),                           //定时服务
@@ -27,7 +27,7 @@
                 'name'=>'master',
                 'pconnect'=>true,
                 'host'=>'127.0.0.1',
-                'port'=>'6379',
+                'port'=>6379,
                 'timeout'=>5
             )
         ),
@@ -39,7 +39,7 @@
                 'name'=>'rank',
                 'pconnect'=>true,
                 'host'=>'127.0.0.1',
-                'port'=>'6379',
+                'port'=>6379,
                 'timeout'=>5
             )
         ),
@@ -48,7 +48,7 @@
                 'name'=>'queue',
                 'pconnect'=>true,
                 'host'=>'127.0.0.1',
-                'port'=>'6379',
+                'port'=>6379,
                 'timeout'=>5
             )
         ),
