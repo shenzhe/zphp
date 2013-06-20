@@ -4,7 +4,7 @@
         'socket'=>array(
             'host'=>'0.0.0.0',                          //socket 监听ip
             'port'=>8991,                               //socket 监听端口
-            'adpter'=>'React',                          //socket 驱动模块
+            'adapter'=>'React',                          //socket 驱动模块
             'daemonize'=>0,                             //是否开启守护进程
             'times'=>array(),                           //定时服务
             'params'=>array(),                          //其它参数
