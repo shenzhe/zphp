@@ -11,6 +11,7 @@ use ZPHP\Core;
 class React implements IClient
 {
     private $_data;
+
     public function onStart()
     {
         echo 'server start' . PHP_EOL;
@@ -34,13 +35,16 @@ class React implements IClient
         }
         $socketConfig = Core\Config::get('socket');
         $server = Protocol\Factory::getInstance($socketConfig['protocol']);
-        $server->parse($data);
-        try{
-            Core\Route::route($server);
-        }catch (\Exception $e){
-            $server->display($e->getMessage());
+        $server->setFd(intval($conn->stream));
+        $result = $server->parse($data);
+        if ($result) {
+            try {
+                Core\Route::route($server);
+            } catch (\Exception $e) {
+                $server->display($e->getMessage());
+            }
+            $conn->write($server->getData() . "\n");
         }
-        $conn->write($server->getData()."\n");
     }
 
     public function onClose()

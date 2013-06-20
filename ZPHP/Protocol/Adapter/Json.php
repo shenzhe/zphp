@@ -15,6 +15,7 @@ class Json implements IProtocol
     private $_method = 'main';
     private $_params = array();
     private $_data;
+    private $fd;
 
     public function parse($_data)
     {
@@ -28,6 +29,12 @@ class Json implements IProtocol
             unset($data['m']);
         }
         $this->_params = $data;
+        return true;
+    }
+
+    public function setFd($fd)
+    {
+        $this->fd = $fd;
     }
 
     public function getAction()

@@ -19,6 +19,7 @@ class Cli implements IProtocol
      * 会取$_SERVER['argv']最后一个参数
      * 原始格式： a=action&m=method&param1=val1
      * @param $_data
+     * @return bool
      */
     public function parse($_data)
     {
@@ -33,6 +34,7 @@ class Cli implements IProtocol
             unset($data['m']);
         }
         $this->_params = $data;
+        return true;
     }
 
     public function getAction()

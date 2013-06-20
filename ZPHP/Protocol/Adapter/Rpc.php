@@ -9,7 +9,7 @@ namespace ZPHP\Protocol\Adapter;
 use ZPHP\Core;
 use ZPHP\Protocol\IProtocol;
 
-class Http implements IProtocol
+class Rpc implements IProtocol
 {
     private $_action = 'index';
     private $_method = 'main';

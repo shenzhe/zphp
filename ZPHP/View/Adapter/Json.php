@@ -13,7 +13,7 @@ class Json extends Base
 {
     public function output()
     {
-        header("Content-Type: application/json; charset=utf-8");
+        \header("Content-Type: application/json; charset=utf-8");
         if (\is_string($this->model)) {
             return $this->model;
         } else {
