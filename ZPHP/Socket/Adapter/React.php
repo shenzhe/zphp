@@ -32,7 +32,6 @@ class React implements IServer
 
     public function run()
     {
-        if($this->config['deame'])
         $client = $this->client;
         $client->onStart($this->serv);
         $this->serv->on('connection', function ($conn) use ($client) {
