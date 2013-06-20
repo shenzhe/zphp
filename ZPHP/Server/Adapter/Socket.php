@@ -12,7 +12,7 @@ use ZPHP\Core\Factory as CFactory;
 
 class Socket
 {
-    public function __construct()
+    public function run()
     {
         $config = Config::get('socket');
         if (empty($config)) {

@@ -106,6 +106,7 @@ class ZPHP
         $timeZone = empty($config['time_zone']) ? 'Asia/Shanghai' : $config['time_zone'];
         \date_default_timezone_set($timeZone);
         $serverMode = empty($config['server_mode']) ? 'Http' : $config['server_mode'];
-        Server\Factory::getInstance($serverMode);
+        $service = Server\Factory::getInstance($serverMode);
+        $service->run();
     }
 }

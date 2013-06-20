@@ -9,7 +9,7 @@ namespace ZPHP\Server\Adapter;
 use ZPHP\Core,
     ZPHP\Protocol;
 
-class Http
+class Rpc
 {
     private $_action = 'index';
     private $_method = 'main';
@@ -17,8 +17,14 @@ class Http
 
     public function run()
     {
-        $server = Protocol\Factory::getInstance('Http');
-        $server->parse($_REQUEST);
+        $rpc = new \Yar_Server(new __CLASS__);
+        $rpc->handle();
+    }
+
+    public function api($params)
+    {
+        $server = Protocol\Factory::getInstance('Rpc');
+        $server->parse($params);
         Core\Route::route($server);
     }
 

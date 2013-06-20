@@ -14,10 +14,14 @@ class Factory
         if (isset(self::$instances[$className])) {
             return self::$instances[$className];
         }
-        if(!\class_exists($className)) {
+        if (!\class_exists($className)) {
             throw new \Exception("no class {$className}");
         }
-        self::$instances[$className] = new $className($params);
+        if (empty($params)) {
+            self::$instances[$className] = new $className();
+        } else {
+            self::$instances[$className] = new $className($params);
+        }
         return self::$instances[$className];
     }
 }
