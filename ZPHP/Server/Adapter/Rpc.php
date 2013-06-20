@@ -17,7 +17,7 @@ class Rpc
 
     public function run()
     {
-        $rpc = new \Yar_Server(new __CLASS__);
+        $rpc = new \Yar_Server(new self());
         $rpc->handle();
     }
 
