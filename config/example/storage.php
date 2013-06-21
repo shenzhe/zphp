@@ -2,42 +2,44 @@
 
     return array(
         'storage'=>array(
-            'RL'=>array(
-                'name'=>'master',
-                'pconnect'=>true,
-                'host'=>'127.0.0.1',
-                'port'=>6379,
-                'timeout'=>5
-            ),
-            'Redis'=>array(
-                'master'=>array(
-                    'name'=>'master',
-                    'pconnect'=>true,
-                    'host'=>'127.0.0.1',
-                    'port'=>6379,
-                    'timeout'=>5
-                ),
-                'slave'=>array(
-                    'name'=>'slave',
-                    'pconnect'=>true,
-                    'host'=>'127.0.0.1',
-                    'port'=>6379,
-                    'timeout'=>5
-                ),
-            ),
-            'TT'=>array(
-                'name'=>'cache',
-                'pconnect'=>true,
-                'servers'=>array(
-                    array(
-                        'host'=>'127.0.0.1',
-                        'port'=>11211
-                    ),
-                    array(
-                        'host'=>'127.0.0.1',
-                        'port'=>11212
-                    )
-                )
-            )
+//=========== redis-storage======
+            'adapter'=>'RL',
+            'name'=>'master',
+            'pconnect'=>true,
+            'host'=>'127.0.0.1',
+            'port'=>6379,
+            'timeout'=>5
+
+////========== Redis =========
+//            'adapter'=>'Redis',
+//            'master'=>array(
+//                'name'=>'master',
+//                'pconnect'=>true,
+//                'host'=>'127.0.0.1',
+//                'port'=>6379,
+//                'timeout'=>5
+//            ),
+//            'slave'=>array(
+//                'name'=>'slave',
+//                'pconnect'=>true,
+//                'host'=>'127.0.0.1',
+//                'port'=>6379,
+//                'timeout'=>5
+//            ),
+
+////============= ttserver ====
+//            'adapter'=>'TT',
+//            'name'=>'cache',
+//            'pconnect'=>true,
+//            'servers'=>array(
+//                array(
+//                    'host'=>'127.0.0.1',
+//                    'port'=>11211
+//                ),
+//                array(
+//                    'host'=>'127.0.0.1',
+//                    'port'=>11212
+//                )
+//            )
         ),
     );

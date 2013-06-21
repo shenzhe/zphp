@@ -5,5 +5,7 @@
         'now_time'=>isset($_SERVER['REQUEST_TIME']) ? $_SERVER['REQUEST_TIME'] : time(),            //系统时间
         'project_name'=>'zphp',                                                                     //项目名
         'app_path'=>'apps',                                                                         //app目录
-        'ctrl_path'=>'ctrl'                                                                         //ctrl目录
+        'ctrl_path'=>'ctrl',                                                                         //ctrl目录
+        'log_path'=>'log',                                                                           //日志目录
+        'time_zone'=>'Asia/Shanghai',                                                                //时区
     );

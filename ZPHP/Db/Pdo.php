@@ -39,6 +39,9 @@ class Pdo
 
     public function setDBName($dbName)
     {
+        if(empty($dbName)) {
+            return ;
+        }
         $this->dbName = $dbName;
     }
 
@@ -54,7 +57,7 @@ class Pdo
 
     public function setClassName($className)
     {
-        if ($this->className != $className) {
+        if (!empty($className) && $this->className != $className) {
             $this->className = $className;
             $this->tableName = null;
         }
@@ -132,7 +135,6 @@ class Pdo
         foreach ($fields as $field) {
             $params[$field] = $entity->$field;
         }
-
         $statement->execute($params);
         return $this->pdo->lastInsertId();
     }

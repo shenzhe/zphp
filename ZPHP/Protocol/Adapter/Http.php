@@ -11,7 +11,7 @@ use ZPHP\Protocol\IProtocol;
 
 class Http implements IProtocol
 {
-    private $_action = 'index';
+    private $_action = 'main\\main';
     private $_method = 'main';
     private $_params = array();
 

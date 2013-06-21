@@ -21,7 +21,7 @@ class Php extends Base
 
     public function output()
     {
-        $tplPath = ZPHP\Core\Config::get('tpl_path');
+        $tplPath = ZPHP\Core\Config::getFiled('proejct', 'tpl_path', 'template' . DS . 'template');
         $fileName = ZPHP\ZPHP::getRootPath() . DS . $tplPath . DS . $this->tplFile;
         if (!\is_file($fileName)) {
             throw new \Exception("no file {$fileName}");
