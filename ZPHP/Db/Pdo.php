@@ -21,7 +21,7 @@ class Pdo
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
             ));
         }
-        if (!empty($this->className)) {
+        if (!empty($className)) {
             $this->className = $className;
         }
         if (empty($dbName)) {
