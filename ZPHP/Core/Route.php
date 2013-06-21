@@ -15,7 +15,7 @@ class Route
 {
     public static function route($server)
     {
-        $action = ZPHP::getAppPath() . '\\' . Config::get('ctrl_path', 'ctrl') . '\\' . $server->getAction();
+        $action = Config::get('ctrl_path', 'ctrl') . '\\' . $server->getAction();
         $class = Factory::getInstance($action);
         if (!($class instanceof IController)) {
             throw new \Exception("ctrl error");

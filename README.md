@@ -49,7 +49,7 @@ zphp是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
 
 约定
 ===========
-    config/examle/base.php 里的配置项目是必需的。
+    config/example/base.php 里的配置项目是必需的。
 
 
 

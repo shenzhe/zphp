@@ -62,8 +62,8 @@ class ZPHP
     {
         $baseClasspath = \str_replace('\\', DS, $class) . '.php';
         $libs = array(
-            '',
             self::$appPath . DS,
+            '',
             'lib' . DS
         );
         foreach ($libs as $lib) {

@@ -1,5 +1,5 @@
 <?php
-namespace apps\ctrl;
+namespace ctrl;
 use ZPHP\Controller\IController,
     ZPHP\Core\Config,
     ZPHP\View;
@@ -32,7 +32,8 @@ class main implements IController
                 $model.= "key:{$key}=>{$val}\n";
             }
         }
-        $view = View\Factory::getInstance('String');
+        $viewMode = Config::get('view_mode', 'String');
+        $view = View\Factory::getInstance($viewMode);
         $view->setModel($model);
         return $view;
     }
