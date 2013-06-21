@@ -6,7 +6,7 @@
 
 
 namespace ZPHP\Serialize\Adapter;
-class Php extends Base
+class Php
 {
     public function serialize($data)
     {

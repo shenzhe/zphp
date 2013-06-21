@@ -6,7 +6,7 @@
 
 
 namespace ZPHP\Serialize\Adapter;
-class Msgpack extends Base
+class Msgpack
 {
     public function serialize($data)
     {

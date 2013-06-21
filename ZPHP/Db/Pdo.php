@@ -173,7 +173,7 @@ class Pdo
 
         $statement = $this->pdo->prepare($query);
         $statement->execute($params);
-        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        $statement->setFetchMode(\PDO::FETCH_ASSOC);
         return $statement->fetchAll();
     }
 
@@ -201,7 +201,7 @@ class Pdo
             throw new \Exception('data base error');
         }
 
-        $statement->setFetchMode(PDO::FETCH_CLASS, $this->className);
+        $statement->setFetchMode(\PDO::FETCH_CLASS, $this->className);
         return $statement->fetchAll();
     }
 
@@ -216,7 +216,7 @@ class Pdo
         $query .= " limit 1";
         $statement = $this->pdo->prepare($query);
         $statement->execute($params);
-        $statement->setFetchMode(PDO::FETCH_CLASS, $this->className);
+        $statement->setFetchMode(\PDO::FETCH_CLASS, $this->className);
         return $statement->fetch();
     }
 

@@ -4,12 +4,13 @@
  * Date: 13-6-17
  */
 namespace ZPHP\Cache;
+use ZPHP\Core\Factory as ZFactory;
 
 class Factory
 {
     public static function getInstance($adapter = 'Json', $config = null)
     {
         $className = __NAMESPACE__ . "\\Adapter\\{$adapter}";
-        return CFactory::getInstance($className, $config);
+        return ZFactory::getInstance($className, $config);
     }
 }

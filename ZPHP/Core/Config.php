@@ -26,9 +26,13 @@ class Config
         return $config;
     }
 
-    public static function get($key, $default = null)
+    public static function get($key, $default = null, $throw=false)
     {
-        return isset(self::$config[$key]) ? self::$config[$key] : $default;
+        $result =  isset(self::$config[$key]) ? self::$config[$key] : $default;
+        if($throw && empty($result)) {
+            throw new \Exception("{key} config empty");
+        }
+        return $result;
     }
 
     public static function all()

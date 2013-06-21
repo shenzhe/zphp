@@ -18,6 +18,7 @@ class Log
         $t = \date("Ymd");
         $logPath = Config::get('log_path', 'log');
         $dir = ZPHP::getRootPath() . DS . $logPath . DS . $t;
+        Dir::make($dir);
         $str = \date('Y-m-d H:i:s', Config::get('now_time'), time()) . self::SEPARATOR . \implode(self::SEPARATOR, $params);
         $logFile = $dir . \DS . $type . '.log';
         \error_log($str . "\n", 3, $logFile);

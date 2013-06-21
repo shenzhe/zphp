@@ -24,6 +24,8 @@ class ZPHP
 
     private static $appPath = 'apps';
 
+    private static $timeZone = 'Asia/Shanghai';
+
     public static function getRootPath()
     {
         return self::$rootPath;
@@ -97,15 +99,13 @@ class ZPHP
             self::setConfigPath($configPath);
         }
         \spl_autoload_register(__CLASS__ . '::autoLoader');
-        $config = Config::load(self::getConfigPath());
-        if (!empty($config['app_path'])) {
-            $appPath = $config['app_path'];
-            self::setAppPath($appPath);
-        }
+        Config::load(self::getConfigPath());
+        $appPath = Config::get('app_path', self::$appPath);
+        self::setAppPath($appPath);
         \set_exception_handler(__CLASS__ . '::exceptionHandler');
-        $timeZone = empty($config['time_zone']) ? 'Asia/Shanghai' : $config['time_zone'];
+        $timeZone = Config::get('time_zone', self::$timeZone);
         \date_default_timezone_set($timeZone);
-        $serverMode = empty($config['server_mode']) ? 'Http' : $config['server_mode'];
+        $serverMode = Config::get('server_mode', 'Http');
         $service = Server\Factory::getInstance($serverMode);
         $service->run();
     }

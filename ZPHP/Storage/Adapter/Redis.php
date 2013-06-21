@@ -45,14 +45,14 @@ class Redis implements IStorage
         return $this->redis->hMGet($uKey, $keys);
     }
 
-    public function getMD($userId, $key)
+    public function getMD($userId, $key, $slaveConfig="")
     {
         $uKey = $this->uKey($userId);
         $data = $this->redis->hGet($uKey, $key);
         return $data;
     }
 
-    public function getSD($userId, $key, $slaveConfig)
+    public function getSD($userId, $key, $slaveConfig="")
     {
         $uKey = $this->uKey($userId);
         $this->setSlave($slaveConfig);
