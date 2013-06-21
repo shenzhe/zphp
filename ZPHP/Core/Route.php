@@ -7,17 +7,21 @@
 namespace ZPHP\Core;
 use ZPHP\Controller\IController,
     ZPHP\Core\Factory,
+    ZPHP\Core\Config,
     ZPHP\View\IView;
+use ZPHP\ZPHP;
 
 class Route
 {
     public static function route($server)
     {
-        $class = Factory::getInstance($server->getAction());
-        if ($class instanceof IController) {
-            $class->setServer($server);
-            $before = $class->_before();
+        $action = ZPHP::getAppPath() . '\\' . Config::get('ctrl_path', 'ctrl') . '\\' . $server->getAction();
+        $class = Factory::getInstance($action);
+        if (!($class instanceof IController)) {
+            throw new \Exception("ctrl error");
         }
+        $class->setServer($server);
+        $before = $class->_before();
         $view = $exception = null;
         if ($before) {
             try {
@@ -31,9 +35,7 @@ class Route
                 $exception = $e;
             }
         }
-        if ($class instanceof IController) {
-            $class->_after();
-        }
+        $class->_after();
         if ($exception !== null) {
             throw $exception;
         }

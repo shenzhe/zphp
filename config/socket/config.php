@@ -4,6 +4,7 @@
         'server_mode' => 'Socket',
         'project_name'=>'zphp',
         'app_path'=>'apps',
+        'ctrl_path'=>'ctrl',
         'socket'=>array(
             'host'=>'0.0.0.0',                          //socket 监听ip
             'port'=>8991,                             //socket 监听端口
