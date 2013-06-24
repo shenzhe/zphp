@@ -67,7 +67,7 @@ class ZPHP
         $libs = array(
             self::$rootPath . DS . self::$appPath,
             self::$zPath,
-            self::$rootPath . DS . 'lib'
+            self::$zPath . DS . 'lib'
         );
         foreach ($libs as $lib) {
             $classpath =  $lib . DS . $baseClasspath;
