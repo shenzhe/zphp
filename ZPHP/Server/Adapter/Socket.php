@@ -9,6 +9,7 @@ namespace ZPHP\Server\Adapter;
 use ZPHP\Socket\Factory as SFactory;
 use ZPHP\Core\Config;
 use ZPHP\Core\Factory as CFactory;
+use ZPHP\Common\Daemon as ZDeamon;
 
 class Socket
 {
@@ -22,5 +23,9 @@ class Socket
         $client = CFactory::getInstance($config['client_class']);
         $socket->setClient($client);
         $socket->run();
+        if ($config['daemonize']) {
+            $deamonize = new ZDeamon(Config::get('daemonize', array()));
+            $deamonize->start();
+        }
     }
 }

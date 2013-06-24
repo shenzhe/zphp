@@ -12,6 +12,6 @@
             'protocol'=>'Json',                         //socket通信数据协议
             'call_mode'=>'ZPHP',                        //业务处理模式
             'work_mode'=>1,                             //工作模式：1：多进程 2：多线程
-            'worker'=>1                                 //工作进程数
+            'worker_num'=>1                                 //工作进(线)程数
         ),
     );

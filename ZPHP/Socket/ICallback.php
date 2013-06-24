@@ -5,7 +5,7 @@
  *  view接口
  */
 namespace ZPHP\Socket;
-interface IClient
+interface ICallback
 {
     public function onStart();
 

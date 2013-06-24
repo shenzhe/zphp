@@ -4,13 +4,21 @@
  * Date: 13-6-19
  */
 namespace socket;
+use ZPHP\Socket\ICallback;
 use ZPHP\Socket\IClient;
 use ZPHP\Protocol;
 use ZPHP\Core;
 
-class React implements IClient
+class React implements ICallback
 {
     private $_data;
+    private $_msgQueue;
+    private $_conns;
+
+    public function setQueue($queue)
+    {
+        $this->_msgQueue = $queue;
+    }
 
     public function onStart()
     {
@@ -21,29 +29,28 @@ class React implements IClient
     {
         $params = func_get_args();
         $fd = (int)$params[0]->stream;
+        $this->_conns[$fd] = $params[0];
         echo "Client {$fd}：Connect" . PHP_EOL;
     }
 
     public function onReceive()
     {
         $params = func_get_args();
-        $conn = $params[0];
         $data = trim($params[1]);
         echo $data . PHP_EOL;
         if (empty($data)) {
             return;
         }
-        $socketConfig = Core\Config::get('socket');
-        $server = Protocol\Factory::getInstance($socketConfig['protocol']);
-        $server->setFd(intval($conn->stream));
+        $server = Protocol\Factory::getInstance(Core\Config::getFiled('socket', 'protocol'));
         $result = $server->parse($data);
-        if ($result) {
-            try {
-                Core\Route::route($server);
-            } catch (\Exception $e) {
-                $server->display($e->getMessage());
-            }
-            $conn->write($server->getData() . "\n");
+        if(empty($result['a'])) {
+            $fd = $result['fd'];
+            $this->_conns[$fd]->write($data);
+        } else {
+            $fd = (int)$params[0]->stream;
+            $result['fd'] = $fd;
+            $server->display($result);
+            msg_send($this->_msgQueue, 1, $server->getData());
         }
     }
 
@@ -53,6 +60,7 @@ class React implements IClient
         $conn = $params[0];
         $conn->end();
         $fd = (int)$params[0]->stream;
+        unset($this->_conns[$fd]);
         echo "Client {$fd}：Close" . PHP_EOL;
     }
 
@@ -64,5 +72,23 @@ class React implements IClient
     public function display($data)
     {
         $this->_data = $data;
+    }
+
+    public function work()
+    {
+        $server = Protocol\Factory::getInstance(Core\Config::getFiled('socket', 'protocol'));
+        msg_receive($this->_msgQueue, 0, $messageType, 1024, $data, true, MSG_IPC_NOWAIT);
+        if(!empty($data)){
+            $result = $server->parse($data);
+            if (!empty($result)) {
+                try {
+                    Core\Route::route($server);
+                } catch (\Exception $e) {
+                    $server->display($e->getMessage());
+                }
+                $server->sendMaster();
+            }
+        }
+        usleep(500);
     }
 }

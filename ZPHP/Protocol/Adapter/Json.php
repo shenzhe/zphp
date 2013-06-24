@@ -6,8 +6,9 @@
 
 
 namespace ZPHP\Protocol\Adapter;
-use ZPHP\Core;
-use ZPHP\Protocol\IProtocol;
+use ZPHP\Core\Config,
+    ZPHP\Socket\Client as ZSClient,
+    ZPHP\Protocol\IProtocol;
 
 class Json implements IProtocol
 {
@@ -22,14 +23,18 @@ class Json implements IProtocol
         $data = \json_decode($_data, true);
         if (isset($data['a'])) {
             $this->_action = \str_replace('/', '\\', $data['a']);
-            unset($data['a']);
+            //unset($data['a']);
         }
         if (isset($data['m'])) {
             $this->_method = $data['m'];
-            unset($data['m']);
+            //unset($data['m']);
+        }
+
+        if (isset($data['fd'])) {
+            $this->fd = $data['fd'];
         }
         $this->_params = $data;
-        return true;
+        return $data;
     }
 
     public function setFd($fd)
@@ -54,6 +59,11 @@ class Json implements IProtocol
 
     public function display($model)
     {
+        if (is_array($model)) {
+            $model['fd'] = $this->fd;
+        } else {
+            $model[] = $model;
+        }
         $this->_data = $model;
     }
 
@@ -62,5 +72,13 @@ class Json implements IProtocol
         $data = \json_encode($this->_data);
         $this->_data = null;
         return $data;
+    }
+
+    public function sendMaster()
+    {
+        $host = Config::getFiled('socket', 'host');
+        $port = Config::getFiled('socket', 'port');
+        $client = new ZSClient($host, $port);
+        $client->send($this->getData());
     }
 }
