@@ -25,6 +25,7 @@ class ZPHP
     private static $appPath = 'apps';
 
     private static $timeZone = 'Asia/Shanghai';
+    private static $zPath;
 
     public static function getRootPath()
     {
@@ -64,12 +65,12 @@ class ZPHP
     {
         $baseClasspath = \str_replace('\\', DS, $class) . '.php';
         $libs = array(
-            self::$appPath . DS,
-            '',
-            'lib' . DS
+            self::$rootPath . DS . self::$appPath,
+            self::$zPath,
+            self::$rootPath . DS . 'lib'
         );
         foreach ($libs as $lib) {
-            $classpath = self::$rootPath . DS . $lib . $baseClasspath;
+            $classpath =  $lib . DS . $baseClasspath;
             if (\is_file($classpath)) {
                 require "{$classpath}";
                 return;
@@ -89,6 +90,7 @@ class ZPHP
         if (!defined('DS')) {
             define('DS', DIRECTORY_SEPARATOR);
         }
+        self::$zPath = \dirname(__DIR__);
         self::setRootPath($rootPath);
         if (!empty($_SERVER['HTTP_HOST'])) {
             $configPath = $_SERVER['HTTP_HOST'];
