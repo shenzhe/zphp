@@ -3,7 +3,7 @@
  * User: shenzhe
  * Date: 13-6-17
  */
-namespace ZPHP\Queue;
+namespace ZPHP\Queue\Adapter;
 
 
 class Php
