@@ -8,13 +8,13 @@ use ZPHP\Socket\ICallback;
 use ZPHP\Socket\IClient;
 use ZPHP\Protocol;
 use ZPHP\Core;
+use ZPHP\Core\Config as ZConfig;
 use ZPHP\Queue\Factory as ZQueue;
 
 class React implements ICallback
 {
     private $_data;
     private $_conns;
-    private $queueKey = 'zphp_react';
 
 
     public function onStart()
@@ -43,16 +43,16 @@ class React implements ICallback
         if (empty($result['a'])) {
             if (!empty($result['fd'])) {
                 $fd = $result['fd'];
-                $this->_conns[$fd]->write($data."\n");
+                $this->_conns[$fd]->write($data . "\n");
             } else {
-                $params[0]->write($data."\n");
+                $params[0]->write($data . "\n");
             }
         } else {
             $fd = (int)$params[0]->stream;
             $server->setFd($fd);
             $server->display($result);
-            $queueService = ZQueue::getInstance('Php');
-            $queueService->add($this->queueKey, $server->getData());
+            $queueService = ZQueue::getInstance(ZConfig::getFiled('queue', 'adapter'));
+            $queueService->add(ZConfig::getFiled('queue', 'key'), $server->getData());
         }
     }
 
@@ -79,9 +79,9 @@ class React implements ICallback
     public function work()
     {
         $server = Protocol\Factory::getInstance(Core\Config::getFiled('socket', 'protocol'));
-        $queueService = ZQueue::getInstance('Php');
+        $queueService = ZQueue::getInstance(ZConfig::getFiled('queue', 'adapter'));
         while (true) {
-            $data = $queueService->get($this->queueKey);
+            $data = $queueService->get(ZConfig::getFiled('queue', 'key'));
             if (!empty($data)) {
                 $result = $server->parse($data);
                 if (!empty($result['fd'])) {

@@ -18,5 +18,10 @@
             'work_mode'=>1,                             //工作模式：1：多进程 2：多线程
             'worker_num'=>5                                 //工作进程数
         ),
+
+        'queue'=>array(
+            'adapter'=>'Php',
+            'key'=>ftok(__FILE__, 'a'),
+        )
         
     );
