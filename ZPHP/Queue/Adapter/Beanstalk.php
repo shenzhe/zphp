@@ -18,12 +18,12 @@ class Beanstalk
         }
     }
 
-    public function addQueue($key, $data)
+    public function add($key, $data)
     {
         return $this->beanstalk->put($key, $data);
     }
 
-    public function getQueue($key)
+    public function get($key)
     {
         $job = $this->beanstalk->reserve($key);
         $this->beanstalk->delete($job['id'], $key);

@@ -18,12 +18,12 @@ class Redis
         }
     }
 
-    public function addQueue($key, $data)
+    public function add($key, $data)
     {
         return $this->redis->rPush($key, $data);
     }
 
-    public function getQueue($key)
+    public function get($key)
     {
         return $this->redis->lPop($key);
     }
