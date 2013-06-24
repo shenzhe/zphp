@@ -7,13 +7,16 @@
 
 
 namespace ZPHP\View\Adapter;
-use ZPHP\View\Base;
+use ZPHP\View\Base,
+    ZPHP\Core\Config;
 
 class Amf extends Base
 {
     public function output()
     {
-        \header("Content-Type: application/amf; charset=utf-8");
+        if (Config::get('server_mode') == 'Http') {
+            \header("Content-Type: application/amf; charset=utf-8");
+        }
         return \amf3_encode($this->model);
     }
 }

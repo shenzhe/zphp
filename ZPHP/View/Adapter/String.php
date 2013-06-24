@@ -13,7 +13,9 @@ class String extends Base
 {
     public function output()
     {
-        \header("Content-Type: text/plain; charset=utf-8");
+        if (Config::get('server_mode') == 'Http') {
+            \header("Content-Type: text/plain; charset=utf-8");
+        }
         if (\is_string($this->model)) {
             return $this->model;
         } else {

@@ -36,7 +36,9 @@ class Xml extends Base
 
     public function output()
     {
-        \header("Content-Type:text/xml; charset=utf-8");
+        if (Config::get('server_mode') == 'Http') {
+            \header("Content-Type:text/xml; charset=utf-8");
+        }
         return $this->xmlEncode();
     }
 }

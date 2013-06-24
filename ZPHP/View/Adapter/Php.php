@@ -34,8 +34,16 @@ class Php extends Base
 
     public function display()
     {
-        \header("Content-Type: text/html; charset=utf-8");
-        $this->output();
+        if (Config::get('server_mode') == 'Http') {
+            \header("Content-Type: text/html; charset=utf-8");
+            $this->output();
+        } else {
+            ob_start();
+            $this->output();
+            $data = ob_get_contents();
+            ob_flush();
+            return $data;
+        }
     }
 
 
