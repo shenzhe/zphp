@@ -8,7 +8,8 @@
 namespace ZPHP\Socket\Adapter;
 use ZPHP\Socket\IServer,
     ZPHP\Core\Config as ZConfig,
-    ZPHP\Protocol;
+    ZPHP\Protocol,
+    ZPHP\Common\Daemon;
 use React\EventLoop\Factory as eventLoop,
     React\Socket\Server as server;
 
@@ -48,7 +49,7 @@ class React implements IServer
             }
         }
         if (ZConfig::getFiled('socket', 'daemonize')) {
-            $deamonize = new ZDeamon(Config::get('daemonize', array()));
+            $deamonize = new Deamon(Config::get('daemonize', array()));
             $deamonize->start();
         }
         $client = $this->client;
