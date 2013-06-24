@@ -14,6 +14,7 @@
 //            'adapter'=>'Redis',
 //            'master'=>array(
 //                'name'=>'master',
+//                '_prefix'=>'public',
 //                'pconnect'=>true,
 //                'host'=>'127.0.0.1',
 //                'port'=>6379,
@@ -21,6 +22,7 @@
 //            ),
 //            'slave'=>array(
 //                'name'=>'slave',
+//                '_prefix'=>'public',
 //                'pconnect'=>true,
 //                'host'=>'127.0.0.1',
 //                'port'=>6379,

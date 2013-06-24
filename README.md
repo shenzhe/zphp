@@ -12,13 +12,14 @@ zphp是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
 
     1) 性能强悍     (大部分api可以在10ms内处理完)
     2) socket, http, rpc 完美融合，自由切换
-    3) 通信协议自由扩展     (框架会提供 xml json phptpl amf protobuf)
-    4) 丰富的kv持久存储支持    (ttserver, redis, redis-storage)，
-    5) 丰富的cache      (apc, memcached, redis, xcache, yac),
-    6) 队列支持       (beanstalk, redis)，
-    7) 实时排行榜支持     (redis)，
-    8) 多进程支持        (开发中)
-    9) 多线程支持        (开发中)
+    3) 通信协议自由扩展    
+    4) 可配置的自由的view层
+    5) 丰富的kv持久存储支持    (ttserver, redis, redis-storage)，
+    6) 丰富的cache      (apc, memcached, redis, xcache, yac),
+    7) 队列支持       (beanstalk, redis)，
+    8) 实时排行榜支持     (redis)，
+    9) 多进程支持        (开发中)
+    10) 多线程支持        (开发中)
 
 相关扩展
 =======
@@ -50,6 +51,7 @@ zphp是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
 约定
 ===========
     config/example/base.php 里的配置项目是必需的。
+    当不同模块使用了相同的adapter(如:redis), 如用到不同的host或port,可配置_prefix进行隔离
 
 
 

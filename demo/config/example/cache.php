@@ -7,6 +7,7 @@
             ),
             'net'=>array(               //网络分布式缓存
                 'adapter'=>'Redis',
+                '_prefix'=>'public',
                 'name'=>'cache',
                 'pconnect'=>true,
                 'host'=>'127.0.0.1',

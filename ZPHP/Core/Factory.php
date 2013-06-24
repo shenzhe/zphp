@@ -11,17 +11,21 @@ class Factory
 
     public static function getInstance($className, $params = null)
     {
-        if (isset(self::$instances[$className])) {
-            return self::$instances[$className];
+        $keyName = $className;
+        if(!empty($params['_prefix'])) {
+            $keyName .= $params['_prefix'];
+        }
+        if (isset(self::$instances[$keyName])) {
+            return self::$instances[$keyName];
         }
         if (!\class_exists($className)) {
             throw new \Exception("no class {$className}");
         }
         if (empty($params)) {
-            self::$instances[$className] = new $className();
+            self::$instances[$keyName] = new $className();
         } else {
-            self::$instances[$className] = new $className($params);
+            self::$instances[$keyName] = new $className($params);
         }
-        return self::$instances[$className];
+        return self::$instances[$keyName];
     }
 }
