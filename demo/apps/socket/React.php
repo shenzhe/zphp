@@ -79,8 +79,8 @@ class React implements ICallback
     public function work()
     {
         $server = Protocol\Factory::getInstance(Core\Config::getFiled('socket', 'protocol'));
+        $queueService = ZQueue::getInstance('Php');
         while (true) {
-            $queueService = ZQueue::getInstance('Php');
             $data = $queueService->get($this->queueKey);
             if (!empty($data)) {
                 $result = $server->parse($data);
