@@ -38,9 +38,6 @@ class React implements IServer
         $workMode = ZConfig::getFiled('socket', 'work_mode', 1);
         if (1 === $workMode) {
             $workNum = ZConfig::getFiled('socket', 'worker_num', 1);
-            $msgQueueKey = \ftok(__FILE__, 'a');
-            $msgQueue = msg_get_queue($msgQueueKey);
-            $this->client->setQueue($msgQueue);
             for ($i = 0; $i < $workNum; $i++) {
                 if (($pid1 = pcntl_fork()) === 0) { //子进程
                     $pid = posix_getpid();

@@ -66,7 +66,7 @@ class Json implements IProtocol
             $data['data'] = $model;
         }
         $data['fd'] = $this->fd;
-        $this->_data = $model;
+        $this->_data = $data;
     }
 
     public function getData()

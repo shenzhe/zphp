@@ -8,17 +8,14 @@ use ZPHP\Socket\ICallback;
 use ZPHP\Socket\IClient;
 use ZPHP\Protocol;
 use ZPHP\Core;
+use ZPHP\Queue\Factory as ZQueue;
 
 class React implements ICallback
 {
     private $_data;
-    private $_msgQueue;
     private $_conns;
+    private $queueKey = 'zphp_react';
 
-    public function setQueue($queue)
-    {
-        $this->_msgQueue = $queue;
-    }
 
     public function onStart()
     {
@@ -44,17 +41,18 @@ class React implements ICallback
         $server = Protocol\Factory::getInstance(Core\Config::getFiled('socket', 'protocol'));
         $result = $server->parse($data);
         if (empty($result['a'])) {
-            if(!empty($result['fd'])) {
+            if (!empty($result['fd'])) {
                 $fd = $result['fd'];
-                $this->_conns[$fd]->write($data);
+                $this->_conns[$fd]->write($data."\n");
             } else {
-                $params[0]->write($data);
+                $params[0]->write($data."\n");
             }
         } else {
             $fd = (int)$params[0]->stream;
-            $result['fd'] = $fd;
+            $server->setFd($fd);
             $server->display($result);
-            msg_send($this->_msgQueue, 1, $server->getData());
+            $queueService = ZQueue::getInstance('Php');
+            $queueService->add($this->queueKey, $server->getData());
         }
     }
 
@@ -82,9 +80,13 @@ class React implements ICallback
     {
         $server = Protocol\Factory::getInstance(Core\Config::getFiled('socket', 'protocol'));
         while (true) {
-            msg_receive($this->_msgQueue, 0, $messageType, 1024, $data, true, MSG_IPC_NOWAIT);
+            $queueService = ZQueue::getInstance('Php');
+            $data = $queueService->get($this->queueKey);
             if (!empty($data)) {
                 $result = $server->parse($data);
+                if (!empty($result['fd'])) {
+                    $server->setFd($result['fd']);
+                }
                 if (!empty($result)) {
                     try {
                         Core\Route::route($server);
