@@ -45,31 +45,30 @@ class React implements IServer
                 if (($pid1 = pcntl_fork()) === 0) { //子进程
                     $pid = posix_getpid();
                     $this->pids[$pid] = 0;
-                    while(true) {
-                        $this->client->work();
-                    }
-                } else {
-                    $client = $this->client;
-                    $client->onStart($this->serv);
-                    $this->serv->on('connection', function ($conn) use ($client) {
-                        $client->onConnect($conn);
-                        $conn->on('data', function ($datas) use ($conn, $client) {
-                            $client->onReceive($conn, $datas);
-                        });
-
-                        $conn->on('end', function () use ($conn, $client) {
-                            $conn->end();
-                        });
-
-                        $conn->on('close', function () use ($client) {
-                            $client->onClose();
-                        });
-                    });
-                    $this->serv->listen($this->config['port'], $this->config['host']);
-                    $this->loop->run();
+                    $this->client->work();
+                    exit();
                 }
             }
         }
+
+        $client = $this->client;
+        $client->onStart($this->serv);
+        $this->serv->on('connection', function ($conn) use ($client) {
+            $client->onConnect($conn);
+            $conn->on('data', function ($datas) use ($conn, $client) {
+                $client->onReceive($conn, $datas);
+            });
+
+            $conn->on('end', function () use ($conn, $client) {
+                $conn->end();
+            });
+
+            $conn->on('close', function () use ($client) {
+                $client->onClose();
+            });
+        });
+        $this->serv->listen($this->config['port'], $this->config['host']);
+        $this->loop->run();
 
     }
 }

@@ -59,11 +59,13 @@ class Json implements IProtocol
 
     public function display($model)
     {
+        $data = array();
         if (is_array($model)) {
-            $model['fd'] = $this->fd;
+            $data = $model;
         } else {
-            $model[] = $model;
+            $data['data'] = $model;
         }
+        $data['fd'] = $this->fd;
         $this->_data = $model;
     }
 

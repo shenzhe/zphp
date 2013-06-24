@@ -43,9 +43,13 @@ class React implements ICallback
         }
         $server = Protocol\Factory::getInstance(Core\Config::getFiled('socket', 'protocol'));
         $result = $server->parse($data);
-        if(empty($result['a'])) {
-            $fd = $result['fd'];
-            $this->_conns[$fd]->write($data);
+        if (empty($result['a'])) {
+            if(!empty($result['fd'])) {
+                $fd = $result['fd'];
+                $this->_conns[$fd]->write($data);
+            } else {
+                $params[0]->write($data);
+            }
         } else {
             $fd = (int)$params[0]->stream;
             $result['fd'] = $fd;
@@ -77,18 +81,20 @@ class React implements ICallback
     public function work()
     {
         $server = Protocol\Factory::getInstance(Core\Config::getFiled('socket', 'protocol'));
-        msg_receive($this->_msgQueue, 0, $messageType, 1024, $data, true, MSG_IPC_NOWAIT);
-        if(!empty($data)){
-            $result = $server->parse($data);
-            if (!empty($result)) {
-                try {
-                    Core\Route::route($server);
-                } catch (\Exception $e) {
-                    $server->display($e->getMessage());
+        while (true) {
+            msg_receive($this->_msgQueue, 0, $messageType, 1024, $data, true, MSG_IPC_NOWAIT);
+            if (!empty($data)) {
+                $result = $server->parse($data);
+                if (!empty($result)) {
+                    try {
+                        Core\Route::route($server);
+                    } catch (\Exception $e) {
+                        $server->display($e->getMessage());
+                    }
+                    $server->sendMaster();
                 }
-                $server->sendMaster();
             }
+            usleep(500);
         }
-        usleep(500);
     }
 }
