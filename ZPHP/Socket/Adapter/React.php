@@ -47,7 +47,10 @@ class React implements IServer
                 }
             }
         }
-
+        if (ZConfig::getFiled('socket', 'daemonize')) {
+            $deamonize = new ZDeamon(Config::get('daemonize', array()));
+            $deamonize->start();
+        }
         $client = $this->client;
         $client->onStart($this->serv);
         $this->serv->on('connection', function ($conn) use ($client) {
