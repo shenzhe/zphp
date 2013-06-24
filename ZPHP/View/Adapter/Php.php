@@ -8,7 +8,8 @@
 
 namespace ZPHP\View\Adapter;
 use ZPHP,
-    ZPHP\View\Base;
+    ZPHP\View\Base,
+    ZPHP\Core\Config;
 
 class Php extends Base
 {
