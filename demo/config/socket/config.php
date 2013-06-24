@@ -9,7 +9,7 @@
             'host'=>'0.0.0.0',                          //socket 监听ip
             'port'=>8991,                             //socket 监听端口
             'adapter'=>'React',                          //socket 驱动模块
-            'daemonize'=>0,                             //是否开启守护进程
+            'daemonize'=>1,                             //是否开启守护进程
             'times'=>array(),                           //定时服务
             'params'=>array(),                          //其它参数
             'client_class'=>'socket\\React',            //socket 回调类

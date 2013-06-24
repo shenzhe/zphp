@@ -19,13 +19,14 @@ class Socket
         if (empty($config)) {
             throw new \Exception("socket config empty");
         }
-        $socket = SFactory::getInstance($config['adapter'], $config);
-        $client = CFactory::getInstance($config['client_class']);
-        $socket->setClient($client);
-        $socket->run();
         if ($config['daemonize']) {
             $deamonize = new ZDeamon(Config::get('daemonize', array()));
             $deamonize->start();
         }
+        $socket = SFactory::getInstance($config['adapter'], $config);
+        $client = CFactory::getInstance($config['client_class']);
+        $socket->setClient($client);
+        $socket->run();
+
     }
 }
