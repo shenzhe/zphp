@@ -7,6 +7,7 @@
 namespace ZPHP;
 use ZPHP\View,
     ZPHP\Core\Config,
+    ZPHP\Common\Daemon,
     ZPHP\Common\Formater;
 
 class ZPHP
@@ -108,6 +109,10 @@ class ZPHP
         $timeZone = Config::get('time_zone', self::$timeZone);
         \date_default_timezone_set($timeZone);
         $serverMode = Config::get('server_mode', 'Http');
+        if (Config::getFiled('socket', 'daemonize')) {
+            $deamonize = new Daemon(Config::get('daemonize', array()));
+            $deamonize->start();
+        }
         $service = Server\Factory::getInstance($serverMode);
         $service->run();
     }

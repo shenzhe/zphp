@@ -449,6 +449,8 @@ class Daemon
             if (!posix_setsid())
                 throw new \Exception("Cannot detach from terminal");
             if (($pid2 = pcntl_fork()) === 0) { //孙子进程
+                if (!posix_setsid())
+                    throw new \Exception("Cannot detach from terminal");
                 //child, get pid
                 $this->_pid = posix_getpid();
             } else {
