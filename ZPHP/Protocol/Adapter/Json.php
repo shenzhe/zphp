@@ -21,8 +21,8 @@ class Json implements IProtocol
     public function parse($_data)
     {
         $data = \json_decode($_data, true);
-        $apn = Config::getFiled('project', 'action_name', 'a');
-        $mpn = Config::getFiled('project', 'method_name', 'm');
+        $apn = Config::getField('project', 'action_name', 'a');
+        $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {
             $this->_action = \str_replace('/', '\\', $data[$apn]);
         }
@@ -30,7 +30,7 @@ class Json implements IProtocol
             $this->_method = $data[$mpn];
         }
 
-        $fdpn = Config::getFiled('project', 'fd_name', 'fd');
+        $fdpn = Config::getField('project', 'fd_name', 'fd');
         if (isset($data[$fdpn])) {
             $this->fd = $data[$fdpn];
         }
@@ -79,8 +79,8 @@ class Json implements IProtocol
 
     public function sendMaster()
     {
-        $host = Config::getFiled('socket', 'host');
-        $port = Config::getFiled('socket', 'port');
+        $host = Config::getField('socket', 'host');
+        $port = Config::getField('socket', 'port');
         $client = new ZSClient($host, $port);
         $client->send($this->getData());
     }

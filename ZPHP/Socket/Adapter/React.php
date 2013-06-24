@@ -35,9 +35,9 @@ class React implements IServer
 
     public function run()
     {
-        $workMode = ZConfig::getFiled('socket', 'work_mode', 1);
+        $workMode = ZConfig::getField('socket', 'work_mode', 1);
         if (1 === $workMode) {
-            $workNum = ZConfig::getFiled('socket', 'worker_num', 1);
+            $workNum = ZConfig::getField('socket', 'worker_num', 1);
             for ($i = 0; $i < $workNum; $i++) {
                 if (($pid1 = pcntl_fork()) === 0) { //子进程
                     $pid = posix_getpid();

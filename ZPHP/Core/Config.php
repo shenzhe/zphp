@@ -35,7 +35,7 @@ class Config
         return $result;
     }
 
-    public static function getFiled($key, $filed, $default = null, $throw = false)
+    public static function getField($key, $filed, $default = null, $throw = false)
     {
         $result = isset(self::$config[$key][$filed]) ? self::$config[$key][$filed] : $default;
         if ($throw && empty($result)) {

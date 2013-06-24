@@ -26,8 +26,8 @@ class Cli implements IProtocol
     {
         $data = \array_pop($_data);
         $data = \parse_url($data);
-        $apn = Config::getFiled('project', 'action_name', 'a');
-        $mpn = Config::getFiled('project', 'method_name', 'm');
+        $apn = Config::getField('project', 'action_name', 'a');
+        $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {
             $this->_action = \str_replace('/', '\\', $data[$apn]);
         }

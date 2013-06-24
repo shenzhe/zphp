@@ -38,7 +38,7 @@ class React implements ICallback
         if (empty($data)) {
             return;
         }
-        $server = Protocol\Factory::getInstance(Core\Config::getFiled('socket', 'protocol'));
+        $server = Protocol\Factory::getInstance(Core\Config::getField('socket', 'protocol'));
         $result = $server->parse($data);
         if (empty($result['a'])) {
             if (!empty($result['fd'])) {
@@ -51,8 +51,8 @@ class React implements ICallback
             $fd = (int)$params[0]->stream;
             $server->setFd($fd);
             $server->display($result);
-            $queueService = ZQueue::getInstance(ZConfig::getFiled('queue', 'adapter'));
-            $queueService->add(ZConfig::getFiled('queue', 'key'), $server->getData());
+            $queueService = ZQueue::getInstance(ZConfig::getField('queue', 'adapter'));
+            $queueService->add(ZConfig::getField('queue', 'key'), $server->getData());
         }
     }
 
@@ -78,10 +78,10 @@ class React implements ICallback
 
     public function work()
     {
-        $server = Protocol\Factory::getInstance(Core\Config::getFiled('socket', 'protocol'));
-        $queueService = ZQueue::getInstance(ZConfig::getFiled('queue', 'adapter'));
+        $server = Protocol\Factory::getInstance(Core\Config::getField('socket', 'protocol'));
+        $queueService = ZQueue::getInstance(ZConfig::getField('queue', 'adapter'));
         while (true) {
-            $data = $queueService->get(ZConfig::getFiled('queue', 'key'));
+            $data = $queueService->get(ZConfig::getField('queue', 'key'));
             if (!empty($data)) {
                 $result = $server->parse($data);
                 if (!empty($result['fd'])) {
