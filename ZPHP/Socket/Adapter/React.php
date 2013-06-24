@@ -36,6 +36,10 @@ class React implements IServer
 
     public function run()
     {
+        if (ZConfig::getFiled('socket', 'daemonize')) {
+            $deamonize = new Daemon(ZConfig::get('daemonize', array()));
+            $deamonize->start();
+        }
         $workMode = ZConfig::getFiled('socket', 'work_mode', 1);
         if (1 === $workMode) {
             $workNum = ZConfig::getFiled('socket', 'worker_num', 1);
@@ -48,10 +52,7 @@ class React implements IServer
                 }
             }
         }
-        if (ZConfig::getFiled('socket', 'daemonize')) {
-            $deamonize = new Deamon(Config::get('daemonize', array()));
-            $deamonize->start();
-        }
+
         $client = $this->client;
         $client->onStart($this->serv);
         $this->serv->on('connection', function ($conn) use ($client) {

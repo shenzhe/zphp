@@ -11,11 +11,6 @@ class Php
     private $key;
     private $queue;
 
-    public function __construct($config)
-    {
-
-    }
-
     public function setKey($key)
     {
         if ($this->key !== $key) {
