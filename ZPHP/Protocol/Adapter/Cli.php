@@ -7,6 +7,7 @@
 
 namespace ZPHP\Protocol\Adapter;
 use ZPHP\Core;
+use ZPHP\Core\Config;
 use ZPHP\Protocol\IProtocol;
 
 class Cli implements IProtocol
@@ -25,13 +26,13 @@ class Cli implements IProtocol
     {
         $data = \array_pop($_data);
         $data = \parse_url($data);
-        if (isset($data['a'])) {
-            $this->_action = \str_replace('/', '\\', $data['a']);
-            unset($data['a']);
+        $apn = Config::getFiled('project', 'action_name', 'a');
+        $mpn = Config::getFiled('project', 'method_name', 'm');
+        if (isset($data[$apn])) {
+            $this->_action = \str_replace('/', '\\', $data[$apn]);
         }
-        if (isset($data['m'])) {
-            $this->_method = $data['m'];
-            unset($data['m']);
+        if (isset($data[$mpn])) {
+            $this->_method = $data[$mpn];
         }
         $this->_params = $data;
         return true;

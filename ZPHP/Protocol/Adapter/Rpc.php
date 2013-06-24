@@ -7,6 +7,7 @@
 
 namespace ZPHP\Protocol\Adapter;
 use ZPHP\Core;
+use ZPHP\Core\Config;
 use ZPHP\Protocol\IProtocol;
 
 class Rpc implements IProtocol
@@ -23,13 +24,13 @@ class Rpc implements IProtocol
     public function parse($_data)
     {
         $data = $_data;
-        if (isset($data['a'])) {
-            $this->_action = \str_replace('/', '\\', $data['a']);
-            unset($data['a']);
+        $apn = Config::getFiled('project', 'action_name', $apn);
+        $mpn = Config::getFiled('project', 'method_name', $mpn);
+        if (isset($data[$apn])) {
+            $this->_action = \str_replace('/', '\\', $data[$apn]);
         }
-        if (isset($data['m'])) {
-            $this->_method = $data['m'];
-            unset($data['m']);
+        if (isset($data[$mpn])) {
+            $this->_method = $data[$mpn];
         }
         $this->_params = $data;
         return true;

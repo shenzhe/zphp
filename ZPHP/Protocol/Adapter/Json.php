@@ -21,17 +21,18 @@ class Json implements IProtocol
     public function parse($_data)
     {
         $data = \json_decode($_data, true);
-        if (isset($data['a'])) {
-            $this->_action = \str_replace('/', '\\', $data['a']);
-            //unset($data['a']);
+        $apn = Config::getFiled('project', 'action_name', 'a');
+        $mpn = Config::getFiled('project', 'method_name', 'm');
+        if (isset($data[$apn])) {
+            $this->_action = \str_replace('/', '\\', $data[$apn]);
         }
-        if (isset($data['m'])) {
-            $this->_method = $data['m'];
-            //unset($data['m']);
+        if (isset($data[$mpn])) {
+            $this->_method = $data[$mpn];
         }
 
-        if (isset($data['fd'])) {
-            $this->fd = $data['fd'];
+        $fdpn = Config::getFiled('project', 'fd_name', 'fd');
+        if (isset($data[$fdpn])) {
+            $this->fd = $data[$fdpn];
         }
         $this->_params = $data;
         return $data;
