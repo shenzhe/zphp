@@ -108,7 +108,7 @@ class ZPHP
         }
         \spl_autoload_register(__CLASS__ . '::autoLoader');
         Config::load(self::getConfigPath());
-        if(Config::getField('project', 'debug_mode')) {
+        if(Config::getField('project', 'debug_mode', 0)) {
             Debug::start();
         }
         $appPath = Config::get('app_path', self::$appPath);
@@ -119,7 +119,7 @@ class ZPHP
         $serverMode = Config::get('server_mode', 'Http');
         $service = Server\Factory::getInstance($serverMode);
         $service->run();
-        if(Config::getField('project', 'debug_mode')) {
+        if(Config::getField('project', 'debug_mode', 0)) {
             Debug::end();
         }
     }
