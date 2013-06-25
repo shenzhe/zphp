@@ -29,13 +29,22 @@ class TT implements IStorage
         }
     }
 
-    public function getMutilMD($userId, $keys)
+    public function getMutilMD($userId, $keys, $slaveConfig='')
     {
         $newKeys = array();
         foreach ($keys as $key) {
             $newKeys[] = $this->uKey($userId, $key);
         }
-        return $this->tt->getMulti($newKeys);
+        $datas = $this->tt->getMulti($newKeys);
+        foreach($datas as $key=>$val) {
+            if(false === $val) {
+                $val = $this->getSD($userId, $key, $slaveConfig);
+                if(false !== $val) {
+                    $datas[$key] = $val;
+                }
+            }
+        }
+        return $datas;
     }
 
     public function getMD($userId, $key, $slaveName = "")

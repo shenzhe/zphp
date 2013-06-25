@@ -7,7 +7,7 @@
 namespace ZPHP;
 use ZPHP\View,
     ZPHP\Core\Config,
-    ZPHP\Common\Daemon,
+    ZPHP\Common\Debug,
     ZPHP\Common\Formater;
 
 class ZPHP
@@ -62,6 +62,11 @@ class ZPHP
         self::$appPath = $path;
     }
 
+    public static function getZPath()
+    {
+        return self::$zPath;
+    }
+
     final public static function autoLoader($class)
     {
         $baseClasspath = \str_replace('\\', DS, $class) . '.php';
@@ -103,6 +108,9 @@ class ZPHP
         }
         \spl_autoload_register(__CLASS__ . '::autoLoader');
         Config::load(self::getConfigPath());
+        if(Config::getField('project', 'debug_mode')) {
+            Debug::start();
+        }
         $appPath = Config::get('app_path', self::$appPath);
         self::setAppPath($appPath);
         \set_exception_handler(__CLASS__ . '::exceptionHandler');
@@ -111,5 +119,8 @@ class ZPHP
         $serverMode = Config::get('server_mode', 'Http');
         $service = Server\Factory::getInstance($serverMode);
         $service->run();
+        if(Config::getField('project', 'debug_mode')) {
+            Debug::end();
+        }
     }
 }

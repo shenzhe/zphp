@@ -11,7 +11,7 @@ interface IStorage
     //设置从库
     public function setSlave($name);
 
-    public function getMutilMD($userId, $keys);
+    public function getMutilMD($userId, $keys, $slaveConfig="");
 
     public function getMD($userId, $key, $slaveConfig = "");
 

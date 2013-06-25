@@ -39,10 +39,19 @@ class Redis implements IStorage
         return $userId . '_' . $this->suffix;
     }
 
-    public function getMutilMD($userId, $keys)
+    public function getMutilMD($userId, $keys, $slaveConfig='')
     {
         $uKey = $this->uKey($userId);
-        return $this->redis->hMGet($uKey, $keys);
+        $datas =  $this->redis->hMGet($uKey, $keys);
+        foreach($datas as $key=>$val) {
+            if(false === $val) {
+                $val = $this->getSD($userId, $key, $slaveConfig);
+                if(false !== $val) {
+                    $datas[$key] = $val;
+                }
+            }
+        }
+        return $datas;
     }
 
     public function getMD($userId, $key, $slaveConfig="")

@@ -40,7 +40,7 @@ class RL implements IStorage
     }
 
 
-    public function getMutilMD($userId, $keys)
+    public function getMutilMD($userId, $keys, $slaveConfig="")
     {
         $uKey = $this->uKey($userId);
         return $this->redis->rlHMGet($uKey, $keys);
@@ -70,12 +70,7 @@ class RL implements IStorage
             return $this->setMDCAS($userId, $key, $data);
         }
         $uKey = $this->uKey($userId);
-        $dsKey = $this->dsKey($uKey, $key);
-        if ($this->redis->dsSet($dsKey, $data)) {
-            return $this->redis->hSet($uKey, $key, $data);
-        }
-
-        return false;
+        return $this->redis->rlHSet($uKey, $key, $data);
     }
 
     public function addMD($userId, $key, $data)

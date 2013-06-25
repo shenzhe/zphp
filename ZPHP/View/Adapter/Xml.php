@@ -25,10 +25,10 @@ class Xml extends Base
     {
         $xml = "";
         foreach ($data as $key => $val) {
-            \is_numeric($key) && $key = "item id=\"$key\"";
+            \is_numeric(\substr($key, 0, 1)) && $key = "item id=\"$key\"";
             $xml .= "<{$key}>";
             $xml .= (\is_array($val) || \is_object($val)) ? $this->dataToXml($val) : $val;
-            list($key,) = \explode(' ', $key);
+            list($key) = \explode(' ', $key);
             $xml .= "</{$key}>\n";
         }
 
