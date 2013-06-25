@@ -24,8 +24,7 @@ class Cli implements IProtocol
      */
     public function parse($_data)
     {
-        $data = \array_pop($_data);
-        $data = \parse_url($data);
+        \parse_str(array_pop($_data), $data);
         $apn = Config::getField('project', 'action_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {
