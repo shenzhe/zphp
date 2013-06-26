@@ -12,11 +12,11 @@ use ZPHP\View\Base,
 
 class Amf extends Base
 {
-    public function output()
+    public function display()
     {
         if (Config::get('server_mode') == 'Http') {
             \header("Content-Type: application/amf; charset=utf-8");
         }
-        return \amf3_encode($this->model);
+        echo \amf3_encode($this->model);
     }
 }

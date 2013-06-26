@@ -20,7 +20,7 @@ class Php extends Base
         $this->tplFile = $tpl;
     }
 
-    public function output()
+    public function display()
     {
         $tplPath = ZPHP\Core\Config::getField('proejct', 'tpl_path', 'template' . DS . 'template');
         $fileName = ZPHP\ZPHP::getRootPath() . DS . $tplPath . DS . $this->tplFile;
@@ -31,20 +31,6 @@ class Php extends Base
             \extract($this->model);
         }
         include "{$fileName}";
-    }
-
-    public function display()
-    {
-        if (Config::get('server_mode') == 'Http') {
-            \header("Content-Type: text/html; charset=utf-8");
-            $this->output();
-        } else {
-            ob_start();
-            $this->output();
-            $data = ob_get_contents();
-            ob_flush();
-            return $data;
-        }
     }
 
 

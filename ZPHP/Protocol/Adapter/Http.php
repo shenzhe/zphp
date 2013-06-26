@@ -7,6 +7,7 @@
 
 namespace ZPHP\Protocol\Adapter;
 use ZPHP\Core;
+use ZPHP\View;
 use ZPHP\Core\Config;
 use ZPHP\Protocol\IProtocol;
 
@@ -53,6 +54,9 @@ class Http implements IProtocol
 
     public function display($model)
     {
-        echo $model;
+        $viewMode = Config::getField('project', 'view_mode', 'String');
+        $view = View\Factory::getInstance($viewMode);
+        $view->setModel($model);
+        $view->display();
     }
 }

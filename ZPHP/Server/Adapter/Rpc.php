@@ -21,6 +21,6 @@ class Rpc
     {
         $server = Protocol\Factory::getInstance('Rpc');
         $server->parse($params);
-        Core\Route::route($server);
+        return Core\Route::route($server);
     }
 }

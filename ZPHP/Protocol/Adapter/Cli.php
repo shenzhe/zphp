@@ -54,6 +54,9 @@ class Cli implements IProtocol
 
     public function display($model)
     {
-        echo $model;
+        $viewMode = Config::get('view_mode', 'String');
+        $view = View\Factory::getInstance($viewMode);
+        $view->setModel($model);
+        $view->display();
     }
 }

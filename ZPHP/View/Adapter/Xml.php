@@ -35,11 +35,11 @@ class Xml extends Base
         return $xml;
     }
 
-    public function output()
+    public function display()
     {
         if (Config::get('server_mode') == 'Http') {
             \header("Content-Type:text/xml; charset=utf-8");
         }
-        return $this->xmlEncode();
+        echo $this->xmlEncode();
     }
 }

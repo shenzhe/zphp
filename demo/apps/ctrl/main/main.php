@@ -25,17 +25,14 @@ class main implements IController
     public function main()
     {
         $project = Config::get('project_name', 'zphp');
-        $model = $project." runing!\n";
+        $data = $project." runing!\n";
         $params = $this->_server->getParams();
         if(!empty($params)) {
             foreach($params as $key=>$val) {
-                $model.= "key:{$key}=>{$val}\n";
+                $data.= "key:{$key}=>{$val}\n";
             }
         }
-        $viewMode = Config::get('view_mode', 'String');
-        $view = View\Factory::getInstance($viewMode);
-        $view->setModel($model);
-        return $view;
+        return $data;
     }
 }
 

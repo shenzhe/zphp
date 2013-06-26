@@ -39,12 +39,6 @@ class Route
         if ($exception !== null) {
             throw $exception;
         }
-        if ($view instanceof IView) {
-            if (\method_exists($view, 'display')) {
-                $view->display();
-            } else {
-                $server->display($view->output());
-            }
-        }
+        $server->display($view);
     }
 }

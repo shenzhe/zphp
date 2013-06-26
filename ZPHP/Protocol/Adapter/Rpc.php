@@ -53,6 +53,6 @@ class Rpc implements IProtocol
 
     public function display($model)
     {
-        echo $model;
+        return $model;
     }
 }
