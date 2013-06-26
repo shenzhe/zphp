@@ -51,7 +51,7 @@ TODO
     socket模块:
         1) php 项目目录/webroot/main.php socket
         2) telnet 127.0.0.1 8991
-        3) 输入: {name":"zphp","k1":"v1"} 发送
+        3) 输入: {"a":"main\main",name":"zphp","k1":"v1"} 发送
         4) 返回: zphp running\n
 
 约定

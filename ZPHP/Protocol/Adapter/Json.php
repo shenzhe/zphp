@@ -12,7 +12,7 @@ use ZPHP\Core\Config,
 
 class Json implements IProtocol
 {
-    private $_action = 'index';
+    private $_action = 'main\main';
     private $_method = 'main';
     private $_params = array();
     private $_data;
