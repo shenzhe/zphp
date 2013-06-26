@@ -29,7 +29,7 @@ TODO
 
 相关扩展
 =======
-    socket： 编译选项加上: --enable-pcntl --enable-sockets
+    socket： 编译选项加上: --enable-pcntl --enable-sockets --enable-sysvmsg
     memcached：http://pecl.php.net/package/memcached
     redis: https://github.com/shenzhe/phpredis
     swoole: https://github.com/matyhtf/php_swoole   (高性能socket模块)
@@ -46,12 +46,12 @@ TODO
 ========
     http模式：
         1) 域名绑定到目录webroot
-        2) 运行：http://域名/main.php?a=main&name=zphp
+        2) 运行：http://域名/main.php?name=zphp&k1=v1
 
     socket模块:
         1) php 项目目录/webroot/main.php socket
         2) telnet 127.0.0.1 8991
-        3) 输入: {"a":"main","name":"zphp"} 发送
+        3) 输入: {name":"zphp","k1":"v1"} 发送
         4) 返回: zphp running\n
 
 约定

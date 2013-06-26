@@ -39,20 +39,29 @@ class React implements ICallback
             return;
         }
         $server = Protocol\Factory::getInstance(Core\Config::getField('socket', 'protocol'));
-        $result = $server->parse($data);
-        if (empty($result['a'])) {
-            if (!empty($result['fd'])) {
-                $fd = $result['fd'];
-                $this->_conns[$fd]->write($data . "\n");
+        $workMode = ZConfig::getField('socket', 'work_mode', 1);
+        if (1 === $workMode) {  //多进程模式
+            $result = $server->parse($data);
+            if (empty($result['a'])) {
+                if (!empty($result['fd'])) {
+                    $fd = $result['fd'];
+                    $this->_conns[$fd]->write($data . "\n");
+                } else {
+                    $params[0]->write($data . "\n");
+                }
             } else {
-                $params[0]->write($data . "\n");
+                $fd = (int)$params[0]->stream;
+                $server->setFd($fd);
+                $server->display($result);
+                $queueService = ZQueue::getInstance(ZConfig::getField('queue', 'adapter'));
+                $queueService->add(ZConfig::getField('queue', 'key'), $server->getData());
             }
-        } else {
-            $fd = (int)$params[0]->stream;
-            $server->setFd($fd);
-            $server->display($result);
-            $queueService = ZQueue::getInstance(ZConfig::getField('queue', 'adapter'));
-            $queueService->add(ZConfig::getField('queue', 'key'), $server->getData());
+        }elseif(0 === $workMode) { //单进程模式
+            $result = $server->parse($data);
+            $server = $this->route($server);
+            $params[0]->write($server->getData() . "\n");
+        } else {   //多线程模式
+            //TODO
         }
     }
 
@@ -88,15 +97,20 @@ class React implements ICallback
                     $server->setFd($result['fd']);
                 }
                 if (!empty($result)) {
-                    try {
-                        Core\Route::route($server);
-                    } catch (\Exception $e) {
-                        $server->display($e->getMessage());
-                    }
+                    $server = $this->route($server);
                     $server->sendMaster();
                 }
             }
             usleep(500);
         }
     }
-}
+
+    private function route($server)
+    {
+        try {
+            Core\Route::route($server);
+        } catch (\Exception $e) {
+            $server->display($e->getMessage());
+        }
+        return $server;
+    }
