@@ -8,6 +8,7 @@
 namespace ZPHP\Protocol\Adapter;
 use ZPHP\Core;
 use ZPHP\Core\Config;
+use ZPHP\View;
 use ZPHP\Protocol\IProtocol;
 
 class Cli implements IProtocol
@@ -15,6 +16,7 @@ class Cli implements IProtocol
     private $_action = 'index';
     private $_method = 'main';
     private $_params = array();
+    private $_view_mode;
 
     /**
      * 会取$_SERVER['argv']最后一个参数
@@ -52,9 +54,19 @@ class Cli implements IProtocol
         return $this->_params;
     }
 
+    public function setViewMode($mode)
+    {
+        $this->_view_mode = $mode;
+    }
+
     public function display($model)
     {
-        $viewMode = Config::get('view_mode', 'String');
+        if (empty($this->_view_mode)) {
+            $viewMode = Config::getField('project', 'view_mode', 'String');
+        } else {
+            $viewMode = $this->_view_mode;
+        }
+        $this->_view_mode = '';
         $view = View\Factory::getInstance($viewMode);
         $view->setModel($model);
         $view->display();

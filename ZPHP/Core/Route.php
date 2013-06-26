@@ -39,6 +39,6 @@ class Route
         if ($exception !== null) {
             throw $exception;
         }
-        $server->display($view);
+        return $server->display($view);
     }
 }

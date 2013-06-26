@@ -16,6 +16,8 @@ class Http implements IProtocol
     private $_action = 'main\\main';
     private $_method = 'main';
     private $_params = array();
+    private $_view_mode = '';
+    private $_tpl_file = '';
 
     /**
      * 直接 parse $_REQUEST
@@ -52,11 +54,30 @@ class Http implements IProtocol
         return $this->_params;
     }
 
+    public function setViewMode($mode)
+    {
+        $this->_view_mode = $mode;
+    }
+
+    public function setTplFile($tpl)
+    {
+        $this->_tpl_file = $tpl;
+    }
+
     public function display($model)
     {
-        $viewMode = Config::getField('project', 'view_mode', 'String');
+        if (empty($this->_view_mode)) {
+            $viewMode = Config::getField('project', 'view_mode', 'String');
+        } else {
+            $viewMode = $this->_view_mode;
+        }
+        $this->_view_mode = '';
         $view = View\Factory::getInstance($viewMode);
         $view->setModel($model);
+        if ('Php' === $viewMode) {
+            $view->setTpl($this->_tpl_file);
+        }
         $view->display();
+
     }
 }

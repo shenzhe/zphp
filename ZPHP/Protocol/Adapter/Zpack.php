@@ -12,7 +12,7 @@ use ZPHP\Protocol\IProtocol;
 
 class Zpack implements IProtocol
 {
-    private $_action = 'index';
+    private $_action = 'main\main';
     private $_method = 'main';
     private $_params = array();
     private $_buffer = array();
