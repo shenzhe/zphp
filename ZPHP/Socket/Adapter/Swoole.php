@@ -18,13 +18,13 @@ class Swoole implements IServer
         $this->config = $config;
         $this->serv = \swoole_server_create($config['host'], $config['port'], $config['work_mode']);
         \swoole_server_set($this->serv, array(
-            'timeout' => 2.5,  //select and epoll_wait timeout. 
+            'timeout' => 2.5, //select and epoll_wait timeout.
             'poll_thread_num' => 2, //reactor thread num
-            'writer_num' => 2,     //writer thread num
-            'worker_num' => $config['worker_num'],    //worker process num
-            'backlog' => 128,   //listen backlog));
-            'max_reuqest'=>empty($config['max_request']) ? 1000 : $config['max_request']
-            ));
+            'writer_num' => 2, //writer thread num
+            'worker_num' => $config['worker_num'], //worker process num
+            'backlog' => 128, //listen backlog));
+            'max_request' => empty($config['max_request']) ? 1000 : $config['max_request']
+        ));
     }
 
     public function setClient($client)

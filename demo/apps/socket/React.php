@@ -57,11 +57,15 @@ class React implements ICallback
                 $queueService->add(ZConfig::getField('queue', 'key'), $server->getData());
             }
         } elseif (1 === $workMode) { //单进程模式
-            $server->parse($data);
-            $fd = (int)$params[0]->stream;
-            $server->setFd($fd);
-            $server = $this->route($server);
-            $params[0]->write($server->getData() . "\n");
+            $result = $server->parse($data);
+            if (empty($result['a'])) {
+                $params[0]->write("server:{$data}" . "\n");
+            } else {
+                $fd = (int)$params[0]->stream;
+                $server->setFd($fd);
+                $server = $this->route($server);
+                $params[0]->write($server->getData() . "\n");
+            }
         } else { //多线程模式
             //TODO
         }
