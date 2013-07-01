@@ -40,7 +40,7 @@ class React implements ICallback
         }
         $server = Protocol\Factory::getInstance(Core\Config::getField('socket', 'protocol'));
         $workMode = ZConfig::getField('socket', 'work_mode', 1);
-        if (1 === $workMode) { //多进程模式
+        if (3 === $workMode) { //多进程模式
             $result = $server->parse($data);
             if (empty($result['a'])) {
                 if (!empty($result['fd'])) {
@@ -56,7 +56,7 @@ class React implements ICallback
                 $queueService = ZQueue::getInstance(ZConfig::getField('queue', 'adapter'));
                 $queueService->add(ZConfig::getField('queue', 'key'), $server->getData());
             }
-        } elseif (0 === $workMode) { //单进程模式
+        } elseif (1 === $workMode) { //单进程模式
             $server->parse($data);
             $fd = (int)$params[0]->stream;
             $server->setFd($fd);
