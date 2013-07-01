@@ -24,7 +24,7 @@ class Swoole implements IServer
             'worker_num' => $config['worker_num'],    //worker process num
             'backlog' => 128,   //listen backlog));
             'max_reuqest'=>empty($config['max_request']) ? 1000 : $config['max_request']
-            )
+            ));
     }
 
     public function setClient($client)
