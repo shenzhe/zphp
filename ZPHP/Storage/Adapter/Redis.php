@@ -39,14 +39,14 @@ class Redis implements IStorage
         return $userId . '_' . $this->suffix;
     }
 
-    public function getMutilMD($userId, $keys, $slaveConfig='')
+    public function getMutilMD($userId, $keys, $slaveConfig = '')
     {
         $uKey = $this->uKey($userId);
-        $datas =  $this->redis->hMGet($uKey, $keys);
-        foreach($datas as $key=>$val) {
-            if(false === $val) {
+        $datas = $this->redis->hMGet($uKey, $keys);
+        foreach ($datas as $key => $val) {
+            if (false === $val) {
                 $val = $this->getSD($userId, $key, $slaveConfig);
-                if(false !== $val) {
+                if (false !== $val) {
                     $datas[$key] = $val;
                 }
             }
@@ -54,14 +54,14 @@ class Redis implements IStorage
         return $datas;
     }
 
-    public function getMD($userId, $key, $slaveConfig="")
+    public function getMD($userId, $key, $slaveConfig = "")
     {
         $uKey = $this->uKey($userId);
         $data = $this->redis->hGet($uKey, $key);
         return $data;
     }
 
-    public function getSD($userId, $key, $slaveConfig="")
+    public function getSD($userId, $key, $slaveConfig = "")
     {
         $uKey = $this->uKey($userId);
         $this->setSlave($slaveConfig);

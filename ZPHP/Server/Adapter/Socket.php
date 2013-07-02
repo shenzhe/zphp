@@ -9,7 +9,6 @@ namespace ZPHP\Server\Adapter;
 use ZPHP\Socket\Factory as SFactory;
 use ZPHP\Core\Config;
 use ZPHP\Core\Factory as CFactory;
-use ZPHP\Common\Daemon as ZDeamon;
 
 class Socket
 {

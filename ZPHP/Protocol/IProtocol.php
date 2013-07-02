@@ -10,8 +10,12 @@ namespace ZPHP\Protocol;
 interface IProtocol
 {
     public function parse($data);
+
     public function getAction();
+
     public function getMethod();
+
     public function getParams();
+
     public function display($model);
 }

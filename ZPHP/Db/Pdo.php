@@ -26,7 +26,7 @@ class Pdo
         }
         if (empty($dbName)) {
             $this->dbName = $config['dbname'];
-        }else{
+        } else {
             $this->dbName = $dbName;
         }
     }
@@ -39,8 +39,8 @@ class Pdo
 
     public function setDBName($dbName)
     {
-        if(empty($dbName)) {
-            return ;
+        if (empty($dbName)) {
+            return;
         }
         $this->dbName = $dbName;
     }
@@ -196,7 +196,6 @@ class Pdo
         if ($limit) {
             $query .= " limit {$limit}";
         }
-
         $statement = $this->pdo->prepare($query);
 
         if (!$statement->execute($params)) {

@@ -17,9 +17,9 @@ class Json extends Base
         if (Config::get('server_mode') == 'Http') {
             \header("Content-Type: application/json; charset=utf-8");
         }
-        
+
         echo \json_encode($this->model);
-        
+
     }
 
 

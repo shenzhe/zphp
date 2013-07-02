@@ -29,7 +29,7 @@ class Debug
         self::$records[$key]['memory_use'] = memory_get_usage();
     }
 
-    public static function end($key = 'ALL', $logName='debug')
+    public static function end($key = 'ALL', $logName = 'debug')
     {
         $endTime = self::getMicroTime();
         $run_id = 0;

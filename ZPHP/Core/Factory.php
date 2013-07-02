@@ -12,7 +12,7 @@ class Factory
     public static function getInstance($className, $params = null)
     {
         $keyName = $className;
-        if(!empty($params['_prefix'])) {
+        if (!empty($params['_prefix'])) {
             $keyName .= $params['_prefix'];
         }
         if (isset(self::$instances[$keyName])) {

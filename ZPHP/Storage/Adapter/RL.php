@@ -40,7 +40,7 @@ class RL implements IStorage
     }
 
 
-    public function getMutilMD($userId, $keys, $slaveConfig="")
+    public function getMutilMD($userId, $keys, $slaveConfig = "")
     {
         $uKey = $this->uKey($userId);
         return $this->redis->rlHMGet($uKey, $keys);

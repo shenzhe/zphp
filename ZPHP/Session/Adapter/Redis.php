@@ -46,6 +46,9 @@ class Redis
 
     public function write($sid, $data)
     {
+        if(empty($data)) {
+            return;
+        }
         return $this->redis->setex($sid, $this->gcTime, $data);
     }
 

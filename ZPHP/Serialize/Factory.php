@@ -14,13 +14,13 @@ class Factory
         return CFactory::getInstance($className);
     }
 
-    public static function serialize($adapter='Php', $data)
+    public static function serialize($adapter = 'Php', $data)
     {
         $class = self::getInstance($adapter);
         return $class->serialize($data);
     }
 
-    public static function unserialize($adapter='Php', $data)
+    public static function unserialize($adapter = 'Php', $data)
     {
         $class = self::getInstance($adapter);
         return $class->unserialize($data);
