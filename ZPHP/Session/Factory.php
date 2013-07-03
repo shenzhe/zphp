@@ -8,6 +8,7 @@ use ZPHP\Core\Factory as CFactory;
 
 class Factory
 {
+    private static $isStart=false;
     public static function getInstance($adapter = 'Redis', $config)
     {
         $className = __NAMESPACE__ . "\\Adapter\\{$adapter}";
@@ -16,17 +17,21 @@ class Factory
 
     public static function start($sessionType = '', $config = '')
     {
-        if (!empty($sessionType)) {
-            $handler = self::getInstance($sessionType, $config);
-            session_set_save_handler(
-                array($handler, 'open'),
-                array($handler, 'close'),
-                array($handler, 'read'),
-                array($handler, 'write'),
-                array($handler, 'destroy'),
-                array($handler, 'gc')
-            );
+        if(false === self::$isStart) {
+            if (!empty($sessionType)) {
+                $handler = self::getInstance($sessionType, $config);
+                session_set_save_handler(
+                    array($handler, 'open'),
+                    array($handler, 'close'),
+                    array($handler, 'read'),
+                    array($handler, 'write'),
+                    array($handler, 'destroy'),
+                    array($handler, 'gc')
+                );
+            }
+            session_name('ZPHPSESSID');
+            session_start();
+            self::$isStart = true;
         }
-        session_start();
     }
 }
