@@ -41,7 +41,7 @@ TODO
 
 流程图
 =======
-![点击查看zphp流程图](https://github.com/shenzhe/zphp/blob/master/zphp_jg.jpg "zphp流程图") 
+![点击查看zphp流程图](https://raw.github.com/shenzhe/zphp/master/zphp_jg.jpg "zphp流程图") 
 
 运行demo
 ========
