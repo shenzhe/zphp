@@ -5,7 +5,9 @@
  */
 namespace socket;
 
-class ReactThread implements Thread
+use ZPHP\Core;
+
+class ReactThread extends \Thread
 {
     private $_conn;
     private $_data;
@@ -21,9 +23,23 @@ class ReactThread implements Thread
 
     public function run()
     {
-        $this->_server->parse($this->_data);
+        $result = $this->_server->parse($this->_data);
+        if (empty($result['a'])) {
+            $data = $this->_data;
+        } else {
+            $this->_server = $this->route($this->_server);
+            $data = $this->_server->getData();
+        }
+        \stream_socket_sendto($this->_conn, $data."\n");
+    }
 
-        $this->_server = $this->route($this->_server);
-        $this->_conn->write($this->_server->getData() . "\n");
+    private function route($server)
+    {
+        try {
+            Core\Route::route($server);
+        } catch (\Exception $e) {
+            $server->display($e->getMessage());
+        }
+        return $server;
     }
 }

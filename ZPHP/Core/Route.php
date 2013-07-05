@@ -8,8 +8,7 @@ namespace ZPHP\Core;
 use ZPHP\Controller\IController,
     ZPHP\Core\Factory,
     ZPHP\Core\Config,
-    ZPHP\View\IView;
-use ZPHP\ZPHP;
+    ZPHP\ZPHP;
 
 class Route
 {

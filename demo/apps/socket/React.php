@@ -42,10 +42,10 @@ class React implements ICallback
         if (empty($data)) {
             return;
         }
-        $this->_server->check();
         $server = Protocol\Factory::getInstance(Core\Config::getField('socket', 'protocol'));
         $workMode = ZConfig::getField('socket', 'work_mode', 1);
         if (3 === $workMode) { //多进程模式
+            $this->_server->check();
             $result = $server->parse($data);
             if (empty($result['a'])) {
                 if (!empty($result['fd'])) {
