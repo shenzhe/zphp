@@ -15,11 +15,15 @@ class React implements ICallback
 {
     private $_data;
     private $_conns;
+    private $_server;
+    private $_reqnum=0;
 
 
     public function onStart()
     {
-        echo 'server start' . PHP_EOL;
+//        echo 'server start' . PHP_EOL;
+        $params = func_get_args();
+        $this->_server = $params[0];
     }
 
     public function onConnect()
@@ -98,13 +102,17 @@ class React implements ICallback
         while (true) {
             $data = $queueService->get(ZConfig::getField('queue', 'key'));
             if (!empty($data)) {
+                $this->_reqnum++;
                 $result = $server->parse($data);
                 if (!empty($result['fd'])) {
                     $server->setFd($result['fd']);
                 }
                 if (!empty($result)) {
                     $server = $this->route($server);
-                    $server->sendMaster();
+                    $server->sendMaster([
+                        'pid' => posix_getpid(),
+                        'reqnum'=>$this->_reqnum,
+                    ]);
                 }
             }
             usleep(500);

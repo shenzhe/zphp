@@ -77,8 +77,11 @@ class Json implements IProtocol
         return $data;
     }
 
-    public function sendMaster()
+    public function sendMaster(array $_params=null)
     {
+        if(!empty($_params)) {
+            $this->_data += $_params;
+        }
         $host = Config::getField('socket', 'host');
         $port = Config::getField('socket', 'port');
         $client = new ZSClient($host, $port);

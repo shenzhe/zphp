@@ -35,16 +35,9 @@ class React implements IServer
 
     public function run()
     {
-        $workMode = ZConfig::getField('socket', 'work_mode', 1);
-        if (1 === $workMode) {
-            $workNum = ZConfig::getField('socket', 'worker_num', 1);
-            for ($i = 0; $i < $workNum; $i++) {
-                if (($pid1 = pcntl_fork()) === 0) { //子进程
-                    $pid = posix_getpid();
-                    $this->pids[$pid] = 0;
-                    $this->client->work();
-                    exit();
-                }
+        if (1 === $this->config['work_mode']) {
+            for ($i = 0; $i < $this->config['worker_num']; $i++) {
+               $this->fork();
             }
         }
 
@@ -66,6 +59,28 @@ class React implements IServer
         });
         $this->serv->listen($this->config['port'], $this->config['host']);
         $this->loop->run();
+
+    }
+
+    public function fork()
+    {
+        if (($pid1 = pcntl_fork()) === 0) { //子进程
+            $pid = posix_getpid();
+            $this->pids[$pid] = 0;
+            $this->client->work();
+            exit();
+        }
+    }
+
+    public function check($pid)
+    {
+        if(empty($this->config['max_reuqest'])) {
+            return ;
+        }
+        if($this->pids[$pid] >= $this->config['max_reuqest']) {
+            posix_kill($pid, SIGTERM);
+            $this->fork();
+        }
 
     }
 }
