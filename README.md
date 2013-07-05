@@ -19,20 +19,22 @@ zphp是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
     7) 队列支持       (beanstalk, redis)，
     8) 实时排行榜支持     (redis)，
     9) 多进程支持        (pcntl, 类ph-fpm的进程管理 (处理一定的请求之后自动kill，然后master会fork一个新进程))
+    10) 多线程支持
 
 TODO
 ========
 
-    1) 多线程模块
-    2) 完善的守护进程实现
-    3) 定时器完善
+    1) 完善的守护进程实现
+    2) 定时器完善
 
 相关扩展
 =======
     socket： 编译选项加上: --enable-pcntl --enable-sockets --enable-sysvmsg
-    memcached：http://pecl.php.net/package/memcached
-    redis: https://github.com/shenzhe/phpredis
+    多线程：https://github.com/krakjoe/pthreads
+    异步：http://pecl.php.net/package/libevent       (用react做socket推荐用此扩展)
     swoole: https://github.com/matyhtf/php_swoole   (高性能socket模块)
+
+    redis: https://github.com/shenzhe/phpredis
     xcache: https://github.com/lighttpd/xcache      (php opcode代码加速模块)
     yac: https://github.com/laruence/yac            (基于共享内存的高性能 key=>val cache)
     yar: https://github.com/laruence/yar            (rpc框架)
@@ -58,7 +60,7 @@ TODO
 ===========
     config/example/base.php 里的配置项目是必需的。
     当不同模块使用了相同的adapter(如:redis), 如用到不同的host或port,可配置_prefix进行隔离
-    cli模块式 php 项目目录/webroot/main.php 配置目录名(如:default) 参数(格式：a=b\&c=d\&e=f)
+    cli模块执行 php 项目目录/webroot/main.php 配置目录名(如:default) 参数(格式：a=b\&c=d\&e=f)
 
 
 
