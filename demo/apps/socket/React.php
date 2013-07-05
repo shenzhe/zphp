@@ -73,7 +73,7 @@ class React implements ICallback
                 $params[0]->write($server->getData() . "\n");
             }
         } else { //多线程模式
-            //TODO
+            new ReactThread($params[0], $data, $server);
         }
     }
 
