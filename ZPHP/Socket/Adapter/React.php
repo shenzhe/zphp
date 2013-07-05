@@ -77,15 +77,16 @@ class React implements IServer
         $this->pids[$pid]++;
     }
 
-    public function check($pid)
+    public function check()
     {
         if(empty($this->config['max_request'])) {
             return ;
         }
-        if($this->pids[$pid] >= $this->config['max_request']) {
-            posix_kill($pid, SIGTERM);
-            $this->fork();
+        foreach($this->pids as $pid=>$num) {
+            if($num >= $this->config['max_request']) {
+                posix_kill($pid, SIGTERM);
+                $this->fork();
+            }
         }
-
     }
 }
