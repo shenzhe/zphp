@@ -16,7 +16,8 @@
             'protocol'=>'Json',                         //socket通信数据协议
             'call_mode'=>'ZPHP',                         //业务处理模式,ZPHP:内置route, RPC: rpc方式, FASTCGI: fastcig方式
             'work_mode'=>3,                             //工作模式：1：多进程 2：多线程
-            'worker_num'=>3                                 //工作进程数
+            'worker_num'=>3,                                 //工作进程数
+            'max_request'=>1000,                            //单个进程最大处理请求数
         ),
 
         'queue'=>array(

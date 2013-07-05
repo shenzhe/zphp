@@ -72,6 +72,11 @@ class React implements IServer
         }
     }
 
+    public function addRequest($pid)
+    {
+        $this->pids[$pid]++;
+    }
+
     public function check($pid)
     {
         if(empty($this->config['max_request'])) {
