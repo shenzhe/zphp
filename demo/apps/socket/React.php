@@ -21,7 +21,7 @@ class React implements ICallback
 
     public function onStart()
     {
-//        echo 'server start' . PHP_EOL;
+        echo 'server start' . PHP_EOL;
         $params = func_get_args();
         $this->_server = $params[0];
     }

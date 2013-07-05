@@ -42,7 +42,7 @@ class React implements IServer
         }
 
         $client = $this->client;
-        $client->onStart($this->serv);
+        $client->onStart($this);
         $this->serv->on('connection', function ($conn) use ($client) {
             $client->onConnect($conn);
             $conn->on('data', function ($datas) use ($conn, $client) {
