@@ -84,6 +84,7 @@ class React implements IServer
         }
         foreach($this->pids as $pid=>$num) {
             if($num >= $this->config['max_request']) {
+                unset($this->pids[$pid]);
                 posix_kill($pid, SIGTERM);
                 $this->fork();
             }
