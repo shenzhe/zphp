@@ -80,7 +80,7 @@ class Json implements IProtocol
     public function sendMaster(array $_params=null)
     {
         if(!empty($_params)) {
-            $this->_data += $_params;
+            $this->_data = $this->_data + $_params;
         }
         $host = Config::getField('socket', 'host');
         $port = Config::getField('socket', 'port');

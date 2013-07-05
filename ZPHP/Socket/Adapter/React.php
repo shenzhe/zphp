@@ -35,7 +35,7 @@ class React implements IServer
 
     public function run()
     {
-        if (1 === $this->config['work_mode']) {
+        if (3 === $this->config['work_mode']) {
             for ($i = 0; $i < $this->config['worker_num']; $i++) {
                $this->fork();
             }
@@ -74,10 +74,10 @@ class React implements IServer
 
     public function check($pid)
     {
-        if(empty($this->config['max_reuqest'])) {
+        if(empty($this->config['max_request'])) {
             return ;
         }
-        if($this->pids[$pid] >= $this->config['max_reuqest']) {
+        if($this->pids[$pid] >= $this->config['max_request']) {
             posix_kill($pid, SIGTERM);
             $this->fork();
         }
