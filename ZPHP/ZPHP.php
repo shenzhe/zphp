@@ -22,10 +22,7 @@ class ZPHP
      * @var string
      */
     private static $configPath = 'default';
-
     private static $appPath = 'apps';
-
-    private static $timeZone = 'Asia/Shanghai';
     private static $zPath;
 
     public static function getRootPath()
@@ -73,7 +70,7 @@ class ZPHP
         $libs = array(
             self::$rootPath . DS . self::$appPath,
             self::$zPath,
-            self::$zPath . DS . 'lib'
+            self::$zPath . DS . ZConfig::get('lib_path', 'lib')
         );
         foreach ($libs as $lib) {
             $classpath = $lib . DS . $baseClasspath;
@@ -114,7 +111,7 @@ class ZPHP
         $appPath = Config::get('app_path', self::$appPath);
         self::setAppPath($appPath);
         \set_exception_handler(__CLASS__ . '::exceptionHandler');
-        $timeZone = Config::get('time_zone', self::$timeZone);
+        $timeZone = Config::get('time_zone', 'Asia/Shanghai');
         \date_default_timezone_set($timeZone);
         $serverMode = Config::get('server_mode', 'Http');
         $service = Server\Factory::getInstance($serverMode);

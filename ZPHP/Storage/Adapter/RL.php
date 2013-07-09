@@ -14,11 +14,13 @@ class RL implements IStorage
     private $redis;
     private $sRedis = null;
     private $suffix = "";
+    private $pconnect;
 
     public function __construct($config)
     {
         if (empty($this->redis)) {
             $this->redis = Manager\Redis::getInstance($config);
+            $this->pconnect = $config['pconnect'];
         }
     }
 
