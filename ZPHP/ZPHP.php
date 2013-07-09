@@ -24,6 +24,7 @@ class ZPHP
     private static $configPath = 'default';
     private static $appPath = 'apps';
     private static $zPath;
+    private static $libPath='lib';
 
     public static function getRootPath()
     {
@@ -70,7 +71,7 @@ class ZPHP
         $libs = array(
             self::$rootPath . DS . self::$appPath,
             self::$zPath,
-            self::$zPath . DS . Config::get('lib_path', 'lib')
+            self::$zPath . DS . self::$libPath
         );
         foreach ($libs as $lib) {
             $classpath = $lib . DS . $baseClasspath;
@@ -108,6 +109,7 @@ class ZPHP
         if (Config::getField('project', 'debug_mode', 0)) {
             Debug::start();
         }
+        self::$libPath = Config::get('lib_path', 'lib');
         $appPath = Config::get('app_path', self::$appPath);
         self::setAppPath($appPath);
         \set_exception_handler(__CLASS__ . '::exceptionHandler');
