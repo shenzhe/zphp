@@ -11,5 +11,7 @@ interface IView
 
     function getModel();
 
-    function output();
+    function display();
+
+    function render();
 }

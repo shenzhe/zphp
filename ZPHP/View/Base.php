@@ -6,7 +6,7 @@
  */
 namespace ZPHP\View;
 
-class Base implements IView
+abstract class Base implements IView
 {
 
     protected $model;
@@ -21,8 +21,14 @@ class Base implements IView
         return $this->model;
     }
 
-    public function output()
-    {
+    abstract public function display();
 
+    public function render()
+    {
+        \ob_start();
+        $this->display();
+        $content = \ob_get_contents();
+        \ob_end_clean();
+        return $content;
     }
 }
