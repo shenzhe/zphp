@@ -25,6 +25,6 @@ class Memcached
             }
             self::$instances[$name] = $memcached;
         }
-        return self::$instance[$name];
+        return self::$instances[$name];
     }
 }

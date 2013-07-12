@@ -25,6 +25,7 @@ class ZPHP
     private static $appPath = 'apps';
     private static $zPath;
     private static $libPath='lib';
+    private static $classPath = array();
 
     public static function getRootPath()
     {
@@ -67,6 +68,10 @@ class ZPHP
 
     final public static function autoLoader($class)
     {
+        if(isset(self::$classPath[$class])) {
+            return self::$classPath[$class];
+            return;
+        }
         $baseClasspath = \str_replace('\\', DS, $class) . '.php';
         $libs = array(
             self::$rootPath . DS . self::$appPath,
@@ -76,6 +81,7 @@ class ZPHP
         foreach ($libs as $lib) {
             $classpath = $lib . DS . $baseClasspath;
             if (\is_file($classpath)) {
+                self::$classPath[$class] = $classpath;
                 require "{$classpath}";
                 return;
             }
