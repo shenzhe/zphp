@@ -1,0 +1,24 @@
+{
+	"name": "zphp/zphp",
+	"type": "framework",
+    "description": "ZPHP is a light that is dedicated to gaming, social networking, web, mobile) server-side frameworks. Providing high performance real-time communication solutions.",
+    "keywords": ["framework", "server"],
+    "homepage": "https://github.com/shenzhe/zphp",
+    "license": "MIT",
+	"authors": [
+		{
+			"name": "shenzhe",
+			"email": "shenzhe163@gmail.com"
+		},
+		{
+			"name": "cooper",
+			"email": "myxiaoao@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">=5.3.7"
+	},
+	"autoload": {
+        "psr-0": { "ZPHP\\": "" }
+    }
+}
