@@ -17,8 +17,5 @@
 	],
 	"require": {
 		"php": ">=5.3.7"
-	},
-	"autoload": {
-        "psr-0": { "ZPHP\\ZPHP": "ZPHP/" }
-    }
+	}
 }
