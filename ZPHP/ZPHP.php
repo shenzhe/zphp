@@ -69,7 +69,7 @@ class ZPHP
     final public static function autoLoader($class)
     {
         if(isset(self::$classPath[$class])) {
-            return self::$classPath[$class];
+            require self::$classPath[$class];
             return;
         }
         $baseClasspath = \str_replace('\\', DS, $class) . '.php';
