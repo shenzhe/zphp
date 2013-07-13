@@ -1,7 +1,7 @@
 {
 	"name": "zphp/zphp",
 	"type": "framework",
-    "description": "ZPHP is a light that is dedicated to gaming, social networking, web, mobile) server-side frameworks. Providing high performance real-time communication solutions.",
+    "description": "ZPHP is a light that is dedicated to gaming, social networking, web, mobile server-side frameworks. Providing high performance real-time communication solutions.",
     "keywords": ["framework", "server"],
     "homepage": "https://github.com/shenzhe/zphp",
     "license": "MIT",
