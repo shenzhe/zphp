@@ -26,6 +26,16 @@ class Config
         return $config;
     }
 
+    public static function loadFiles(array $files)
+    {
+        $config = array();
+        foreach($files as $file) {
+            $config += include "{$file}";
+        }
+        self::$config = $config;
+        return $config;
+    }
+
     public static function get($key, $default = null, $throw = false)
     {
         $result = isset(self::$config[$key]) ? self::$config[$key] : $default;
