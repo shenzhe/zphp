@@ -39,7 +39,6 @@ class Swoole implements ICallback
         if (empty($result['a'])) {
             \swoole_server_send($serv, $fd, "server:" . $data);
         } else {
-            $fd = (int)$params[0]->stream;
             $server->setFd($fd);
             $server = $this->route($server);
             \swoole_server_send($serv, $fd, $server->getData());
@@ -56,6 +55,35 @@ class Swoole implements ICallback
     public function onShutdown()
     {
         echo "server close";
+    }
+
+    public function onTimer()
+    {
+
+    }
+
+    public function onWorkerStart()
+    {
+        $params = func_get_args();
+        $worker_id = $params[1];
+        echo "WorkerStart[$worker_id]|pid=" . posix_getpid() . ".\n";
+    }
+
+    public function onWorkerStop()
+    {
+        $params = func_get_args();
+        $worker_id = $params[1];
+        echo "WorkerStop[$worker_id]|pid=" . posix_getpid() . ".\n";
+    }
+
+    private function route($server)
+    {
+        try {
+            Core\Route::route($server);
+        } catch (\Exception $e) {
+            $server->display($e->getMessage());
+        }
+        return $server;
     }
 
 }

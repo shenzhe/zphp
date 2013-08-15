@@ -40,6 +40,12 @@ class Swoole implements IServer
         \swoole_server_handler($this->serv, 'onClose', array($this->client, 'onClose'));
         \swoole_server_handler($this->serv, 'onShutdown', array($this->client, 'onShutdown'));
         \swoole_server_handler($this->serv, 'onTimer', array($this->client, 'onTimer'));
+        if(method_exists($this->client, 'onWorkerStart')) {
+            \swoole_server_handler($this->serv, 'onWorkerStart', array($this->client, 'onWorkerStart'));
+        }
+        if(method_exists($this->client, 'onWorkerStop')) {
+            \swoole_server_handler($this->serv, 'onWorkerStop', array($this->client, 'onWorkerStop'));
+        }
         if (!empty($this->config['times'])) {
             foreach ($this->config['times'] as $time) {
                 \swoole_server_addtimer($this->serv, $time);
