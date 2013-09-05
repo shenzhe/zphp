@@ -29,14 +29,15 @@ ZPHP是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
 
 ##相关扩展
 
-* socket： 编译选项加上: --enable-pcntl --enable-sockets --enable-sysvmsg
-* 多线程：https://github.com/krakjoe/pthreads
-* 异步：http://pecl.php.net/package/libevent (用react做socket推荐用此扩展)
-* swoole: https://github.com/matyhtf/php_swoole  (高性能socket模块)
-* redis: https://github.com/shenzhe/phpredis
-* xcache: https://github.com/lighttpd/xcache (php opcode代码加速模块)
-* yac: https://github.com/laruence/yac (基于共享内存的高性能 key=>val cache)
-* yar: https://github.com/laruence/yar  (rpc框架)
+    *生产环境推荐：
+    1) https://github.com/matyhtf/php_swoole  (高性能socket模块)
+    2）https://github.com/shenzhe/phpredis    (redis，用于cache,conn等)
+
+    *使用react做socket，需要：
+    1) 编译选项加上: --enable-pcntl --enable-sockets
+    2) http://pecl.php.net/package/libevent   (libevent库)
+    3) https://github.com/krakjoe/pthreads     (多线程支持，可选)
+
 
 ##流程图
 ![点击查看zphp流程图](https://raw.github.com/shenzhe/zphp/master/zphp_jg.jpg "zphp流程图") 
