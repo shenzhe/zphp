@@ -43,13 +43,17 @@ class Dir
             if ($filename[0] === '.') {
                 continue;
             }
-            if (!empty($filter) && !\preg_match($filter, $filename)) {
-                continue;
-            }
+            //过滤文件移动到下面  change by ahuo 2013-09-11 16:23
+            //if (!empty($filter) && !\preg_match($filter, $filename)) {
+              //  continue;
+            //}
 
             if ($file->isDir()) {
                 self::tree($dir . DS . $filename, $filter, $result, $deep);
             } else {
+                if(!empty($filter) && !\preg_match($filter,$filename)){
+                    continue;
+                }
                 if ($deep) {
                     $result[$dir] = $filename;
                 } else {
