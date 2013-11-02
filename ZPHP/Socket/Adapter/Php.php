@@ -185,7 +185,7 @@ class Php implements IServer
         $data = self::fread_stream($client_socket, $server->buffer_size);
 
         if ($data !== false) {
-            $server->client->onRecive($client_id, $data);
+            $server->client->onReceive($client_id, $data);
         } else {
             $server->close($client_id);
         }
