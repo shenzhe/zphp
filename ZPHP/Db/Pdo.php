@@ -44,6 +44,14 @@ class Pdo
         }
         $this->dbName = $dbName;
     }
+	//add set TableName change by ahuo 2013-11-05 14:23
+	public function setTableName($tableName)
+	{
+		if(empty($tableName)){
+			return;
+		}
+		$this->tableName = $tableName;
+	}
 
     public function getTableName()
     {
@@ -229,8 +237,8 @@ class Pdo
         $result = $statement->fetch();
         return $result["count"];
     }
-
-    public function remove($where, $params = [])
+	//$params = [] php5.3.6 报语法错误 change by ahuo 2013-11-05 14:23
+    public function remove($where, $params = array())
     {
         if (empty($where)) {
             return false;
