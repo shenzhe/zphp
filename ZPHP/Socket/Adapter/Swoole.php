@@ -18,12 +18,16 @@ class Swoole implements IServer
         $this->config = $config;
         $this->serv = \swoole_server_create($config['host'], $config['port'], $config['work_mode']);
         \swoole_server_set($this->serv, array(
-            'timeout' => 2.5, //select and epoll_wait timeout.
-            'poll_thread_num' => 2, //reactor thread num
-            'writer_num' => 2, //writer thread num
+            'timeout' => empty($config['timeout']) ? 2.5 : $config['timeout'], //select and epoll_wait timeout.
+            'poll_thread_num' => empty($config['poll_thread_num']) ? 2 : $config['poll_thread_num'], //reactor thread num
+            'writer_num' => empty($config['writer_num']) ? 2 : $config['writer_num'], //writer thread num
             'worker_num' => $config['worker_num'], //worker process num
-            'backlog' => 128, //listen backlog));
-            'max_request' => empty($config['max_request']) ? 1000 : $config['max_request']
+            'backlog' => empty($config['backlog']) ? 128 : $config['backlog'], //listen backlog));
+            'max_request' => empty($config['max_request']) ? 1000 : $config['max_request'],
+            'max_conn' => empty($config['max_conn']) ? 100000 : $config['max_conn'],
+            'dispatch_mode' => empty($config['dispatch_mode']) ? 2 : $config['dispatch_mode'],
+            'log_file' => empty($config['log_file']) ? '/tmp/swoole.log' : $config['log_file'],
+            'daemonize' => $config['daemonize'],
         ));
     }
 
@@ -39,7 +43,9 @@ class Swoole implements IServer
         \swoole_server_handler($this->serv, 'onReceive', array($this->client, 'onReceive'));
         \swoole_server_handler($this->serv, 'onClose', array($this->client, 'onClose'));
         \swoole_server_handler($this->serv, 'onShutdown', array($this->client, 'onShutdown'));
-        \swoole_server_handler($this->serv, 'onTimer', array($this->client, 'onTimer'));
+        if(method_exists($this->client, 'onTimer')) {
+            \swoole_server_handler($this->serv, 'onTimer', array($this->client, 'onTimer'));
+        }
         if(method_exists($this->client, 'onWorkerStart')) {
             \swoole_server_handler($this->serv, 'onWorkerStart', array($this->client, 'onWorkerStart'));
         }

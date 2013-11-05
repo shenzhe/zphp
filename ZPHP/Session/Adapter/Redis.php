@@ -15,7 +15,7 @@ class Redis
 
     public function __construct($config)
     {
-        if (empty(self::$redis)) {
+        if (empty($this->redis)) {
             $this->redis = Manager\Redis::getInstance($config);
         }
     }
