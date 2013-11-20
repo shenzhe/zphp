@@ -7,6 +7,7 @@ ZPHP是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
 ###维护者
 * cooper [https://github.com/huanghua581](https://github.com/huanghua581)
 * yongchuan (charles) / charles.m1256@gmail.com
+* ruanxianhuo  https://github.com/asdf20122012 ruanxianhuo@corp.the9.com
 
 
 ##特色
