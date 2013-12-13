@@ -46,7 +46,7 @@ class Redis implements IRank
 
     public function getRankByScore($rankType, $start, $end, $scores = true, $offset = 0, $count = 0)
     {
-        if (!empty($offect) && !empty($count)) {
+        if (!empty($offset) && !empty($count)) {
             return $this->redis->zRangeByScore($rankType, $start, $end, array('withscores' => $scores, 'limit' => array($offset, $count)));
         }
         return $this->redis->zRangeByScore($rankType, $start, $end, array('withscores' => $scores));
