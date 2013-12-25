@@ -18,7 +18,8 @@ class Pdo
         if (empty($this->pdo)) {
             $this->pdo = new \PDO($config['dns'], $config['user'], $config['pass'], array(
                 \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '{$config['charset']}';",
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_PERSISTENT => empty($config['pconnect']) ? false : true
             ));
         }
         if (!empty($className)) {

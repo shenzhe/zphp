@@ -66,17 +66,35 @@ class Http implements IProtocol
 
     public function display($model)
     {
-        if (empty($this->_view_mode)) {
-            $viewMode = Config::getField('project', 'view_mode', 'String');
+        if(empty($model['_view_mode'])) {
+            if (empty($this->_view_mode)) {
+                $viewMode = Config::getField('project', 'view_mode', '');
+            } else {
+                $viewMode = $this->_view_mode;
+                $this->_view_mode = '';
+            }
         } else {
-            $viewMode = $this->_view_mode;
+            $viewMode = $model['_view_mode'];
+            unset($model['_view_mode']);
         }
-        $this->_view_mode = '';
+
+        if(empty($viewMode)) {
+            return $model;
+        }
+
         $view = View\Factory::getInstance($viewMode);
-        $view->setModel($model);
         if ('Php' === $viewMode) {
-            $view->setTpl($this->_tpl_file);
+            if(!empty($model['_tpl_file'])) {
+                $view->setTpl($model['_tpl_file']);
+                unset($model['_tpl_file']);
+            } else if(!empty($this->_tpl_file)){
+                $view->setTpl($this->_tpl_file);
+                $this->_tpl_file = null;
+            } else {
+                throw new \Exception("tpl file empty");
+            }
         }
+        $view->setModel($model);
         $view->display();
 
     }
