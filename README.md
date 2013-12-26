@@ -5,6 +5,7 @@ ZPHP是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
 * shenzhe (泽泽，半桶水) / shenzhe163@gmail.com
 
 ###维护者
+* godsoul [www.osfans.org(godsoul1986@gmail.com)
 * cooper [https://github.com/huanghua581](https://github.com/huanghua581)
 * yongchuan (charles) / charles.m1256@gmail.com
 * ruanxianhuo  https://github.com/asdf20122012 ruanxianhuo@corp.the9.com
