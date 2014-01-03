@@ -7,15 +7,20 @@
 
 
 namespace ZPHP\Socket\Adapter;
-use ZPHP\Socket\IServer;
+use ZPHP\Socket\IServer,
+    ZPHP\Socket\ICallback;
 
 class Swoole implements IServer
 {
     private $client;
     private $config;
+    private $serv;
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
+        if(!\extension_loaded('swoole')) {
+            throw new \Exception("no swoole extension. get: https://github.com/matyhtf/swoole");
+        }
         $this->config = $config;
         $this->serv = new \swoole_server($config['host'], $config['port'], $config['work_mode']);
         $this->serv->set(array(
@@ -34,7 +39,11 @@ class Swoole implements IServer
 
     public function setClient($client)
     {
-        $this->client = $client;
+        if($clinet instanceof ICallback) {
+            $this->client = $client;
+        }
+        
+        throw new \Exception("client on instanceof ICallback");
     }
 
     public function run()
