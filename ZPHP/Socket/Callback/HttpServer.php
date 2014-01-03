@@ -25,6 +25,9 @@ class HttpServer implements ICallback
         */
     }
 
+    /**
+     * 支持get方式：url示例： http://host:port/?a=ctrl&m=method&key1=>val1&key2=val2
+     */
     public function onReceive()
     {
         $params = func_get_args();
@@ -60,6 +63,13 @@ class HttpServer implements ICallback
         //echo "server shut dowm\n";
     }
 
+    /**
+     * @param $serv
+     * @param $fd
+     * @param $data
+     * @return bool
+     *  支持返回json数据
+     */
     public function sendOne($serv, $fd, $data)
     {
         $data = json_encode($data);

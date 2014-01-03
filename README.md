@@ -1,5 +1,5 @@
 ##ZPHP
-ZPHP是一个极轻的的，专用于游戏(社交，网页，移动)的服务器端开发框架， 提供高性能实时通信服务解决方案。
+ZPHP是一个极轻的的，定位于后置SOA服务的框架，他和传统的MVC框架的明显区别在于，只有简单的路由功能，且专注于性能，并能提供高性能socket服务。
 
 ###发起人
 * shenzhe (泽泽，半桶水) / shenzhe163@gmail.com
@@ -25,15 +25,14 @@ ZPHP是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
     10) 多线程支持
     11) composer 安装
 
-##TODO
+##demo
 
-    1) 完善的守护进程实现
-    2) 定时器完善
+    地址： [https://github.com/shenzhe/zphpdemo](https://github.com/shenzhe/zphpdemo)
 
 ##相关扩展
 
     *生产环境推荐：
-    1) https://github.com/matyhtf/php_swoole  (高性能socket模块)
+    1) https://github.com/matyhtf/swoole  (高性能socket模块)
     2）https://github.com/shenzhe/phpredis    (redis，用于cache,conn等)
 
     *使用react做socket，需要：
@@ -45,34 +44,6 @@ ZPHP是一个极轻的的，专用于游戏(社交，网页，移动)的服务�
 ##流程图
 ![点击查看zphp流程图](https://raw.github.com/shenzhe/zphp/master/zphp_jg.jpg "zphp流程图") 
 
-##安装
-
-普通使用请参照demo文件夹。
-
-###composer 安装
-1.创建composer.json文件   
-2.添加代码  
-```javascript
-{
-    "require": {
-        "zphp/zphp": "dev-master"
-    }
-}
-```  
-3.执行composer install  
-4.然后参照demo_composer文件夹初始项目。
-
-##运行demo
-
-    http模式：
-    	1) 域名绑定到目录webroot
-    	2) 运行：http://域名/main.php?name=zphp&k1=v1
-    socket模块:
-    	1) php 项目目录/webroot/main.php socket
-    	2) telnet 127.0.0.1 8991
-    	3) 输入: {"a":"main/main","name":"zphp","k1":"v1"} 发送
-    	4) 返回: zphp running\n
-        
 
 ##约定
     config/example/base.php 里的配置项目是必需的。

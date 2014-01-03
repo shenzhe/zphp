@@ -2,6 +2,7 @@
 /**
  * User: shenzhe
  * Date: 13-6-17
+ * 所需要库地址： https://github.com/reactphp/react
  */
 
 

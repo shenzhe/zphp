@@ -2,6 +2,7 @@
 /**
  * User: shenzhe
  * Date: 13-6-17
+ * 所需扩展地址：https://github.com/bzick/php-libevent
  */
 
 
