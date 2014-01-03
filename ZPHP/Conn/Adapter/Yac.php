@@ -76,7 +76,7 @@ class Yac implements IConn
 
     public function getChannel($channel = 'ALL')
     {
-        return json_decode($this->yac->get($this->getKey($channel), true);
+        return json_decode($this->yac->get($this->getKey($channel)), true);
     }
 
     public function get($uid)
