@@ -39,12 +39,8 @@ class Swoole implements IServer
 
     public function setClient($client)
     {
-        if($clinet instanceof ICallback) {
-            $this->client = $client;
-            return true;
-        }
-        
-        throw new \Exception("client on instanceof ICallback");
+        $this->client = $client;
+        return true;
     }
 
     public function run()
