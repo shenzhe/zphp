@@ -16,7 +16,7 @@ class Yac implements IConn
     public function __construct($config)
     {
         if(empty($this->yac)) {
-            $this->yac = ZCache::getInstance($config);
+            $this->yac = ZCache::getInstance($config['adapter'], $config);
             if(!$this->yac->enable()) {
                 throw new \Exception("Yac no enable");
                 
