@@ -3,23 +3,23 @@
 namespace ZPHP\Conn\Adapter;
 use ZPHP\Core\Config as ZConfig,
     ZPHP\Conn\IConn,
-    ZPHP\Manager\Redis as ZRedis;
+    ZPHP\Cache\Factory as ZCache;
 
 /**
- *  redis 容器
+ *  yac共享内存
  */
-class Redis implements IConn
+class Yac implements IConn
 {
 
-    private $redis;
+    private $yac;
 
     public function __construct($config)
     {
-        if(empty($this->redis)) {
-            $this->redis = ZRedis::getInstance($config);
-            $db = ZConfig::getField('connection', 'db', 0);
-            if(!empty($db)) {
-                $this->redis->select($db);
+        if(empty($this->yac)) {
+            $this->yac = ZCache::getInstance($config);
+            if(!$this->yac->enable()) {
+                throw new \Exception("Yac no enable");
+                
             }
         }
     }
@@ -27,13 +27,13 @@ class Redis implements IConn
 
     public function addFd($fd, $uid = 0)
     {
-        return $this->redis->set($this->getKey($fd, 'fu'), $uid);
+        return $this->yac->set($this->getKey($fd, 'fu'), $uid);
     }
 
 
     public function getUid($fd)
     {
-        return $this->redis->get($this->getKey($fd, 'fu'));
+        return $this->yac->get($this->getKey($fd, 'fu'));
     }
 
     public function add($uid, $fd)
@@ -48,27 +48,40 @@ class Redis implements IConn
             'types' => ['ALL' => 1]
         ];
 
-        $this->redis->set($this->getKey($uid), \json_encode($data));
-        $this->redis->hSet($this->getKey('ALL'), $uid, $fd);
+        $this->yac->set($this->getKey($uid), \json_encode($data));
+        $this->yac->upChannel($uid, $fd);
     }
 
     public function addChannel($uid, $channel)
     {
         $uinfo = $this->get($uid);
         $uinfo['types'][$channel] = 1;
-        if ($this->redis->hSet($this->getKey($channel), $uid, $uinfo['fd'])) {
-            $this->redis->set($this->getKey($uid), json_encode($uinfo));
+        if ($this->yac->upChannel($uid, $uinfo['fd'], $channel)) {
+            $this->yac->set($this->getKey($uid), json_encode($uinfo));
         }
+    }
+
+    private function upChannel($uid, $fd, $channel = 'ALL')
+    {   
+        $channelInfo = $this->getChannel($channel);
+        if(empty($channelInfo)) {
+            $channelInfo[$uid] = $fd;
+        } else {
+            $channelInfo = $channelInfo;
+        }
+
+        $this->yac->set($this->getKey($channel), json_encode(value))
+        return true;
     }
 
     public function getChannel($channel = 'ALL')
     {
-        return $this->redis->hGetAll($this->getKey($channel));
+        return json_decode($this->yac->get($this->getKey($channel), true);
     }
 
     public function get($uid)
     {
-        $data = $this->redis->get($this->getKey($uid));
+        $data = $this->yac->get($this->getKey($uid));
         if (empty($data)) {
             return [];
         }
@@ -83,7 +96,7 @@ class Redis implements IConn
             return false;
         }
         $uinfo['time'] = time();
-        return $this->redis->set($this->getKey($uid), json_encode($uinfo));
+        return $this->yac->set($this->getKey($uid), json_encode($uinfo));
     }
 
     public function heartbeat($uid, $ntime = 60)
@@ -106,34 +119,34 @@ class Redis implements IConn
             $uid = $this->getUid($fd);
         }
         if ($old) {
-            $this->redis->delete($this->getKey($fd, 'fu'));
+            $this->yac->delete($this->getKey($fd, 'fu'));
         }
-        $this->redis->delete($this->getKey($fd, 'buff'));
+        $this->yac->delete($this->getKey($fd, 'buff'));
         if (empty($uid)) {
             return;
         }
         $uinfo = $this->get($uid);
         if (!empty($uinfo)) {
-            $this->redis->delete($this->getKey($uid));
+            $this->yac->delete($this->getKey($uid));
             foreach ($uinfo['types'] as $type => $val) {
-                $this->redis->hDel($this->getKey($type), $uid);
+                $this->yac->hDel($this->getKey($type), $uid);
             }
         }
     }
 
     public function getBuff($fd, $prev='buff')
     {
-        return $this->redis->get($this->getKey($fd, $buff));
+        return $this->yac->get($this->getKey($fd, $prev));
     }
 
     public function setBuff($fd, $data, $prev='buff')
     {
-        return $this->redis->set($this->getKey($fd, $prev), $data);
+        return $this->yac->set($this->getKey($fd, $prev), $data);
     }
 
     public function delBuff($fd, $prev='buff')
     {
-        return $this->redis->get($this->getKey($fd, $prev));
+        return $this->yac->delete($this->getKey($fd, $prev));
     }
 
     private function getKey($uid, $prefix = 'uf')
@@ -143,6 +156,6 @@ class Redis implements IConn
 
     public function clear()
     {
-        $this->redis->flushDB();
+        $this->yac->flushDB();
     }
 }
