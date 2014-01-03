@@ -27,7 +27,7 @@ ZPHP是一个极轻的的，定位于后置SOA服务的框架，他和传统的M
 
 ##demo
 
-    地址： [https://github.com/shenzhe/zphpdemo](https://github.com/shenzhe/zphpdemo)
+* 地址： [https://github.com/shenzhe/zphpdemo](https://github.com/shenzhe/zphpdemo)
 
 ##相关扩展
 
