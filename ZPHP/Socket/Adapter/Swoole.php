@@ -65,11 +65,6 @@ class Swoole implements IServer
         if(method_exists($this->client, 'onFinish')) {
             $this->serv->on('Finish', array($this->client, 'onFinish'));
         }
-        if (!empty($this->config['times'])) {
-            foreach ($this->config['times'] as $time) {
-                $this->serv->addtimer($time);
-            }
-        }
         $this->serv->start();
     }
 }
