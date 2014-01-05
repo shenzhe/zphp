@@ -119,8 +119,7 @@ class HttpServer implements ICallback
         $params = func_get_args();
         $worker_id = $params[1];
         echo "WorkerStart[$worker_id]|pid=" . posix_getpid() . ".\n";
-        $config = ZConfig::getField('cache', 'locale');
-        $this->cache = ZConn::getInstance($config['adapter'], $config);
+        $this->cache = ZConn::getInstance(ZConfig::getField('cache', 'locale'));
 
     }
 
