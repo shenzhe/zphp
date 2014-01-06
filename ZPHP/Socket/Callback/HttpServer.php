@@ -112,10 +112,11 @@ class HttpServer implements ICallback
             "\r\n",
             array(
                 'HTTP/1.1 200 OK',
-                'Content-Type: text/html',
-                'Connection:keep-alive',
+                'Content-Type: text/html; charset=utf-8',
+                'Connection: keep-alive',
                 'Server:zserver 0.1',
-                //'Content-Length: '.strlen($data),
+                'Content-Length: '.strlen($data),
+                'Date: '. gmdate("D, d M Y H:i:s T"),
                 '',
                 $data));
         $serv->send($fd, $response);
