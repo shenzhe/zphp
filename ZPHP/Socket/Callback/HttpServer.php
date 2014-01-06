@@ -113,12 +113,13 @@ class HttpServer implements ICallback
             array(
                 'HTTP/1.1 200 OK',
                 'Content-Type: text/html',
+                'Connection:keep-alive',
                 'Server:zserver 0.1',
-                'Content-Length: '.strlen($data),
+                //'Content-Length: '.strlen($data),
                 '',
                 $data));
         $serv->send($fd, $response);
-        $serv->close($fd);
+        //$serv->close($fd);
     }
 
 
