@@ -156,6 +156,6 @@ class Yac implements IConn
 
     public function clear()
     {
-        $this->yac->flush();
+        $this->yac->clear();
     }
 }
