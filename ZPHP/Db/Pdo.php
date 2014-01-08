@@ -12,15 +12,13 @@ class Pdo
     private $dbName;
     private $tableName;
     private $className;
+    private $config;
 
     public function __construct($config, $className = null, $dbName = null)
     {
         if (empty($this->pdo)) {
-            $this->pdo = new \PDO($config['dns'], $config['user'], $config['pass'], array(
-                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '{$config['charset']}';",
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                \PDO::ATTR_PERSISTENT => empty($config['pconnect']) ? false : true
-            ));
+            $this->config = $config;
+            $this->pdo = $this->connect();
         }
         if (!empty($className)) {
             $this->className = $className;
@@ -30,6 +28,16 @@ class Pdo
         } else {
             $this->dbName = $dbName;
         }
+    }
+
+    private function connect()
+    {
+        return new \PDO($this->config['dns'], $this->config['user'], $this->config['pass'], array(
+                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '{$config['charset']}';",
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_PERSISTENT => empty($this->config['pconnect']) ? false : true
+            ));
+
     }
 
     public function getDBName()
@@ -272,5 +280,19 @@ class Pdo
         $statement = $this->pdo->prepare($sql);
         $statement->execute();
         return $statement->fetch();
+    }
+
+
+    public function ping()
+    {
+        if(empty($this->pdo)) {
+            $this->pdo = $this->connect();
+        } else {  
+            $status = $this->pdo->getAttribute(\PDO::ATTR_SERVER_INFO);
+            if('MySQL server has gone away' === $status) {
+                $this->pdo = $this->connect();
+            }
+        }
+        return $this->pdo;
     }
 }
