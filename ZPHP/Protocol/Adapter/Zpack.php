@@ -55,7 +55,7 @@ class Zpack implements IProtocol
             $this->_method = $params[$mpn];
         }
         $this->_params = $params;
-        return true;
+        return $this->_params;
     }
 
     public function setFd($fd)
