@@ -54,7 +54,6 @@ class Zpack implements IProtocol
         if (isset($params[$mpn])) {
             $this->_method = $params[$mpn];
         }
-        $this->_params = $params;
         return $this->_params;
     }
 
