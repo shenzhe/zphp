@@ -80,9 +80,7 @@ class Zpack implements IProtocol
     public function display($model)
     {
         $data = \json_encode($model);
-        $dataLen = \strlen($data);
         $pack = new MessagePacker();
-        $pack->writeInt($dataLen);
         $pack->writeString($data);
         return $pack->getData();
     }
