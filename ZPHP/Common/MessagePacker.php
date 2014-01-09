@@ -139,7 +139,7 @@ class MessagePacker
     {
         $len = strlen($this->data);
         if($this->offset < $len) {
-            return substr($this->data, $this->offset));
+            return substr($this->data, $this->offset);
         }
 
         return null;
