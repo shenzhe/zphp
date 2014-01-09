@@ -17,6 +17,7 @@ class Zpack implements IProtocol
     private $_params = array();
     private $_buffer = array();
     private $fd;
+    private $_data;
 
     /**
      * client包格式： writeString(json_encode(array("a"='main/main',"m"=>'main', 'k1'=>'v1')));
@@ -82,6 +83,29 @@ class Zpack implements IProtocol
         $data = \json_encode($model);
         $pack = new MessagePacker();
         $pack->writeString($data);
-        return $pack->getData();
+        $this->_data =  $pack->getData();
+        $this->_data = $model;
+        return $this->_data;
+    }
+
+    public function getData()
+    {
+        $data = \json_encode($this->_data);
+        $pack = new MessagePacker();
+        $pack->writeString($data);
+        $data = $pack->getData();
+        $this->_data = null;
+        return $data;
+    }
+
+    public function sendMaster(array $_params=null)
+    {
+        if(!empty($_params)) {
+            $this->_data = $this->_data + $_params;
+        }
+        $host = Config::getField('socket', 'host');
+        $port = Config::getField('socket', 'port');
+        $client = new ZSClient($host, $port);
+        $client->send($this->getData());
     }
 }
