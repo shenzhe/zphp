@@ -30,6 +30,11 @@ class MessagePacker
         $this->offset = 0;
     }
 
+    public function resetOffset()
+    {
+        $this->offset = 0;
+    }
+
     public function writeByte($d)
     {
         $this->data .= pack("C1", $d);
@@ -128,5 +133,15 @@ class MessagePacker
     public function getData()
     {
         return $this->data;
+    }
+
+    public function getBuffer()
+    {
+        $len = strlen($this->data);
+        if($this->offset < $len) {
+            return substr($this->data, $this->offset));
+        }
+
+        return null;
     }
 }

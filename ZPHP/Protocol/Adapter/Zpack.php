@@ -19,7 +19,7 @@ class Zpack implements IProtocol
     private $fd;
 
     /**
-     * client包格式： 包总长+action+method+params(json_encode)
+     * client包格式： writeString(json_encode(array("a"='main/main',"m"=>'main', 'k1'=>'v1')));
      * server包格式：包总长+数据(json_encode)
      * @param $_data
      * @return bool
@@ -42,10 +42,18 @@ class Zpack implements IProtocol
                 unset($this->_buffer[$this->fd]);
             }
         }
-        $this->_action = $packData->readString();
-        $this->_method = $packData->readString();
+        $packData->resetOffset();
         $params = $packData->readString();
         $this->_params = \json_decode($params, true);
+        $apn = Config::getField('project', 'action_name', 'a');
+        $mpn = Config::getField('project', 'method_name', 'm');
+        if (isset($params[$apn])) {
+            $this->_action = \str_replace('/', '\\', $params[$apn]);
+        }
+        if (isset($params[$mpn])) {
+            $this->_method = $params[$mpn];
+        }
+        $this->_params = $params;
         return true;
     }
 
