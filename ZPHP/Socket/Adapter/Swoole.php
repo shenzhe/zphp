@@ -50,21 +50,11 @@ class Swoole implements IServer
         $this->serv->on('Receive', array($this->client, 'onReceive'));
         $this->serv->on('Close', array($this->client, 'onClose'));
         $this->serv->on('Shutdown', array($this->client, 'onShutdown'));
-        if(method_exists($this->client, 'onTimer')) {
-            $this->serv->on('Timer', array($this->client, 'onTimer'));
-        }
-        if(method_exists($this->client, 'onWorkerStart')) {
-            $this->serv->on('WorkerStart', array($this->client, 'onWorkerStart'));
-        }
-        if(method_exists($this->client, 'onWorkerStop')) {
-            $this->serv->on('WorkerStop', array($this->client, 'onWorkerStop'));
-        }
-        if(method_exists($this->client, 'onTask')) {
-            $this->serv->on('Tash', array($this->client, 'onTask'));
-        }
-        if(method_exists($this->client, 'onFinish')) {
-            $this->serv->on('Finish', array($this->client, 'onFinish'));
-        }
+        $handlerArray = array('onTimer', 'onWorkerStart', 'onWorkerStop', 'onMasterConnect', 'onMasterClose', 'onTask', 'onFinish');
+        foreach($handlerArray as $handler) {
+           if(method_exists($this->client, $handler)) {
+            $this->serv->on($handler, array($this->client, $handler));
+        } 
         $this->serv->start();
     }
 }
