@@ -42,11 +42,11 @@ class Yac implements IConn
         if (!empty($uinfo)) {
             $this->delete($uid);
         }
-        $data = [
+        $data = array(
             'fd' => $fd,
             'time' => time(),
             'types' => ['ALL' => 1]
-        ];
+        );
 
         $this->yac->set($this->getKey($uid), \json_encode($data));
         $this->yac->upChannel($uid, $fd);
@@ -83,7 +83,7 @@ class Yac implements IConn
     {
         $data = $this->yac->get($this->getKey($uid));
         if (empty($data)) {
-            return [];
+            return array();
         }
 
         return json_decode($data, true);

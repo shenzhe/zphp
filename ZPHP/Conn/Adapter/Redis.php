@@ -42,11 +42,11 @@ class Redis implements IConn
         if (!empty($uinfo)) {
             $this->delete($uid);
         }
-        $data = [
+        $data = array(
             'fd' => $fd,
             'time' => time(),
             'types' => ['ALL' => 1]
-        ];
+        );
 
         $this->redis->set($this->getKey($uid), \json_encode($data));
         $this->redis->hSet($this->getKey('ALL'), $uid, $fd);
@@ -70,7 +70,7 @@ class Redis implements IConn
     {
         $data = $this->redis->get($this->getKey($uid));
         if (empty($data)) {
-            return [];
+            return array();
         }
 
         return json_decode($data, true);

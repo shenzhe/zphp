@@ -34,7 +34,7 @@ class Redis
      * @param array $names
      * @return bool
      */
-    public static function closeInstance(array $names = [])
+    public static function closeInstance(array $names = array())
     {
         if (empty(self::$instances)) {
             return true;

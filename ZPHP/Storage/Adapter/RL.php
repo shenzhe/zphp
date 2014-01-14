@@ -138,7 +138,7 @@ class RL implements IStorage
     public function getMulti($cmds)
     {
         $this->redis->multi(\Redis::PIPELINE);
-        $uids = [];
+        $uids = array();
         foreach ($cmds as $userId => $key) {
             $uids[] = $userId;
             $uKey = $this->uKey($userId);
