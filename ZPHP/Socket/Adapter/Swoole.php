@@ -28,6 +28,7 @@ class Swoole implements IServer
             'poll_thread_num' => empty($config['poll_thread_num']) ? 2 : $config['poll_thread_num'], //reactor thread num
             'writer_num' => empty($config['writer_num']) ? 2 : $config['writer_num'], //writer thread num
             'worker_num' => empty($config['worker_num']) ? 2 : $config['worker_num'], //worker process num
+            'task_worker_num' => empty($config['task_worker_num']) ? 2 : $config['task_worker_num'], //task worker num
             'backlog' => empty($config['backlog']) ? 128 : $config['backlog'], //listen backlog));
             'max_request' => empty($config['max_request']) ? 1000 : $config['max_request'],
             'max_conn' => empty($config['max_conn']) ? 100000 : $config['max_conn'],
