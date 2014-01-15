@@ -60,8 +60,9 @@ class Swoole implements IServer
             'onFinish',
         );
         foreach($handlerArray as $handler) {
-           if(method_exists($this->client, $handler)) {
-            $this->serv->on(\str_replace('on', '', $handler), array($this->client, $handler));
+            if(method_exists($this->client, $handler)) {
+                $this->serv->on(\str_replace('on', '', $handler), array($this->client, $handler));
+            }
         } 
         $this->serv->start();
     }
