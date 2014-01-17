@@ -254,10 +254,10 @@ class Client
                 break;
             case self::REQUEST_COMPLETE:
                 list($header, $content) = explode("\r\n\r\n", $response);
-                return [
+                return array(
                     'header' => $header,
                     'content' => $content
-                ];
+                );
         }
     }
 }

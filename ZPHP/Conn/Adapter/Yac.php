@@ -45,7 +45,7 @@ class Yac implements IConn
         $data = array(
             'fd' => $fd,
             'time' => time(),
-            'types' => ['ALL' => 1]
+            'types' => array('ALL' => 1)
         );
 
         $this->yac->set($this->getKey($uid), \json_encode($data));
