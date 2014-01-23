@@ -66,17 +66,17 @@ class Http implements IProtocol
 
     public function display($model)
     {
-        if(isset($model['_view_mode'])) {
-            if(empty($model['_view_mode'])) {
+        if(is_array($model)) {
+            if(!empty($model['_view_mode'])) {
+                $viewMode = $model['_view_mode'];
+                unset($model['_view_mode']);
+            } else {
                 if (empty($this->_view_mode)) {
                     $viewMode = Config::getField('project', 'view_mode', '');
                 } else {
                     $viewMode = $this->_view_mode;
                     $this->_view_mode = '';
                 }
-            } else {
-                $viewMode = $model['_view_mode'];
-                unset($model['_view_mode']);
             }
         }
 
@@ -86,7 +86,7 @@ class Http implements IProtocol
 
         $view = View\Factory::getInstance($viewMode);
         if ('Php' === $viewMode) {
-            if(!empty($model['_tpl_file'])) {
+            if(is_array($model) && !empty($model['_tpl_file'])) {
                 $view->setTpl($model['_tpl_file']);
                 unset($model['_tpl_file']);
             } else if(!empty($this->_tpl_file)){
