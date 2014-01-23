@@ -32,7 +32,7 @@ class Pdo
 
     private function connect()
     {
-        return new \PDO($this->config['dns'], $this->config['user'], $this->config['pass'], array(
+        return new \PDO($this->config['dsn'], $this->config['user'], $this->config['pass'], array(
                 \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '{$config['charset']}';",
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                 \PDO::ATTR_PERSISTENT => empty($this->config['pconnect']) ? false : true
