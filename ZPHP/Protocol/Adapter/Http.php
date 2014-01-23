@@ -66,16 +66,18 @@ class Http implements IProtocol
 
     public function display($model)
     {
-        if(empty($model['_view_mode'])) {
-            if (empty($this->_view_mode)) {
-                $viewMode = Config::getField('project', 'view_mode', '');
+        if(isset($model['_view_mode'])) {
+            if(empty($model['_view_mode'])) {
+                if (empty($this->_view_mode)) {
+                    $viewMode = Config::getField('project', 'view_mode', '');
+                } else {
+                    $viewMode = $this->_view_mode;
+                    $this->_view_mode = '';
+                }
             } else {
-                $viewMode = $this->_view_mode;
-                $this->_view_mode = '';
+                $viewMode = $model['_view_mode'];
+                unset($model['_view_mode']);
             }
-        } else {
-            $viewMode = $model['_view_mode'];
-            unset($model['_view_mode']);
         }
 
         if(empty($viewMode)) {
