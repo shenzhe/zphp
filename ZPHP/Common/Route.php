@@ -51,7 +51,7 @@ class Route
         if(!empty($routes)) {
             foreach($routes as $type=>$rules) {
                 foreach($rules as $path=>$rule) {
-                    if($rule[0] == str_replace('/', '\\', $action) && $rule[1] == str_replace('/', '\\', $action)) {
+                    if($rule[0] == str_replace('/', '\\', $action) && $rule[1] == $method) {
                         if('static' == $type) {
                             if(!empty($params)) {
                                 return $appUrl.$path.'?'.http_build_query($params);
