@@ -39,10 +39,10 @@ class Http implements IProtocol
             $routeMap = ZRoute::match(Config::get('route', false), $_SERVER['PATH_INFO']);
             if(is_array($routeMap)) {
                 $this->_action = $routeMap[0];
-                $this->_action = $routeMap[2];
-                if(is_array($routeMap[3])) {
+                $this->_method = $routeMap[1];
+                if(is_array($routeMap[2])) {
                     //参数优先
-                    $data = $data + $routeMap[3];
+                    $data = $data + $routeMap[2];
                 }
                 
             }

@@ -58,9 +58,9 @@ class Route
                             }
                             return $appUrl.$path;
                         } else {
-                            $realPath = $rule[4];
-                            if(!empty($rule[3])) {
-                                foreach($rule[3] as $key) {
+                            $realPath = $rule[3];
+                            if(!empty($rule[2])) {
+                                foreach($rule[2] as $key) {
                                     if(isset($params[$key])) {
                                         $realPath = str_replace("%{$key}%", $params[$key], $realPath);
                                         unset($params[$key]);
