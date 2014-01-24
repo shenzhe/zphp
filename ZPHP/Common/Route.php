@@ -53,7 +53,10 @@ class Route
                 foreach($rules as $path=>$rule) {
                     if($rule[0] == $action && $rule[1] == $method) {
                         if('static' == $type) {
-                            return $appUrl.$path.'?'.http_build_query($params);
+                            if(!empty($params){
+                                return $appUrl.$path.'?'.http_build_query($params)
+                            }
+                            return $appUrl.$path;
                         } else {
                             $realPath = $rule[4];
                             if(!empty($rule[3])) {
@@ -63,6 +66,9 @@ class Route
                                         unset($params[$key]);
                                     }
                                 }
+                            }
+                            if(!empty($params){
+                                return $appUrl.$path;
                             }
                             return $appUrl.$path.'?'.http_build_query($params);
                         }
