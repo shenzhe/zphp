@@ -26,7 +26,7 @@ class Route
             }
             if(!empty($matches)) {
                 unset($matches[0]);
-                $rule[3] = array_combine($rule[3], $matches);
+                $rule[2] = array_combine($rule[2], $matches);
                 return $rule;
             }
         }
