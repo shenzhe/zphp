@@ -10,6 +10,7 @@ use ZPHP\Core;
 use ZPHP\View;
 use ZPHP\Core\Config;
 use ZPHP\Protocol\IProtocol;
+use ZPHP\Common\Route as ZRoute;
 
 class Http implements IProtocol
 {
@@ -24,9 +25,8 @@ class Http implements IProtocol
      * @param $_data
      * @return bool
      */
-    public function parse($_data)
+    public function parse($data)
     {
-        $data = $_data;
         $apn = Config::getField('project', 'action_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {
@@ -34,6 +34,18 @@ class Http implements IProtocol
         }
         if (isset($data[$mpn])) {
             $this->_method = $data[$mpn];
+        }
+        if(!empty($_SERVER['PATH_INFO'])) {
+            $routeMap = ZRoute::match(Config::get('route', false), $_SERVER['PATH_INFO']);
+            if(is_array($routeMap)) {
+                $this->_action = $routeMap[0];
+                $this->_action = $routeMap[2];
+                if(is_array($routeMap[3])) {
+                    //参数优先
+                    $data = $data + $routeMap[3];
+                }
+                
+            }
         }
         $this->_params = $data;
         return true;
