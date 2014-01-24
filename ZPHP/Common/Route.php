@@ -68,9 +68,9 @@ class Route
                                 }
                             }
                             if(!empty($params)){
-                                return $appUrl.$path;
+                                return $appUrl.$realPath;
                             }
-                            return $appUrl.$path.'?'.http_build_query($params);
+                            return $appUrl.$realPath.'?'.http_build_query($params);
                         }
                     }
                 }
