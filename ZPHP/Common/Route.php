@@ -36,7 +36,7 @@ class Route
     public static function makeUrl($action, $method, $params=array())
     {
         $appUrl = ZConfig::getField('project', 'app_host', "");
-        $actionName = ZConfig::getField('project', 'action_name', 'a');
+        $actionName = ZConfig::getField('project', 'ctrl_name', 'a');
         $methodName = ZConfig::getField('project', 'method_name', 'm');
         if(empty($appUrl)) {
             $appUrl = '/';

@@ -46,7 +46,7 @@ class Zpack implements IProtocol
         $packData->resetOffset();
         $params = $packData->readString();
         $this->_params = \json_decode($params, true);
-        $apn = Config::getField('project', 'action_name', 'a');
+        $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($params[$apn])) {
             $this->_action = \str_replace('/', '\\', $params[$apn]);

@@ -24,7 +24,7 @@ class Rpc implements IProtocol
     public function parse($_data)
     {
         $data = $_data;
-        $apn = Config::getField('project', 'action_name', 'a');
+        $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {
             $this->_action = \str_replace('/', '\\', $data[$apn]);
