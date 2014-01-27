@@ -66,6 +66,11 @@ class ZPHP
         return self::$zPath;
     }
 
+    public static function getLibPath()
+    {
+        return self::$libPath;
+    }
+
     final public static function autoLoader($class)
     {
         if(isset(self::$classPath[$class])) {

@@ -2,7 +2,7 @@
 /**
  * User: shenzhe
  * Date: 13-6-17
- *  view接口
+ *  
  */
 namespace ZPHP\View;
 
@@ -21,6 +21,7 @@ abstract class Base implements IView
         return $this->model;
     }
 
+    //数据输出
     abstract public function display();
 
     public function render()

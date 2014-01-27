@@ -20,7 +20,7 @@ class Factory
         if(false === self::$isStart) {
             if (!empty($sessionType)) {
                 $handler = self::getInstance($sessionType, $config);
-                session_set_save_handler(
+                \session_set_save_handler(
                     array($handler, 'open'),
                     array($handler, 'close'),
                     array($handler, 'read'),
@@ -29,8 +29,8 @@ class Factory
                     array($handler, 'gc')
                 );
             }
-            session_name('ZPHPSESSID');
-            session_start();
+            \session_name('ZPHPSESSID');
+            \session_start();
             self::$isStart = true;
         }
     }

@@ -2,7 +2,7 @@
 /**
  * author: shenzhe
  * Date: 13-6-17
- * 文件目录操作类
+ * 
  */
 
 namespace ZPHP\Common;

@@ -14,7 +14,7 @@ class Beanstalk
     public function __construct($config)
     {
         if (empty($this->beanstalk)) {
-            $this->beanstalk = Manager\BeanStakl::getInstance($config);
+            $this->beanstalk = Manager\Beanstalk::getInstance($config);
         }
     }
 

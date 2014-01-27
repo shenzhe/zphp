@@ -12,7 +12,7 @@ use ZPHP\Protocol\IProtocol;
 
 class Zpack implements IProtocol
 {
-    private $_action = 'main\main';
+    private $_ctrl = 'main\\main';
     private $_method = 'main';
     private $_params = array();
     private $_buffer = array();
@@ -49,7 +49,7 @@ class Zpack implements IProtocol
         $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($params[$apn])) {
-            $this->_action = \str_replace('/', '\\', $params[$apn]);
+            $this->_ctrl = \str_replace('/', '\\', $params[$apn]);
         }
         if (isset($params[$mpn])) {
             $this->_method = $params[$mpn];
@@ -62,9 +62,9 @@ class Zpack implements IProtocol
         $this->fd = $fd;
     }
 
-    public function getAction()
+    public function getCtrl()
     {
-        return $this->_action;
+        return $this->_ctrl;
     }
 
     public function getMethod()

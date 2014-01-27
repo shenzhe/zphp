@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *  依赖于 httpparser扩展
+ *  git地址：https://github.com/matyhtf/php-webserver/tree/master/ext
+ */
+
 namespace ZPHP\Socket\Callback;
 
 use ZPHP\Socket\ICallback;
@@ -29,7 +34,7 @@ class HttpServer implements ICallback
     }
 
     /**
-     * 支持get方式：url示例： http://host:port/?a=ctrl&m=method&key1=>val1&key2=val2
+     *  请求发起
      */
     public function onReceive()
     {

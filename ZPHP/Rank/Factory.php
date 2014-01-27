@@ -2,7 +2,7 @@
 /**
  * User: shenzhe
  * Date: 13-6-17
- *  view接口
+ * 
  */
 namespace ZPHP\Rank;
 use ZPHP\Core\Factory as CFactory;

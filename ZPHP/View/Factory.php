@@ -2,7 +2,7 @@
 /**
  * User: shenzhe
  * Date: 13-6-17
- *  view接口
+ *  
  */
 namespace ZPHP\View;
 use ZPHP\Core\Factory as CFactory;

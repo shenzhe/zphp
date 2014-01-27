@@ -76,6 +76,9 @@ class Route
                 }
             }
         }
+        if(empty($params)){
+            return $appUrl."?{$actionName}={$action}&{$methodName}={$method}";
+        }
         return $appUrl."?{$actionName}={$action}&{$methodName}={$method}&".http_build_query($params);
     }
 }

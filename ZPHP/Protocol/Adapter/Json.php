@@ -12,7 +12,7 @@ use ZPHP\Core\Config,
 
 class Json implements IProtocol
 {
-    private $_action = 'main\main';
+    private $_ctrl = 'main\\main';
     private $_method = 'main';
     private $_params = array();
     private $_data;
@@ -24,7 +24,7 @@ class Json implements IProtocol
         $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {
-            $this->_action = \str_replace('/', '\\', $data[$apn]);
+            $this->_ctrl = \str_replace('/', '\\', $data[$apn]);
         }
         if (isset($data[$mpn])) {
             $this->_method = $data[$mpn];
@@ -47,9 +47,9 @@ class Json implements IProtocol
         return $this->fd;
     }
 
-    public function getAction()
+    public function getCtrl()
     {
-        return $this->_action;
+        return $this->_ctrl;
     }
 
     public function getMethod()

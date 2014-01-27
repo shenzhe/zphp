@@ -15,9 +15,9 @@ interface IProtocol
     public function parse($data);
 
     /**
-	 *  获取当前业务的action名
+	 *  获取当前业务的ctrl名
 	 */
-    public function getAction();
+    public function getCtrl();
 
     /**
 	 *  获取当前业务的methoed名

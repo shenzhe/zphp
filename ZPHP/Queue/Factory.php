@@ -2,7 +2,7 @@
 /**
  * User: shenzhe
  * Date: 13-6-17
- *  view接口
+ * 对列接口
  */
 namespace ZPHP\Queue;
 use ZPHP\Core\Factory as CFactory;

@@ -14,7 +14,7 @@ use ZPHP\Common\Route as ZRoute;
 
 class Http implements IProtocol
 {
-    private $_action = 'main\\main';
+    private $_ctrl = 'main\\main';
     private $_method = 'main';
     private $_params = array();
     private $_view_mode = '';
@@ -30,7 +30,7 @@ class Http implements IProtocol
         $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {
-            $this->_action = \str_replace('/', '\\', $data[$apn]);
+            $this->_ctrl = \str_replace('/', '\\', $data[$apn]);
         }
         if (isset($data[$mpn])) {
             $this->_method = $data[$mpn];
@@ -38,7 +38,7 @@ class Http implements IProtocol
         if(!empty($_SERVER['PATH_INFO'])) {
             $routeMap = ZRoute::match(Config::get('route', false), $_SERVER['PATH_INFO']);
             if(is_array($routeMap)) {
-                $this->_action = $routeMap[0];
+                $this->_ctrl = $routeMap[0];
                 $this->_method = $routeMap[1];
                 if(is_array($routeMap[2])) {
                     //参数优先
@@ -51,9 +51,9 @@ class Http implements IProtocol
         return true;
     }
 
-    public function getAction()
+    public function getCtrl()
     {
-        return $this->_action;
+        return $this->_ctrl;
     }
 
     public function getMethod()
