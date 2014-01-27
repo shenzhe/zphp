@@ -43,6 +43,10 @@ class Json implements IProtocol
         $this->fd = $fd;
     }
 
+    public function getFd(){
+        return $this->fd;
+    }
+
     public function getAction()
     {
         return $this->_action;
@@ -66,7 +70,7 @@ class Json implements IProtocol
         } else {
             $data['data'] = $model;
         }
-        $data['fd'] = $this->fd;
+        $data['_fd'] = $this->fd;
         $this->_data = $data;
         return $this->_data;
     }

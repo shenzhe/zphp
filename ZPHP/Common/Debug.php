@@ -3,13 +3,16 @@
 namespace ZPHP\Common;
 use ZPHP\ZPHP,
     ZPHP\Core\Config,
-    ZPHP\Common\Log;
+    ZPHP\Common\Log,
+    ZPHP\Common\Terminal;
 
 
 class Debug
 {
     private static $xhprof = false;
     private static $records;
+
+    private static $DEBUG_TRACE = false;
 
     public static function getMicroTime()
     {
@@ -67,15 +70,17 @@ class Debug
             $msg = self::dump($args);
         }
 
-        if (self::DEBUG_TRACE) {
+        if (self::$DEBUG_TRACE) {
             $trace = self::getTrace();
         } else {
             $trace = array();
         }
         if ($msgType == 'debug') {
-            Terminal::drawStr($msg, 'brown');
+            Terminal::drawStr($msg, 'magenta');
         } else if ($msgType == 'error') {
             Terminal::drawStr($msg, 'red');
+        } else if ($msgType == 'info') {
+            Terminal::drawStr($msg, 'brown');
         } else {
             Terminal::drawStr($msg, 'default');
         }
@@ -106,7 +111,7 @@ class Debug
         return $traces_data;
     }
 
-    public static function dump()
+    private static function dump()
     {
         ob_start();
 
@@ -122,7 +127,7 @@ class Debug
 
     public static function log()
     {
-        self::_log('info', func_get_args());
+        self::_log('log', func_get_args());
     }
 
     public static function info()
