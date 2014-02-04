@@ -164,4 +164,14 @@ class HttpServer implements ICallback
         echo "WorkerStop[$worker_id]|pid=" . posix_getpid() . ".\n";
         */
     }
+    
+    public function onTask()
+    {
+        
+    }
+    
+    public function onFinish()
+    {
+        
+    }
 }
