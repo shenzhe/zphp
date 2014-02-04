@@ -19,6 +19,8 @@ class Pdo
         if (empty($this->pdo)) {
             $this->config = $config;
             $this->pdo = $this->connect();
+        } elseif (!empty($config['ping'])) {
+        	$this->ping();
         }
         if (!empty($className)) {
             $this->className = $className;
