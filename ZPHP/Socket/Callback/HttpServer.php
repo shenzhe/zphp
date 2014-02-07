@@ -13,15 +13,19 @@ use ZPHP\Protocol;
 use ZPHP\Core;
 use \HttpParser;
 use ZPHP\Conn\Factory as ZConn;
+use ZPHP\Socket\Route;
 
 
 class HttpServer implements ICallback
 {
 
     private $_cache;
+    private $_route;
     public function onStart()
     {
         echo 'server start, swoole version: ' . SWOOLE_VERSION . PHP_EOL;
+        $config = ZConfig::getField('cache', 'locale');
+        $this->cache = ZConn::getInstance($config['adapter'], $config);
     }
 
     public function onConnect()
@@ -101,7 +105,9 @@ class HttpServer implements ICallback
     public function onShutdown()
     {
         //echo "server shut dowm\n";
-        $this->cache->clear();
+        if($this->cache) {
+            $this->cache->clear();
+        }
     }
 
     /**
@@ -131,6 +137,11 @@ class HttpServer implements ICallback
 
     private function _route($data)
     {
+        if(empty($this->_route)) {
+            $this->_route = Route::getInstance(ZConfig::getField('socket', 'call_mode', 'ZPHP'));
+        }
+        return $this->_route->run($data);
+        /*
         try {
             $server = Protocol\Factory::getInstance('Http');
             $server->parse($data);
@@ -143,6 +154,7 @@ class HttpServer implements ICallback
             //print_r($e);
             return null;
         }
+        */
     }
 
 
