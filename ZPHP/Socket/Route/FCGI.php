@@ -19,12 +19,7 @@ class FCGI
         if ($this->_client === null) {
             $this->_client = new Fcgi\Client(ZConfig::getField('socket', 'fcgi_host', '127.0.0.1'), ZConfig::getField('socket', 'fcgi_port', 9000));
         }
-        try {
-            return $this->_client->request($data);
-        } catch (\Exception $e) {
-            $result =  Formater::exception($e);
-            return $result;
-        }
+        return $this->_client->request($data);
     }
 
 }

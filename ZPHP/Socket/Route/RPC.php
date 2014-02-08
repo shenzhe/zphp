@@ -18,12 +18,8 @@ class RPC
         if ($this->_rpc === null) {
             $this->_rpc = new \Yar_Client(ZConfig::getField('socket', 'rpc_host'));
         }
-        try {
-            return $this->_rpc->api($data);
-        } catch (\Exception $e) {
-            $result =  Formater::exception($e);
-            return $result;
-        }
+        return $this->_rpc->api($data);
+        
     }
 
 }

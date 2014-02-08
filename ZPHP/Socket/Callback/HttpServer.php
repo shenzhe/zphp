@@ -140,7 +140,12 @@ class HttpServer implements ICallback
         if(empty($this->_route)) {
             $this->_route = Route::getInstance(ZConfig::getField('socket', 'call_mode', 'ZPHP'));
         }
-        return $this->_route->run($data);
+        try {
+            return $this->_route->run($data);
+        } catch (\Exception $e) {
+            //$result =  Formater::exception($e);
+            return null;
+        }
         /*
         try {
             $server = Protocol\Factory::getInstance('Http');
