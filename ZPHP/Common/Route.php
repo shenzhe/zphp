@@ -62,7 +62,7 @@ class Route
                             if(!empty($rule[2])) {
                                 foreach($rule[2] as $key) {
                                     if(isset($params[$key])) {
-                                        $realPath = str_replace("%{$key}%", $params[$key], $realPath);
+                                        $realPath = str_replace("\{{$key}\}", $params[$key], $realPath);
                                         unset($params[$key]);
                                     }
                                 }
