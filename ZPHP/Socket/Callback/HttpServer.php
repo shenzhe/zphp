@@ -1,8 +1,9 @@
 <?php
 
 /**
- *  依赖于 httpparser扩展
+ *  依赖于 httpparser扩展和yac扩展
  *  git地址：https://github.com/matyhtf/php-webserver/tree/master/ext
+ *  git地址：https://github.com/laruence/yac
  */
 
 namespace ZPHP\Socket\Callback;
@@ -131,7 +132,9 @@ class HttpServer implements ICallback
                 '',
                 $data));
         $serv->send($fd, $response);
-        //$serv->close($fd);
+        if(!ZConfig::getField('project', 'keepalive', 1)) {
+            $serv->close($fd);
+        }
     }
 
 
