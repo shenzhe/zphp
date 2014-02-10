@@ -120,19 +120,20 @@ class HttpServer implements ICallback
      */
     public function sendOne($serv, $fd, $data)
     {
+        $keepalive = ZConfig::getField('project', 'keepalive', 1);
         $response = join(
             "\r\n",
             array(
                 'HTTP/1.1 200 OK',
                 'Content-Type: text/html; charset=utf-8',
-                'Connection: keep-alive',
+                'Connection: '.$keepalive ? 'keep-alive' : 'Close',
                 'Server:zserver 0.1',
                 'Content-Length: '.strlen($data),
                 'Date: '. gmdate("D, d M Y H:i:s T"),
                 '',
                 $data));
         $serv->send($fd, $response);
-        if(!ZConfig::getField('project', 'keepalive', 1)) {
+        if(!$keepalive) {
             $serv->close($fd);
         }
     }
