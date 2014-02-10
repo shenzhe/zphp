@@ -40,7 +40,7 @@ class Http implements IProtocol
             if(is_array($routeMap)) {
                 $this->_ctrl = $routeMap[0];
                 $this->_method = $routeMap[1];
-                if(is_array($routeMap[2])) {
+                if(!empty($routeMap[2]) && is_array($routeMap[2])) {
                     //参数优先
                     $data = $data + $routeMap[2];
                 }
