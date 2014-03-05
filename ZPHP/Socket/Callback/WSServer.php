@@ -314,7 +314,7 @@ abstract class WSServer implements ICallback
      * @param   bool    $end        Whether it is the last frame of the message.
      * @return  void
      */
-    private function send($fd, $message, $opcode = self::OPCODE_TEXT_FRAME, $end = true)
+    public function send($fd, $message, $opcode = self::OPCODE_TEXT_FRAME, $end = true)
     {
         if((self::OPCODE_TEXT_FRAME  === $opcode or self::OPCODE_CONTINUATION_FRAME === $opcode) and false === (bool) preg_match('//u', $message))
         {
