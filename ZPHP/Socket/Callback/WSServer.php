@@ -115,7 +115,7 @@ abstract class WSServer implements ICallback
                         $this->close($fd, self::CLOSE_PROTOCOL_ERROR);
                     }
                     //数据包就绪
-                    if($ws['finish'])
+                    if(!empty($ws['finish']))
                     {
                         $this->opcodeSwitch($fd, $ws);
                         //还有数据
