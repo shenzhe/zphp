@@ -399,7 +399,7 @@ abstract class WSServer implements ICallback
         }
     }
 
-    abstract public function onSend($fd, $ws) 
+    abstract public function onSend($fd, $ws); 
     
     private function doHandshake($data)
     {
