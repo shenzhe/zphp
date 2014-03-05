@@ -45,11 +45,11 @@ abstract class WSServer implements ICallback
      */
     const GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 
-    private $_ws = array();
+    public $_ws = array();
     private $_route;
     private $_buff = array();
     private $_ws_list = array();
-    private $serv;
+    public $serv;
 
     public function onStart()
     {
