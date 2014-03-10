@@ -44,7 +44,6 @@ class Http implements IProtocol
                     //参数优先
                     $data = $data + $routeMap[2];
                 }
-                
             }
         }
         $this->_params = $data;

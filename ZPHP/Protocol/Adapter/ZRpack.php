@@ -10,7 +10,7 @@ use ZPHP\Core\Config;
 use ZPHP\Common\MessagePacker;
 use ZPHP\Protocol\IProtocol;
 
-class Zpack implements IProtocol
+class ZRpack implements IProtocol
 {
     private $_ctrl = 'main\\main';
     private $_method = 'main';
@@ -18,9 +18,10 @@ class Zpack implements IProtocol
     private $_buffer = array();
     private $fd;
     private $_data;
+    private $_cmd;
 
     /**
-     * client包格式： writeString(json_encode(array("a"='main/main',"m"=>'main', 'k1'=>'v1')));
+     * client包格式： writeString(json_encode(array("pathinfo", array("参数列表") )));
      * server包格式：包总长+数据(json_encode)
      * @param $_data
      * @return bool
@@ -43,16 +44,20 @@ class Zpack implements IProtocol
                 unset($this->_buffer[$this->fd]);
             }
         }
-        $packData->resetOffset();
+        $packData->resetOffset(4);
+        $this->_cmd = $packData->readInt();
+        $pathinfo = Config::getField('cmdlist', $this->_cmd);
         $params = $packData->readString();
-        $this->_params = \json_decode($params, true);
-        $apn = Config::getField('project', 'ctrl_name', 'a');
-        $mpn = Config::getField('project', 'method_name', 'm');
-        if (isset($params[$apn])) {
-            $this->_ctrl = \str_replace('/', '\\', $params[$apn]);
-        }
-        if (isset($params[$mpn])) {
-            $this->_method = $params[$mpn];
+        $unpackData = \json_decode(gzdecode($params), true);
+        $this->_params = $unpackData;
+        $routeMap = ZRoute::match(Config::get('route', false), $pathinfo);
+        if(is_array($routeMap)) {
+            $this->_ctrl = $routeMap[0];
+            $this->_method = $routeMap[1];
+            if(!empty($routeMap[2]) && is_array($routeMap[2])) {
+                //参数优先
+                $this->_params = $this->_params + $routeMap[2];
+            }
         }
         return $this->_params;
     }
@@ -82,6 +87,11 @@ class Zpack implements IProtocol
         return $this->_params;
     }
 
+    public function getCmd()
+    {
+        return $this->_cmd;
+    }
+
     public function display($model)
     {
         $data = array();
@@ -91,18 +101,26 @@ class Zpack implements IProtocol
             $data['data'] = $model;
         }
         $data['fd'] = $this->fd;
+        $data['cmd'] = $this->_cmd;
         $this->_data = $data;
-        return $this->_data;
+        echo $this->getData();
     }
 
     public function getData()
     {
-        $data = \json_encode($this->_data);
+        if (Config::get('server_mode') == 'Http') {
+            \header("Content-Type: application/zrpack; charset=utf-8");
+        }
+        $data = gzencode(\json_encode($this->_data));
         $pack = new MessagePacker();
-        $pack->writeString($data);
+        $len = strlen($data);
+        $pack->writeInt($len+12);
+        $pack->writeInt($this->_cmd);
+        $pack->writeString($data, $len);
         $data = $pack->getData();
         $this->_data = null;
-        return $data;
+        $this->_cmd = null;
+        return $pack->getData();
     }
 
     public function sendMaster(array $_params=null)

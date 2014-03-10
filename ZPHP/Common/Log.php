@@ -18,7 +18,7 @@ class Log
         $t = \date("Ymd");
         $logPath = Config::get('log_path', '');
         if(empty($logPath)) {
-            $dir = ZPHP::getRootPath() . DS . $logPath . DS . $t;
+            $dir = ZPHP::getRootPath() . DS . 'log' . DS . $t;
         } else {
             $dir = $logPath . DS . $t;
         }

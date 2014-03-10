@@ -30,9 +30,9 @@ class MessagePacker
         $this->offset = 0;
     }
 
-    public function resetOffset()
+    public function resetOffset($len=0)
     {
-        $this->offset = 0;
+        $this->offset = $len;
     }
 
     public function writeByte($d)
@@ -40,18 +40,22 @@ class MessagePacker
         $this->data .= pack("C1", $d);
     }
 
-    public function writeString($s)
+    public function writeString($s, $len=null)
     {
         $s = rtrim($s, "\0") . "\0";
-        $len = strlen($s);
+        if(null === $len) {
+            $len = strlen($s);
+        }
         $this->writeInt($len);
         $this->data .= pack("a*", $s);
     }
 
     //写二进制数据
-    public function writeBinary($b)
+    public function writeBinary($b, $len=null)
     {
-        $len = strlen($b);
+        if(null === $len) {
+            $len = strlen($s);
+        }
         $this->writeInt($len);
         $this->data .= $b;
         //$this->data .= pack('H*', $b);
