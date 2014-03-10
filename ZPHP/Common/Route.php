@@ -2,6 +2,7 @@
 namespace ZPHP\Common;
 
 use ZPHP\Core\Config as ZConfig;
+use ZPHP\Cache\Factory as ZCache;
 
 /**
  * Route
@@ -51,6 +52,16 @@ class Route
         if(isset($route['static'][$pathinfo])) {
             return $route['static'][$pathinfo];
         }
+
+        if(!empty($route['cache'])) {
+            $config = ZConfig::getField('cache', 'locale', array());
+            if(!empty($config)) {
+                $cache = ZCache::getInstance($config['adapter'], $config);
+                $result = $cache->get($pathinfo);
+                return json_decode($result, true);
+            }
+        }
+
         foreach($route['dynamic'] as $regex=>$rule) {
             if(!preg_match($regex, $pathinfo, $matches)) {
                 continue;
@@ -63,9 +74,13 @@ class Route
                     if(($count1 + $count2) > 0) {
                         unset($matches[$index]);
                     }
-
                 }
-                $rule[2] = array_combine($rule[2], $matches);
+                if(!empty($rule[2])) {
+                    $rule[2] = array_combine($rule[2], $matches);
+                }
+                if(isset($cache)) {
+                    $cache->set($pathinfo, json_encode($rule));
+                }
                 return $rule;
             }
         }
