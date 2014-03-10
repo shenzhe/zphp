@@ -57,6 +57,14 @@ class Route
             }
             if(!empty($matches)) {
                 unset($matches[0]);
+                foreach($matches as $index=>$val) {
+                    $rule[0] = str_replace("{{$index}}", $val, $rule[0], $count1);
+                    $rule[1] = str_replace("{{$index}}", $val, $rule[1], $count2);
+                    if(($count1 + $count2) > 0) {
+                        unset($matches[$index]);
+                    }
+
+                }
                 $rule[2] = array_combine($rule[2], $matches);
                 return $rule;
             }
