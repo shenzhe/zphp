@@ -58,7 +58,9 @@ class Route
             if(!empty($config)) {
                 $cache = ZCache::getInstance($config['adapter'], $config);
                 $result = $cache->get($pathinfo);
-                return json_decode($result, true);
+                if(!empty($result)) {
+                    return json_decode($result, true);
+                }
             }
         }
 
@@ -134,6 +136,9 @@ class Route
         }
         $routes = ZConfig::get('route', false);
         if(!empty($routes)) {
+            if(isset($routes['cache'])) {
+                unset($routes['cache']);
+            }
             foreach($routes as $type=>$rules) {
                 foreach($rules as $path=>$rule) {
                     if($rule[0] == str_replace('/', '\\', $ctrl) && $rule[1] == $method) {
