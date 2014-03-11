@@ -35,7 +35,7 @@ class Php implements ICache
         $timeOut = $timeOut ? (time() + $timeOut) : 0;
         return $this->_cache[$key] = array(
             $value, $timeOut
-        )
+        );
     }
 
     public function set($key, $value, $timeOut = 0)
@@ -43,7 +43,7 @@ class Php implements ICache
         $timeOut = $timeOut ? (time() + $timeOut) : 0;
         return $this->_cache[$key] = array(
             $value, $timeOut
-        )
+        );
     }
 
     public function get($key)
