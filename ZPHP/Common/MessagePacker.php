@@ -17,14 +17,14 @@ class MessagePacker
     {
         $this->data = $data;
         $this->offset = 0;
-        $this->dateLen = strlen($data);
+        $this->dataLen = strlen($data);
     }
 
     public function resetForUnPack($data)
     {
         $this->data = $data;
         $this->offset = 0;
-        $this->dateLen = strlen($data);
+        $this->dataLen = strlen($data);
     }
 
     public function resetForPack()
