@@ -33,7 +33,7 @@ class ZRpack implements IProtocol
         if (!empty($this->_cache)) {
             $this->_cache = ZCache::getInstance('Php');
         }
-        if (!empty($cacheData = $this->_cache->get($this->fd])) {
+        if (!empty($cacheData = $this->_cache->get($this->fd))) {
             $_data = $cacheData . $_data;
             $this->_cache->delete($this->fd)
         }
