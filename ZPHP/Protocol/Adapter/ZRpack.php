@@ -30,12 +30,12 @@ class ZRpack implements IProtocol
      */
     public function parse($_data)
     {
-        if (!empty($this->_cache)) {
+        if (empty($this->_cache)) {
             $this->_cache = ZCache::getInstance('Php');
         }
         if (!empty($cacheData = $this->_cache->get($this->fd))) {
             $_data = $cacheData . $_data;
-            $this->_cache->delete($this->fd)
+            $this->_cache->delete($this->fd);
         }
         if (empty($_data)) {
             return false;
@@ -113,7 +113,7 @@ class ZRpack implements IProtocol
         }
         $data = $this->_data;
         unset($data['cmd'], $data['fd']);
-        $data = gzencode(\json_encode());
+        $data = gzencode(\json_encode($data));
         $pack = new MessagePacker();
         $len = strlen($data);
         $pack->writeInt($len+12);
