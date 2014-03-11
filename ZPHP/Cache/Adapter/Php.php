@@ -61,7 +61,8 @@ class Php implements ICache
 
     public function delete($key)
     {
-        return unset($this->_cache[$key]);
+        unset($this->_cache[$key]);
+        return true;
     }
 
     public function increment($key, $step = 1)
