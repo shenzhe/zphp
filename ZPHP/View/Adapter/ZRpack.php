@@ -21,7 +21,7 @@ class ZRpack extends Base
         $cmd = $this->model['cmd'];
         unset($this->model['cmd']);
         $data = gzencode(\json_encode($this->model));
-        $pack = new MessagePacker();
+        $pack = new MessagePacker($data);
         $len = strlen($data);
         $pack->writeInt($len+12);
         $pack->writeInt($cmd);
