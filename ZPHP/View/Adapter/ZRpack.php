@@ -26,7 +26,7 @@ class Zpack extends Base
         $pack->writeInt($len+12);
         $pack->writeInt($cmd);
         $pack->writeString($data, $len);
-        echo = $pack->getData();
+        echo $pack->getData();
 
     }
 
