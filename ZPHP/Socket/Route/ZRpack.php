@@ -13,26 +13,27 @@ use ZPHP\Core;
 
 class ZRpack
 {
-    public function run($data)
+    public function run($data, $fd)
     {
         $server = Protocol\Factory::getInstance('ZRpack');
+        $server->setFd($fd);
         if(!$server->parse($data)) {
             return array();
         }
-        $results = array();
+        $result = '';
         \ob_start();
         Core\Route::route($server);
         $result = \ob_get_contents();
         \ob_end_clean();
-        $results[] = $result;
-        while ($server->parse($server->getFdBuffer())) {
+
+        while ($server->parse("")) {
             \ob_start();
             Core\Route::route($server);
-            $result = \ob_get_contents();
+            $result .= \ob_get_contents();
             \ob_end_clean();
-            $results[] = $result;
+            
         }
 
-        return $results;
+        return $result;
     }
 }

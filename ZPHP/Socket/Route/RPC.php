@@ -13,7 +13,7 @@ use ZPHP\Core\Config as ZConfig;
 class RPC
 {
     private $_rpc;
-    public function run($data)
+    public function run($data, $fd=null)
     {
         if ($this->_rpc === null) {
             $this->_rpc = new \Yar_Client(ZConfig::getField('socket', 'rpc_host'));

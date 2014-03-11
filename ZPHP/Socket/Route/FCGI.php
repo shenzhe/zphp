@@ -14,7 +14,7 @@ use ZPHP\Fcgi;
 class FCGI
 {
     private $_client;
-    public function run($data)
+    public function run($data, $fd=null)
     {
         if ($this->_client === null) {
             $this->_client = new Fcgi\Client(ZConfig::getField('socket', 'fcgi_host', '127.0.0.1'), ZConfig::getField('socket', 'fcgi_port', 9000));

@@ -42,7 +42,7 @@ class MessagePacker
 
     public function writeString($s, $len=null)
     {
-        $s = rtrim($s, "\0") . "\0";
+        //$s = rtrim($s, "\0") . "\0";
         if(null === $len) {
             $len = strlen($s);
         }

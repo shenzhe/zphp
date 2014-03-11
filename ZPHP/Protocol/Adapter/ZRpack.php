@@ -9,6 +9,7 @@ namespace ZPHP\Protocol\Adapter;
 use ZPHP\Core\Config;
 use ZPHP\Common\MessagePacker;
 use ZPHP\Protocol\IProtocol;
+use ZPHP\Cache\Factory as ZCache;
 
 class ZRpack implements IProtocol
 {
@@ -19,30 +20,34 @@ class ZRpack implements IProtocol
     private $fd;
     private $_data;
     private $_cmd;
+    private $_cache;
 
     /**
-     * client包格式： writeString(json_encode(array("pathinfo", array("参数列表") )));
-     * server包格式：包总长+数据(json_encode)
+     * 包格式： 包总长+命令id+数据
+     * 
      * @param $_data
      * @return bool
      */
     public function parse($_data)
     {
-        if (!empty($this->_buffer[$this->fd])) {
-            $_data = $this->_buffer . $_data;
+        if (!empty($this->_cache)) {
+            $this->_cache = ZCache::getInstance('Php');
+        }
+        if (!empty($cacheData = $this->_cache->get($this->fd])) {
+            $_data = $cacheData . $_data;
+            $this->_cache->delete($this->fd)
+        }
+        if (empty($_data)) {
+            return false;
         }
         $packData = new MessagePacker($_data);
         $packLen = $packData->readInt();
         $dataLen = \strlen($_data);
         if ($packLen > $dataLen) {
-            $this->_buffer[$this->fd] = $_data;
+            $this->_cache->set($this->fd, $_data);
             return false;
         } elseif ($packLen < $dataLen) {
-            $this->_buffer[$this->fd] = \substr($_data, $packLen, $dataLen - $packLen);
-        } else {
-            if (!empty($this->_buffer[$this->fd])) {
-                unset($this->_buffer[$this->fd]);
-            }
+            $this->_cache->set($this->fd,  \substr($_data, $packLen, $dataLen - $packLen));
         }
         $packData->resetOffset(4);
         $this->_cmd = $packData->readInt();
@@ -65,11 +70,6 @@ class ZRpack implements IProtocol
     public function setFd($fd)
     {
         $this->fd = $fd;
-    }
-
-    public function getFdBuffer($fd)
-    {
-        return !empty($this->_buffer[$fd]) ? $this->_buffer[$fd] : false
     }
 
     public function getCtrl()
@@ -111,7 +111,9 @@ class ZRpack implements IProtocol
         if (Config::get('server_mode') == 'Http') {
             \header("Content-Type: application/zrpack; charset=utf-8");
         }
-        $data = gzencode(\json_encode($this->_data));
+        $data = $this->_data;
+        unset($data['cmd'], $data['fd']);
+        $data = gzencode(\json_encode());
         $pack = new MessagePacker();
         $len = strlen($data);
         $pack->writeInt($len+12);

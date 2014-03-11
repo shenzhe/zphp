@@ -32,16 +32,17 @@ class Php implements ICache
         if (!empty(isset($this->_cache[$key]))) {
             throw new Exception("{$key} exitst");
         }
-
+        $timeOut = $timeOut ? (time() + $timeOut) : 0;
         return $this->_cache[$key] = array(
-            $value, (time() + $timeOut)
+            $value, $timeOut
         )
     }
 
     public function set($key, $value, $timeOut = 0)
     {
+        $timeOut = $timeOut ? (time() + $timeOut) : 0;
         return $this->_cache[$key] = array(
-            $value, (time() + $timeOut)
+            $value, $timeOut
         )
     }
 

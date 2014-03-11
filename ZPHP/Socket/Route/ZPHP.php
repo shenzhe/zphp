@@ -13,9 +13,10 @@ use ZPHP\Core;
 
 class ZPHP
 {
-    public function run($data)
+    public function run($data, $fd)
     {
         $server = Protocol\Factory::getInstance('Http');
+        $server->setFd($fd);
         $server->parse($data);
         \ob_start();
         Core\Route::route($server);
