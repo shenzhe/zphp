@@ -36,6 +36,10 @@ class Route
         }
         $class->_after();
         if ($exception !== null) {
+            if('Socket' == Config::get('server_mode', 'Http')) {
+                call_user_func(Config::getField('project', 'exception_handler', 'ZPHP\ZPHP::exceptionHandler'), $exception);
+                return;
+            }
             throw $exception;
         }
         if (null === $view) {

@@ -123,7 +123,8 @@ class ZPHP
         self::$libPath = Config::get('lib_path', self::$zPath . DS .'lib');
         $appPath = Config::get('app_path', self::$appPath);
         self::setAppPath($appPath);
-        \set_exception_handler(__CLASS__ . '::exceptionHandler');
+        $eh = Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler');
+        \set_exception_handler($eh);
         $timeZone = Config::get('time_zone', 'Asia/Shanghai');
         \date_default_timezone_set($timeZone);
         $serverMode = Config::get('server_mode', 'Http');
