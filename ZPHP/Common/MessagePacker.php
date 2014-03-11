@@ -11,17 +11,20 @@ class MessagePacker
 {
     public $data;
     private $offset;
+    private $dataLen;
 
     public function __construct($data = '')
     {
         $this->data = $data;
         $this->offset = 0;
+        $this->dateLen = strlen($data);
     }
 
     public function resetForUnPack($data)
     {
         $this->data = $data;
         $this->offset = 0;
+        $this->dateLen = strlen($data);
     }
 
     public function resetForPack()
@@ -147,5 +150,10 @@ class MessagePacker
         }
 
         return null;
+    }
+
+    public function isEnd() 
+    {
+        return $this->offset >= $this->dataLen;
     }
 }
