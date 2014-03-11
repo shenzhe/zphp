@@ -11,7 +11,7 @@ use ZPHP\View\Base,
     ZPHP\Core\Config,
     ZPHP\Common\MessagePacker;;
 
-class Zpack extends Base
+class ZRpack extends Base
 {
     public function display()
     {
