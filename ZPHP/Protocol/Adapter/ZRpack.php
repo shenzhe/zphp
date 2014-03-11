@@ -73,6 +73,11 @@ class ZRpack implements IProtocol
         $this->fd = $fd;
     }
 
+    public function getFd($fd)
+    {
+        return $this->fd;
+    }
+
     public function getCtrl()
     {
         return $this->_ctrl;
