@@ -18,8 +18,8 @@ class ZRpack extends Base
         if (Config::get('server_mode') == 'Http') {
             \header("Content-Type: application/zrpack; charset=utf-8");
         }
-        $cmd = $data['cmd'];
-        unset($data['cmd']);
+        $cmd = $this->model['cmd'];
+        unset($this->model['cmd']);
         $data = gzencode(\json_encode($this->model));
         $pack = new MessagePacker();
         $len = strlen($data);
