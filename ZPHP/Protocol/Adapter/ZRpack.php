@@ -55,7 +55,9 @@ class ZRpack implements IProtocol
         $pathinfo = Config::getField('cmdlist', $this->_cmd);
         $params = $packData->readString();
         $unpackData = \json_decode(gzdecode($params), true);
-        $this->_params = $unpackData;
+        if(!empty($unpackData) && is_array($unpackData)) {
+            $this->_params = $unpackData;
+        }
         $routeMap = ZRoute::match(Config::get('route', false), $pathinfo);
         if(is_array($routeMap)) {
             $this->_ctrl = $routeMap[0];

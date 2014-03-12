@@ -17,10 +17,10 @@ class ZRpack
     {
         $server = Protocol\Factory::getInstance('ZRpack');
         $server->setFd($fd);
-        if(!$server->parse($data)) {
-            return array();
-        }
         $result = '';
+        if(false === $server->parse($data)) {
+            return $result;
+        }
         \ob_start();
         Core\Route::route($server);
         $result = \ob_get_contents();
