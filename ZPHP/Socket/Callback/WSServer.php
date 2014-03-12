@@ -72,14 +72,10 @@ abstract class WSServer implements ICallback
 
         if(!isset($this->_ws[$fd])) {  //未连接
 
-            $params = func_get_args();
-            $_data = $params[3];
-            $serv = $params[0];
-            $fd = $params[1];
             $parser = new HttpParser();
             $buffer = !empty($this->_buff[$fd]['buff']) ? $this->_buff[$fd]['buff'] : "";
             $nparsed = !empty($this->_buff[$fd]['nparsed']) ? $this->_buff[$fd]['nparsed'] : 0;
-            $buffer .= $_data;
+            $buffer .= $data;
             $nparsed = $parser->execute($buffer, $nparsed);
             if($parser->hasError()) {
                 $serv->close($fd);
@@ -338,7 +334,7 @@ abstract class WSServer implements ICallback
                 {
                     $this->onSend($fd, $ws);
                     //数据已处理完
-                    unset($this->ws_list[$fd]);
+                    unset($this->_ws_list[$fd]);
                 }
 //                else
 //                {
@@ -360,9 +356,10 @@ abstract class WSServer implements ICallback
                 {
                     $this->close($fd, self::CLOSE_PROTOCOL_ERROR);
                 }
+                unset($this->_ws_list[$fd]);
                 break;
             case self::OPCODE_CONNECTION_CLOSE:
-                $length = &$frame['length'];
+                $length = &$ws['length'];
                 if(1    === $length || 0x7d < $length)
                 {
                     $this->close($fd, self::CLOSE_PROTOCOL_ERROR);
@@ -372,7 +369,7 @@ abstract class WSServer implements ICallback
                 $reason = null;
                 if(0 < $length)
                 {
-                    $message = &$frame['message'];
+                    $message = &$ws['message'];
                     $_code   = unpack('nc', substr($message, 0, 2));
                     $code    = &$_code['c'];
 
