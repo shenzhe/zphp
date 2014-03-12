@@ -69,6 +69,7 @@ abstract class WSServer implements ICallback
         $params = func_get_args();
         $fd = $params[1];
         $data = $params[3];
+        $serv = $params[0];
 
         if(!isset($this->_ws[$fd])) {  //未连接
 
