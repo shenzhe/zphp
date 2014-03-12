@@ -20,8 +20,15 @@ class Route
             throw new \Exception("ctrl error");
         }
         $class->setServer($server);
-        $before = $class->_before();
         $view = $exception = null;
+        
+        try {
+            $before = $class->_before();
+        } catch (\Exception $e) {
+            $exception = $e;
+            $before = false;
+        }        
+
         if ($before) {
             try {
                 $method = $server->getMethod();
