@@ -16,11 +16,16 @@ class Pdo
 
     public function __construct($config, $className = null, $dbName = null)
     {
+        $this->checkPing();
+    }
+
+    public function checkPing()
+    {
         if (empty($this->pdo)) {
             $this->config = $config;
             $this->pdo = $this->connect();
         } elseif (!empty($config['ping'])) {
-        	$this->ping();
+            $this->ping();
         }
         if (!empty($className)) {
             $this->className = $className;
@@ -296,5 +301,12 @@ class Pdo
             }
         }
         return $this->pdo;
+    }
+
+    public function close()
+    {
+        if(empty($this->config['pconnect'])) {
+            $this->pdo = null;
+        }
     }
 }
