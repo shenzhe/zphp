@@ -16,10 +16,10 @@ class Pdo
 
     public function __construct($config, $className = null, $dbName = null)
     {
-        $this->checkPing();
+        $this->checkPing($config, $className, $dbName);
     }
 
-    public function checkPing()
+    public function checkPing($config, $className = null, $dbName = null)
     {
         if (empty($this->pdo)) {
             $this->config = $config;
