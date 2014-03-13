@@ -32,7 +32,7 @@ class Pdo
     {
         if (empty($this->pdo)) {
             $this->pdo = $this->connect();
-        } elseif (!empty($config['ping'])) {
+        } elseif (!empty($this->config['ping'])) {
             $this->ping();
         }
     }
@@ -294,10 +294,15 @@ class Pdo
     {
         if(empty($this->pdo)) {
             $this->pdo = $this->connect();
-        } else {  
-            $status = $this->pdo->getAttribute(\PDO::ATTR_SERVER_INFO);
-            if('MySQL server has gone away' === $status) {
-                $this->pdo = $this->connect();
+        } else {
+            try {
+                $status = $this->pdo->getAttribute(\PDO::ATTR_SERVER_INFO);
+            } catch (\Exception $e) {
+                if ($e->getCode() == 'HY000') {
+                    $this->pdo = $this->connect();
+                } else {
+                    throw $e;
+                }
             }
         }
         return $this->pdo;
