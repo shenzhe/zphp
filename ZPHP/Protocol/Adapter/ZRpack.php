@@ -22,9 +22,10 @@ class ZRpack implements IProtocol
     private $_data;
     private $_cmd;
     private $_cache;
+    private $_rid = 0;
 
     /**
-     * 包格式： 包总长+命令id+数据
+     * 包格式： 包总长+命令id+请求id+数据
      * 
      * @param $_data
      * @return bool
@@ -53,6 +54,7 @@ class ZRpack implements IProtocol
         $packData->resetOffset(4);
         $this->_cmd = $packData->readInt();
         $pathinfo = Config::getField('cmdlist', $this->_cmd);
+        $this->_rid = $packData->readInt();
         $params = $packData->readString();
         $unpackData = \json_decode(gzdecode($params), true);
         if(!empty($unpackData) && is_array($unpackData)) {
@@ -99,6 +101,10 @@ class ZRpack implements IProtocol
     {
         return $this->_cmd;
     }
+    public function getRid()
+    {
+        return $this->_rid;
+    }
 
     public function display($model)
     {
@@ -110,6 +116,7 @@ class ZRpack implements IProtocol
         }
         $data['fd'] = $this->fd;
         $data['cmd'] = $this->_cmd;
+        $data['rid'] = $this->_rid;
         $this->_data = $data;
         echo $this->getData();
     }
@@ -124,8 +131,9 @@ class ZRpack implements IProtocol
         $data = gzencode(\json_encode($data));
         $pack = new MessagePacker();
         $len = strlen($data);
-        $pack->writeInt($len+12);
+        $pack->writeInt($len+16);
         $pack->writeInt($this->_cmd);
+        $pack->writeInt($this->_rid);
         $pack->writeString($data, $len);
         $data = $pack->getData();
         $this->_data = null;
