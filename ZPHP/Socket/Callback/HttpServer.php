@@ -23,6 +23,7 @@ abstract class HttpServer implements ICallback
     private $cache;
     private $_route;
     public $serv;
+    private $mimes = array();
     public function onStart()
     {
         echo 'server start, swoole version: ' . SWOOLE_VERSION . PHP_EOL;
@@ -120,6 +121,10 @@ abstract class HttpServer implements ICallback
         $config = ZConfig::getField('cache', 'locale');
         $this->cache = ZConn::getInstance($config['adapter'], $config);
         $this->serv = $params[0];
+        if(is_file(__DIR__.DS.'Mimes.php')) {
+            $mimes = include(__DIR__.DS.'Mimes.php');
+            $this->mimes = array_filp($mimes);
+        }
 
     }
 
@@ -140,5 +145,15 @@ abstract class HttpServer implements ICallback
     public function onFinish()
     {
         
+    }
+
+    public function getMime($filename)
+    {
+        $ext = strtolower(trim(substr(strrchr($filename, '.'), 1)));
+        if(isset($this->mimes[$ext])) {
+            return $this->mimes[$ext];
+        } else {
+            return 'text/html';
+        }
     }
 }
