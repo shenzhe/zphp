@@ -11,29 +11,25 @@ use ZPHP\Core\Config as ZConfig,
 class Yac implements IConn
 {
 
-    private $yac;
+    private $_cache = array();
 
     public function __construct($config)
     {
-        if(empty($this->yac)) {
-            $this->yac = ZCache::getInstance($config['adapter'], $config);
-            if(!$this->yac->enable()) {
-                throw new \Exception("Yac no enable");
-                
-            }
-        }
+        
     }
 
 
     public function addFd($fd, $uid = 0)
     {
-        return $this->yac->set($this->getKey($fd, 'fu'), $uid);
+        $key = $this->getKey($fd, 'fu');
+        return $this->_cache[$key] = $uid;
     }
 
 
     public function getUid($fd)
     {
-        return $this->yac->get($this->getKey($fd, 'fu'));
+        $key = $this->getKey($fd, 'fu');
+        return $this->getByKey($key);
     }
 
     public function add($uid, $fd)
@@ -48,7 +44,8 @@ class Yac implements IConn
             'types' => array('ALL' => 1)
         );
 
-        $this->yac->set($this->getKey($uid), \json_encode($data));
+        $key = $this->getKey($uid);
+        $this->_cache[$key] = $data;
         $this->upChannel($uid, $fd);
     }
 
@@ -56,8 +53,9 @@ class Yac implements IConn
     {
         $uinfo = $this->get($uid);
         $uinfo['types'][$channel] = 1;
-        if ($this->yac->upChannel($uid, $uinfo['fd'], $channel)) {
-            $this->yac->set($this->getKey($uid), json_encode($uinfo));
+        if ($this->upChannel($uid, $uinfo['fd'], $channel)) {
+            $key = $this->getKey($uid);
+            $this->_cache[$key] = $uinfo;
         }
     }
 
@@ -65,33 +63,21 @@ class Yac implements IConn
     {   
         $channelInfo = $this->getChannel($channel);
         $channelInfo[$uid] = $fd;
-        $this->yac->set($this->getKey($channel), json_encode(channelInfo));
-        return true;
-    }
-
-    private function delChannel($uid, $channel = 'ALL')
-    {   
-        $channelInfo = $this->getChannel($channel);
-        if(!empty($channelInfo[$uid])) {
-            unset($channelInfo[$uid]);
-             $this->yac->set($this->getKey($channel), json_encode(channelInfo));
-        }
+        $key = $this->getKey($channel);
+        $this->_cache[$key] = $channelInfo;
         return true;
     }
 
     public function getChannel($channel = 'ALL')
     {
-        return json_decode($this->yac->get($this->getKey($channel)), true);
+        $key = $this->getKey($channel);
+        return $this->getByKey($key);
     }
 
     public function get($uid)
     {
-        $data = $this->yac->get($this->getKey($uid));
-        if (empty($data)) {
-            return array();
-        }
-
-        return json_decode($data, true);
+        $key = $this->getKey($uid);
+        return $this->getByKey($key);
     }
 
     public function uphb($uid)
@@ -101,7 +87,9 @@ class Yac implements IConn
             return false;
         }
         $uinfo['time'] = time();
-        return $this->yac->set($this->getKey($uid), json_encode($uinfo));
+        $key = $this->getKey($uid);
+        $this->_cache[$key] = $uinfo;
+        return true;
     }
 
     public function heartbeat($uid, $ntime = 60)
@@ -124,35 +112,50 @@ class Yac implements IConn
             $uid = $this->getUid($fd);
         }
         if ($old) {
-            $this->yac->delete($this->getKey($fd, 'fu'));
+            $okey = $this->getKey($fd, 'fu');
+            if(isset($this->_cache[$okey])) {
+                unset($this->_cache[$okey]);
+            }
         }
-        $this->yac->delete($this->getKey($fd, 'buff'));
+        $this->delBuff($fd);
         if (empty($uid)) {
             return;
         }
         $uinfo = $this->get($uid);
         if (!empty($uinfo)) {
-            $this->yac->delete($this->getKey($uid));
+            $key = $this->getKey($uid);
+            if(isset($this->_cache[$key])) {
+                unset($this->_cache[$key]);
+            }
             foreach ($uinfo['types'] as $type => $val) {
-                $this->delChannel($uid, $type);
+                $key = $this->getKey($type);
+                if(!empty($this->_cache[$key][$uid])) {
+                    unset($this->_cache[$key][$uid]);   
+                }
             }
         }
-        return true;
     }
 
     public function getBuff($fd, $prev='buff')
     {
-        return $this->yac->get($this->getKey($fd, $prev));
+        $key = $this->getKey($fd, $prev);
+        return $this->getByKey($key);
     }
 
     public function setBuff($fd, $data, $prev='buff')
     {
-        return $this->yac->set($this->getKey($fd, $prev), $data);
+        $key = $this->getKey($fd, $prev);
+        $this->_cache[$key] = $data;
+        return true;
     }
 
     public function delBuff($fd, $prev='buff')
     {
-        return $this->yac->delete($this->getKey($fd, $prev));
+        $key = $this->getKey($fd, $prev);
+        if(isset($this->_cache[$key])) {
+            unset($this->_cache[$key]);
+        }
+        return true;
     }
 
     private function getKey($uid, $prefix = 'uf')
@@ -162,6 +165,15 @@ class Yac implements IConn
 
     public function clear()
     {
-        $this->yac->clear();
+        $this->_cache = array();
+    }
+
+    private function getByKey($key)
+    {
+        if(isset($this->_cache[$key])) {
+            return $this->_cache[$key];
+        }
+
+        return null;
     }
 }

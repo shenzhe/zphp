@@ -13,8 +13,7 @@ use ZPHP\Core\Config as ZConfig;
 use ZPHP\Protocol;
 use ZPHP\Core;
 use \HttpParser;
-use ZPHP\Cache\Factory as ZCache;
-
+use ZPHP\Conn\Factory as ZCache;
 
 
 abstract class HttpServer implements ICallback
