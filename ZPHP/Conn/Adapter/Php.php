@@ -6,9 +6,9 @@ use ZPHP\Core\Config as ZConfig,
     ZPHP\Cache\Factory as ZCache;
 
 /**
- *  yac共享内存
+ *  php内置数组
  */
-class Yac implements IConn
+class Php implements IConn
 {
 
     private $_cache = array();
