@@ -13,7 +13,7 @@ use ZPHP\Core\Config as ZConfig;
 use ZPHP\Protocol;
 use ZPHP\Core;
 use \HttpParser;
-use ZPHP\Conn\Factory as ZConn;
+use ZPHP\Cache\Factory as ZCache;
 
 
 
@@ -28,7 +28,7 @@ abstract class HttpServer implements ICallback
     {
         echo 'server start, swoole version: ' . SWOOLE_VERSION . PHP_EOL;
         $config = ZConfig::getField('cache', 'locale');
-        $this->cache = ZConn::getInstance($config['adapter'], $config);
+        $this->cache = ZCache::getInstance($config['adapter'], $config);
     }
 
     public function onConnect()
@@ -119,7 +119,7 @@ abstract class HttpServer implements ICallback
         //$worker_id = $params[1];
         //echo "WorkerStart[$worker_id]|pid=" . posix_getpid() . ".\n";
         $config = ZConfig::getField('cache', 'locale');
-        $this->cache = ZConn::getInstance($config['adapter'], $config);
+        $this->cache = ZCache::getInstance($config['adapter'], $config);
         $this->serv = $params[0];
         if(is_file(__DIR__.DS.'Mimes.php')) {
             $mimes = include(__DIR__.DS.'Mimes.php');
