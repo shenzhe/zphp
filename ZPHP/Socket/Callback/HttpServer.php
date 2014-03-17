@@ -123,7 +123,7 @@ abstract class HttpServer implements ICallback
         $this->serv = $params[0];
         if(is_file(__DIR__.DS.'Mimes.php')) {
             $mimes = include(__DIR__.DS.'Mimes.php');
-            $this->mimes = array_filp($mimes);
+            $this->mimes = array_flip($mimes);
         }
 
     }
