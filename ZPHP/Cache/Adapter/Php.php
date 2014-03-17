@@ -29,7 +29,7 @@ class Php implements ICache
 
     public function add($key, $value, $timeOut = 0)
     {
-        if (!empty(isset($this->_cache[$key]))) {
+        if (isset($this->_cache[$key])) {
             throw new Exception("{$key} exitst");
         }
         $timeOut = $timeOut ? (time() + $timeOut) : 0;
