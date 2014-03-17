@@ -65,6 +65,16 @@ class Http implements IProtocol
         return $this->_params;
     }
 
+    public function setFd($fd)
+    {
+        $this->_fd = $fd;
+    }
+
+    public function getFd()
+    {
+        return $this->_fd;
+    }
+
     public function setViewMode($mode)
     {
         $this->_view_mode = $mode;

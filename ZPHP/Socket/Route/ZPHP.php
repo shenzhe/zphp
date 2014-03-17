@@ -13,7 +13,7 @@ use ZPHP\Core;
 
 class ZPHP
 {
-    public function run($data, $fd)
+    public function run($data, $fd=null)
     {
         $server = Protocol\Factory::getInstance('Http');
         $server->setFd($fd);

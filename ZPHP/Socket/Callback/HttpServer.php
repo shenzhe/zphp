@@ -20,9 +20,9 @@ use ZPHP\Conn\Factory as ZConn;
 abstract class HttpServer implements ICallback
 {
 
-    private $_cache;
+    private $cache;
     private $_route;
-    private $serv;
+    public $serv;
     public function onStart()
     {
         echo 'server start, swoole version: ' . SWOOLE_VERSION . PHP_EOL;

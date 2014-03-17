@@ -33,4 +33,5 @@ interface IProtocol
 	 *  显示当前业务逻辑处理后的结果数据
 	 */
     public function display($model);
+
 }
