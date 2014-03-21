@@ -8,7 +8,7 @@ ZPHP是一个极轻的的，定位于后置SOA服务的框架，可开发独立�
 * godsoul [www.osfans.org(godsoul1986@gmail.com)
 * cooper [https://github.com/huanghua581](https://github.com/huanghua581)
 * yongchuan (charles) / charles.m1256@gmail.com
-* ruanxianhuo  https://github.com/asdf20122012 ruanxianhuo@corp.the9.com
+* ruanxianhuo  https://github.com/asdf20122012 ruanxianhuo@126.com
 
 
 ##特色
