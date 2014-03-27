@@ -27,6 +27,8 @@ class Http implements IProtocol
      */
     public function parse($data)
     {
+        $this->_ctrl = Config::getField('project', 'default_ctrl_name', 'main\\main');
+        $this->_method = Config::getField('project', 'default_method_name', 'main');
         $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {

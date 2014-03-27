@@ -27,6 +27,8 @@ class Zpack implements IProtocol
      */
     public function parse($_data)
     {
+        $this->_ctrl = Config::getField('project', 'default_ctrl_name', 'main\\main');
+        $this->_method = Config::getField('project', 'default_method_name', 'main');
         if (!empty($this->_buffer[$this->fd])) {
             $_data = $this->_buffer . $_data;
         }
@@ -64,7 +66,7 @@ class Zpack implements IProtocol
 
     public function getFdBuffer($fd)
     {
-        return !empty($this->_buffer[$fd]) ? $this->_buffer[$fd] : false
+        return !empty($this->_buffer[$fd]) ? $this->_buffer[$fd] : false;
     }
 
     public function getCtrl()

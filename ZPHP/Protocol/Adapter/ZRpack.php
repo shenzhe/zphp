@@ -32,10 +32,13 @@ class ZRpack implements IProtocol
      */
     public function parse($_data)
     {
+        $this->_ctrl = Config::getField('project', 'default_ctrl_name', 'main\\main');
+        $this->_method = Config::getField('project', 'default_method_name', 'main');
         if (empty($this->_cache)) {
             $this->_cache = ZCache::getInstance('Php');
         }
-        if (!empty($cacheData = $this->_cache->get($this->fd))) {
+        $cacheData = $this->_cache->get($this->fd);
+        if (!empty($cacheData)) {
             $_data = $cacheData . $_data;
             $this->_cache->delete($this->fd);
         }
