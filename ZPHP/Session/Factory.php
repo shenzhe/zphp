@@ -4,7 +4,8 @@
  * Date: 13-6-17
  */
 namespace ZPHP\Session;
-use ZPHP\Core\Factory as CFactory;
+use ZPHP\Core\Factory as CFactory,
+    ZPHP\Core\Config as ZConfig;
 
 class Factory
 {
@@ -29,7 +30,7 @@ class Factory
                     array($handler, 'gc')
                 );
             }
-            \session_name('ZPHPSESSID');
+            \session_name(ZConfig::getField('project', 'session_name', 'ZPHPSESSID'));
             \session_start();
             self::$isStart = true;
         }
