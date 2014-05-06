@@ -10,8 +10,14 @@ use ZPHP\Core\Factory as CFactory,
 class Factory
 {
     private static $isStart=false;
-    public static function getInstance($adapter = 'Redis', $config)
+    public static function getInstance($adapter = 'Redis', $config=null)
     {
+        if(empty($config)) {
+            $config = ZConfig::get('session');
+            if(!empty($config['adapter'])) {
+                $adapter = $config['adapter'];
+            }
+        }
         $className = __NAMESPACE__ . "\\Adapter\\{$adapter}";
         return CFactory::getInstance($className, $config);
     }

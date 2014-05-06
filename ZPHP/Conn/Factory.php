@@ -2,6 +2,8 @@
 
 namespace ZPHP\Conn;
 
+use ZPHP\Core\Factory as ZFactory,
+	ZPHP\Core\Config as ZConfig;
 /**
  * connect处理工厂
  *
@@ -9,15 +11,18 @@ namespace ZPHP\Conn;
 class Factory
 {
 
-    private static $cache = array();
 
-    public static function getInstance($type = "Redis", $config)
+    public static function getInstance($adapter = "Redis", $config = null)
     {
-        $cacheType = __NAMESPACE__.'\\Adapter\\' . $type;
-        if (!isset(self::$cache[$type])) {
-            self::$cache[$type] = new $cacheType($config);
-        }
-        return self::$cache[$type];
+    	if(empty($config)) {
+    		$config = ZConfig::get('conn');
+    		if(!empty($config['adapter'])) {
+    			$adapter = $config['adapter'];
+    		}
+    	}
+
+       	$className = __NAMESPACE__ . "\\Adapter\\{$adapter}";
+        return ZFactory::getInstance($className, $config);
     }
 
 }
