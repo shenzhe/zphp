@@ -25,6 +25,12 @@ class Factory
     public static function start($sessionType = '', $config = '')
     {
         if(false === self::$isStart) {
+            if(empty($config)) {
+                $config = ZConfig::get('session');
+                if(!empty($config['adapter'])) {
+                    $sessionType = $config['adapter'];
+                }
+            }
             if (!empty($sessionType)) {
                 $handler = self::getInstance($sessionType, $config);
                 \session_set_save_handler(
