@@ -29,7 +29,7 @@ class Mongo
             if(!empty($config['options'])) {
                 $options = $config['options'];
             }
-            $this->mongo = new Mongo($config['dsn'], $options);
+            $this->mongo = new \Mongo($config['dsn'], $options);
             
         }
     }
