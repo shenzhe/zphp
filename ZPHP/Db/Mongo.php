@@ -120,7 +120,7 @@ class Mongo
     public function find($query, $sort = array(), $skip = 0, $limit = 0, $fields = array())
     {
         $cursor = $this->collection->find($query, $fields);
-        if(empty($cursor)) {
+        if(empty($cursor->count())) {
             return array();
         }
         if ($sort) $cursor->sort($sort);
