@@ -137,8 +137,20 @@ class Route
         $routes = ZConfig::get('route', false);
         if(!empty($routes)) {
             if(isset($routes['cache'])) {
+                if(!empty($route['cache'])) {
+                    $config = ZConfig::getField('cache', 'locale', array());
+                    if(!empty($config)) {
+                        $cache = ZCache::getInstance($config['adapter'], $config);
+                        $cacheKey = $this->getKey($ctrl, $method, $params);
+                        $result = $cache->get($cacheKey);
+                        if(!empty($result)) {
+                            return $result;
+                        }
+                    }
+                }
                 unset($routes['cache']);
             }
+            $result = false;
             foreach($routes as $type=>$rules) {
                 foreach($rules as $path=>$rule) {
                     if($rule[0] == str_replace('/', '\\', $ctrl)) {
@@ -147,9 +159,10 @@ class Route
                         }
                         if('static' == $type) {
                             if(empty($params)) {
-                                return $appUrl.$path;  
+                                $result =  $appUrl.$path;  
+                            } else {
+                                $result =  $appUrl.$path.'?'.http_build_query($params);
                             }
-                            return $appUrl.$path.'?'.http_build_query($params);
                         } else {
                             $realPath = $rule[3];
                             $realPath = str_replace(array('{c}', '{m}'), array($ctrl, $method), $realPath);
@@ -162,9 +175,16 @@ class Route
                                 }
                             }
                             if(empty($params)){
-                                return $appUrl.$realPath;
+                                $result =  $appUrl.$realPath;
+                            } else {
+                                $result = $appUrl.$realPath.'?'.http_build_query($params);
                             }
-                            return $appUrl.$realPath.'?'.http_build_query($params);
+                        }
+                        if($result) {
+                            if(isset($cacheKey)) {
+                                $cache->set($cacheKey, $result);
+                            }
+                            return $result;
                         }
                     }
                 }
@@ -174,5 +194,9 @@ class Route
             return $appUrl."?{$ctrlName}={$ctrl}&{$methodName}={$method}";
         }
         return $appUrl."?{$ctrlName}={$ctrl}&{$methodName}={$method}&".http_build_query($params);
+    }
+
+    private function getKey() {
+        return ZConfig::getField('project_name')."_route_".json_encode(func_get_args())；
     }
 }
