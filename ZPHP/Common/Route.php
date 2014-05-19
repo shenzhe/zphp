@@ -141,7 +141,10 @@ class Route
             }
             foreach($routes as $type=>$rules) {
                 foreach($rules as $path=>$rule) {
-                    if($rule[0] == str_replace('/', '\\', $ctrl) && $rule[1] == $method) {
+                    if($rule[0] == str_replace('/', '\\', $ctrl)) {
+                        if($rule[1][0] != '{' && $rule[1] != $method) {
+                            break;
+                        }
                         if('static' == $type) {
                             if(empty($params)) {
                                 return $appUrl.$path;  
