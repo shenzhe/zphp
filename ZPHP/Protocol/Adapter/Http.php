@@ -50,7 +50,7 @@ class Http implements IProtocol
             }
         }
         $this->_params = $data;
-        $this->_tpl_file = str_replace('\\', DS, $this->_ctrl . DS . $this->_method . '.php';
+        $this->_tpl_file = str_replace('\\', DS, $this->_ctrl) . DS . $this->_method . '.php';
         return true;
     }
 
