@@ -25,7 +25,7 @@ class Php extends Base
         $tplPath = ZPHP\Core\Config::getField('project', 'tpl_path', ZPHP\ZPHP::getRootPath() . DS  . 'template' . DS . 'default'. DS);
         $fileName = $tplPath . $this->tplFile;
         if (!\is_file($fileName)) {
-            throw new \Exception("no file {$fileName}");
+            throw new \Exception("no file {$this->tplFile}");
         }
         if (!empty($this->model)) {
             \extract($this->model);

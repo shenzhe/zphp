@@ -11,6 +11,7 @@ use ZPHP\View;
 use ZPHP\Core\Config;
 use ZPHP\Protocol\IProtocol;
 use ZPHP\Common\Route as ZRoute;
+use ZPHP\Common\Utils as ZUtils;
 
 class Http implements IProtocol
 {
@@ -49,6 +50,7 @@ class Http implements IProtocol
             }
         }
         $this->_params = $data;
+        $this->_tpl_file = $this->_ctrl . DS . $this->_method . '.php'
         return true;
     }
 
@@ -104,7 +106,11 @@ class Http implements IProtocol
         }
 
         if(empty($viewMode)) {
-            return $model;
+            if (ZUtils::isAjax()) {
+                $viewMode = 'Json';
+            } else {
+                $viewMode = 'Php';
+            }
         }
 
         $view = View\Factory::getInstance($viewMode);
