@@ -149,7 +149,7 @@ class Route
                             return $appUrl.$path.'?'.http_build_query($params);
                         } else {
                             $realPath = $rule[3];
-                            $realPath = array_replace(array('{c}', '{m}'), array($ctrl, $method), $realPath);
+                            $realPath = str_replace(array('{c}', '{m}'), array($ctrl, $method), $realPath);
                             if(!empty($rule[2])) {
                                 foreach($rule[2] as $key) {
                                     if(isset($params[$key])) {
