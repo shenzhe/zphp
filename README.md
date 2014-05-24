@@ -22,7 +22,7 @@ ZPHP是一个极轻的的，定位于后置SOA服务的框架，可开发独立�
     7) 队列支持  (beanstalk, redis)
     8) 实时排行榜支持 (redis)
     9) 多进程支持 (pcntl, 类ph-fpm的进程管理 (处理一定的请求之后自动kill，然后master会fork一个新进程))
-    10) 多线程支持
+    10) 多线程支持 (no swoole, need pthreads extension)
     11) composer 安装
 
 ##demo
