@@ -2,7 +2,7 @@
 /**
  * User: shenzhe
  * Date: 2014/2/7
- * 
+ *
  * 内置route
  */
 
@@ -17,23 +17,14 @@ class ZRpack
     {
         $server = Protocol\Factory::getInstance('ZRpack');
         $server->setFd($fd);
-        $result = '';
+        $result = array();
         if(false === $server->parse($data)) {
             return $result;
         }
-        \ob_start();
-        Core\Route::route($server);
-        $result = \ob_get_contents();
-        \ob_end_clean();
-
+        $result[] = Core\Route::route($server);
         while ($server->parse("")) {
-            \ob_start();
-            Core\Route::route($server);
-            $result .= \ob_get_contents();
-            \ob_end_clean();
-            
+            $result[] = Core\Route::route($server);
         }
-
         return $result;
     }
 }

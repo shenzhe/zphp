@@ -17,7 +17,6 @@ class ZRpack implements IProtocol
     private $_ctrl = 'main\\main';
     private $_method = 'main';
     private $_params = array();
-    private $_buffer = array();
     private $fd;
     private $_data;
     private $_cmd;
@@ -121,7 +120,7 @@ class ZRpack implements IProtocol
         $data['cmd'] = $this->_cmd;
         $data['rid'] = $this->_rid;
         $this->_data = $data;
-        echo $this->getData();
+        return array($data, $this->getData());
     }
 
     public function getData()
@@ -141,7 +140,7 @@ class ZRpack implements IProtocol
         $data = $pack->getData();
         $this->_data = null;
         $this->_cmd = null;
-        return $pack->getData();
+        return $data;
     }
 
     public function sendMaster(array $_params=null)

@@ -51,6 +51,10 @@ abstract class WSServer implements ICallback
     private $_ws_list = array();
     public $serv;
 
+    abstract public function wsOnOpen($fd);
+    abstract public function wsOnMessage($fd, $ws);
+    abstract public function wsOnClose($fd);
+
     public function onStart()
     {
         $this->log('server start, swoole version: ' . SWOOLE_VERSION);
@@ -89,6 +93,7 @@ abstract class WSServer implements ICallback
                     $sendData  = join("\r\n", $response)."\r\n";
                     $this->log($sendData); 
                     $serv->send($fd, $sendData);
+                    $this->wsOnOpen($fd);
                 } else {
                     $serv->close($fd);
                 }
@@ -333,7 +338,7 @@ abstract class WSServer implements ICallback
             case self::OPCODE_TEXT_FRAME:
                 //if(0x1 === $ws['fin'])
                 {
-                    $this->onSend($fd, $ws);
+                    $this->wsOnMessage($fd, $ws);
                     //数据已处理完
                     unset($this->_ws_list[$fd]);
                 }
@@ -396,8 +401,6 @@ abstract class WSServer implements ICallback
                 $this->close($fd, self::CLOSE_PROTOCOL_ERROR);
         }
     }
-
-    abstract public function onSend($fd, $ws); 
     
     private function doHandshake($data)
     {
@@ -443,6 +446,7 @@ abstract class WSServer implements ICallback
         $this->_clearBuff($fd);
         unset($this->_ws[$fd]);
         unset($this->_ws_list[$fd]);
+        $this->wsOnClose($fd);
     }
 
     public function onShutdown()
