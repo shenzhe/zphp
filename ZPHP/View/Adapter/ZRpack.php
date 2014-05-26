@@ -31,7 +31,6 @@ class ZRpack extends Base
                 $jsonData, $pack->getData()
             );
         } 
-
     }
 
 }

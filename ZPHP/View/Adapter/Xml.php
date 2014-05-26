@@ -39,7 +39,12 @@ class Xml extends Base
     {
         if (Config::get('server_mode') == 'Http') {
             \header("Content-Type:text/xml; charset=utf-8");
+            echo $this->xmlEncode();
+            return null;
         }
-        echo $this->xmlEncode();
+
+        return $this->xmlEncode();
+
+        
     }
 }

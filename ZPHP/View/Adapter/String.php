@@ -16,11 +16,16 @@ class String extends Base
     {
         if (Config::get('server_mode') == 'Http') {
             \header("Content-Type: text/plain; charset=utf-8");
+            if (\is_string($this->model)) {
+                echo $this->model;
+            } else {
+                echo json_encode($this->model);
+            }
+
+            return null;
         }
-        if (\is_string($this->model)) {
-            echo $this->model;
-        } else {
-            print_r($this->model, true);
-        }
+
+        return $this->model;
+        
     }
 }

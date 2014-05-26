@@ -16,7 +16,10 @@ class Amf extends Base
     {
         if (Config::get('server_mode') == 'Http') {
             \header("Content-Type: application/amf; charset=utf-8");
+            echo \amf3_encode($this->model);
+        } else {
+        	return \amf3_encode($this->model);
         }
-        echo \amf3_encode($this->model);
+        
     }
 }

@@ -30,7 +30,15 @@ class Php extends Base
         if (!empty($this->model)) {
             \extract($this->model);
         }
-        include "{$fileName}";
+        if (Config::get('server_mode') == 'Http') {
+            include "{$fileName}";
+        } else {
+            \ob_start();
+            include "{$fileName}";
+            $content = ob_get_contents();
+            \ob_end_clean();
+            return $content;
+        }
     }
 
 
