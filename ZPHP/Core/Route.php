@@ -44,8 +44,7 @@ class Route
         $class->_after();
         if ($exception !== null) {
             if('Socket' == Config::get('server_mode', 'Http')) {
-                call_user_func(Config::getField('project', 'exception_handler', 'ZPHP\ZPHP::exceptionHandler'), $exception);
-                return;
+                return call_user_func(Config::getField('project', 'exception_handler', 'ZPHP\ZPHP::exceptionHandler'), $exception);
             }
             throw $exception;
         }

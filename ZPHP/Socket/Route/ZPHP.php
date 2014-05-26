@@ -18,11 +18,7 @@ class ZPHP
         $server = Protocol\Factory::getInstance('Http');
         $server->setFd($fd);
         $server->parse($data);
-        \ob_start();
-        Core\Route::route($server);
-        $result = \ob_get_contents();
-        \ob_end_clean();
-        return $result;
+        return Core\Route::route($server);
     }
 
 }

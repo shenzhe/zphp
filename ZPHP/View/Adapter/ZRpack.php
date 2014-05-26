@@ -27,11 +27,10 @@ class ZRpack extends Base
             \header("Content-Type: application/zrpack; charset=utf-8");
             echo $pack->getData();
         } else {
-            echo json_encode(array(
+            return array(
                 $jsonData, $pack->getData()
-            ));
-        }
-        
+            );
+        } 
 
     }
 
