@@ -24,7 +24,7 @@ abstract class HttpServer implements ICallback
     public $serv;
     private $mimes = array();
 
-    abstract public function onSend();
+    abstract public function onSend($fd, $data);
 
     public function onStart()
     {
