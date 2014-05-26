@@ -33,11 +33,7 @@ class Php extends Base
         if (Config::get('server_mode') == 'Http') {
             include "{$fileName}";
         } else {
-            \ob_start();
-            include "{$fileName}";
-            $content = ob_get_contents();
-            \ob_end_clean();
-            return $content;
+            return include "{$fileName}";
         }
     }
 
