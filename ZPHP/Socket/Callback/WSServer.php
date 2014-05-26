@@ -46,9 +46,9 @@ abstract class WSServer implements ICallback
     const GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 
     public $_ws = array();
-    private $_route;
     private $_buff = array();
     private $_ws_list = array();
+    private $max_frame_size = 2097152;
     public $serv;
 
     abstract public function wsOnOpen($fd);
@@ -221,6 +221,13 @@ abstract class WSServer implements ICallback
                 $this->log('Message is too long.');
                 return false;
             }
+        }
+
+        //超过最大允许的长度了
+        if ($length > $this->max_frame_size)
+        {
+            $this->log('Message is too long.');
+            return false;
         }
 
         if(0x0 !== $ws['mask'])
