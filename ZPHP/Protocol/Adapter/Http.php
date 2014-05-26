@@ -126,7 +126,7 @@ class Http implements IProtocol
             }
         }
         $view->setModel($model);
-        $view->display();
+        return $view->display();
 
     }
 }
