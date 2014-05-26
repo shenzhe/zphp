@@ -11,6 +11,7 @@ use ZPHP\Common\MessagePacker;
 use ZPHP\Protocol\IProtocol;
 use ZPHP\Cache\Factory as ZCache;
 use ZPHP\Common\Route as ZRoute;
+use ZPHP\View;
 
 class ZRpack implements IProtocol
 {
@@ -119,8 +120,16 @@ class ZRpack implements IProtocol
         $data['fd'] = $this->fd;
         $data['cmd'] = $this->_cmd;
         $data['rid'] = $this->_rid;
-        $this->_data = $data;
-        return array($data, $this->getData());
+        if(empty($data['_view_mode'])) {
+            $viewMode = 'ZRpack';
+        } else {
+            $viewMode = $data['_view_mode'];
+        }
+        $view = View\Factory::getInstance($viewMode);
+        $view->setModel($data);
+        return $view->display();
+        //$this->_data = $data;
+        //return array($data, $this->getData());
     }
 
     public function getData()

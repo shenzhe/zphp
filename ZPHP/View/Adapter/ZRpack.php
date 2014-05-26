@@ -15,21 +15,23 @@ class ZRpack extends Base
 {
     public function display()
     {
-        if (Config::get('server_mode') == 'Http') {
-            \header("Content-Type: application/zrpack; charset=utf-8");
-        }
-        $cmd = $this->model['cmd'];
-        unset($this->model['cmd']);
-        $rid = $this->model['rid'];
-        unset($this->model['rid']);
-        $data = gzencode(\json_encode($this->model));
+        $jsonData = \json_encode($this->model);
+        $data = gzencode($jsonData);
         $pack = new MessagePacker();
         $len = strlen($data);
         $pack->writeInt($len+16);
-        $pack->writeInt($cmd);
-        $pack->writeInt($rid);
+        $pack->writeInt($this->model['cmd']);
+        $pack->writeInt($this->model['rid']);
         $pack->writeString($data, $len);
-        echo $pack->getData();
+        if (Config::get('server_mode') == 'Http') {
+            \header("Content-Type: application/zrpack; charset=utf-8");
+            echo $pack->getData();
+        } else {
+            echo json_encode(array(
+                $jsonData, $pack->getData()
+            ));
+        }
+        
 
     }
 

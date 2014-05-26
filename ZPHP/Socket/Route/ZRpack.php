@@ -17,14 +17,30 @@ class ZRpack
     {
         $server = Protocol\Factory::getInstance('ZRpack');
         $server->setFd($fd);
-        $result = array();
+        $results = array();
         if(false === $server->parse($data)) {
-            return $result;
+            return $results;
         }
-        $result[] = Core\Route::route($server);
+        \ob_start();
+        Core\Route::route($server);
+        $result = \ob_get_contents();
+        \ob_end_clean();
+        if(!empty($result)) {
+            $results[] = json_decode($result, true);
+        } else {
+            $results[] = null;
+        }
         while ($server->parse("")) {
-            $result[] = Core\Route::route($server);
+            \ob_start();
+            Core\Route::route($server);
+            $result = \ob_get_contents();
+            \ob_end_clean();
+            if(!empty($result)) {
+                $results[] = json_decode($result, true);
+            } else {
+                $results[] = null;
+            }
         }
-        return $result;
+        return $results;
     }
 }
