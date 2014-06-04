@@ -53,6 +53,10 @@ class Route
             return $route['static'][$pathinfo];
         }
 
+        if(isset($route['ext'])) {
+            $pathinfo = str_replace($route['ext'], '', $pathinfo);
+        }
+
         if (!empty($route['cache'])) {
             $config = ZConfig::getField('cache', 'locale', array());
             if (!empty($config)) {
@@ -150,6 +154,11 @@ class Route
                 }
                 unset($routes['cache']);
             }
+            $ext = '';
+            if(!empty($routes['ext'])) {
+                $ext = $routes['ext'];
+                unset($routes['ext']);
+            }
             $result = false;
             foreach ($routes as $type => $rules) {
                 foreach ($rules as $path => $rule) {
@@ -175,9 +184,9 @@ class Route
                                 }
                             }
                             if (empty($params)) {
-                                $result = $appUrl . $realPath;
+                                $result = $appUrl . $realPath. $ext;
                             } else {
-                                $result = $appUrl . $realPath . '?' . http_build_query($params);
+                                $result = $appUrl . $realPath . $ext . '?' . http_build_query($params);
                             }
                         }
                         if ($result) {
