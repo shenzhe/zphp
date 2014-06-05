@@ -106,7 +106,7 @@ abstract class WSServer implements ICallback
             do
             {
                 //新的数据帧
-                if(empty($this->_ws_list[$fd]))
+                if(!isset($this->_ws_list[$fd]))
                 {
                     $ws = $this->parseFrame($data);
                     //var_dump($ws);
@@ -121,10 +121,10 @@ abstract class WSServer implements ICallback
                     {
                         $this->opcodeSwitch($fd, $ws);
                         //还有数据
-                        if(strlen($data) > 0)
-                        {
-                            continue;
-                        }
+                        // if(strlen($data) > 0)
+                        // {
+                        //     continue;
+                        // }
                     }
                     //未就绪，先加入到ws_list中
                     else
@@ -139,31 +139,44 @@ abstract class WSServer implements ICallback
                     $ws['buffer'] .= $data;
                     $message_len =  strlen($ws['buffer']);
                     //$this->log("wait data.buffer_len=$message_len|require_len={$ws['length']}", 'INFO');
-                    if($ws['length'] == $message_len)
+                    //数据已完整，进行处理
+                    if ($message_len >= $ws['length'])
                     {
-                        //需要使用MaskN来解析
+                        $ws['buffer'] = substr($ws['buffer'], 0, $ws['length']);
                         $ws['message'] = $this->parseMessage($ws);
                         $this->opcodeSwitch($fd, $ws);
+                        $data = substr($ws['buffer'], $ws['length']);
                     }
-                    //数据过多，可能带有另外一帧的数据
-                    else if($ws['length'] < $message_len)
+                    //数据不足，跳出循环，继续等待数据
+                    else
                     {
-                        //将buffer保存起来
-                        $buffer = $ws['buffer'];
-                        //分离本帧的数据
-                        $ws['buffer'] = substr($buffer, 0, $ws['length']);
-                        //这一帧的数据已完结
-                        $ws['message'] = $this->parseMessage($ws);
-                        //$data是下一帧的数据了
-                        $data = substr($buffer, $ws['length']);
-                        $this->opcodeSwitch($fd, $ws);
-                        //继续解析帧
-                        continue;
+                        break;
                     }
-                    //等待数据
+                    // if($ws['length'] == $message_len)
+                    // {
+                    //     //需要使用MaskN来解析
+                    //     $ws['message'] = $this->parseMessage($ws);
+                    //     $this->opcodeSwitch($fd, $ws);
+                    // }
+                    // //数据过多，可能带有另外一帧的数据
+                    // else if($ws['length'] < $message_len)
+                    // {
+                    //     //将buffer保存起来
+                    //     $buffer = $ws['buffer'];
+                    //     //分离本帧的数据
+                    //     $ws['buffer'] = substr($buffer, 0, $ws['length']);
+                    //     //这一帧的数据已完结
+                    //     $ws['message'] = $this->parseMessage($ws);
+                    //     //$data是下一帧的数据了
+                    //     $data = substr($buffer, $ws['length']);
+                    //     $this->opcodeSwitch($fd, $ws);
+                    //     //继续解析帧
+                    //     continue;
+                    // }
+                    // //等待数据
                 }
                 break;
-            } while(true);
+            } while(strlen($data) > 0 and isset($this->_ws_list[$fd]));;
         }
     }
 
@@ -171,8 +184,8 @@ abstract class WSServer implements ICallback
     {
         //websocket
         $ws  = array();
+        $ws['finish'] = false;
         $data_offset = 0;
-        $data_length = strlen($data);
 
         //fin:1 rsv1:1 rsv2:1 rsv3:1 opcode:4
         $handle        = ord($data[$data_offset]);
@@ -199,6 +212,7 @@ abstract class WSServer implements ICallback
         if(0 === $length)
         {
             $ws['message'] = '';
+            $data = substr($data, $data_offset + 4);
             return $ws;
         }
         //126 short
@@ -216,18 +230,11 @@ abstract class WSServer implements ICallback
             $handle = unpack('N*l', substr($data, $data_offset, 8));
             $data_offset += 8;
             $length = $handle['l2'];
-            if($length > 0x7fffffffffffffff)
+            if($length > $this->max_frame_size)
             {
                 $this->log('Message is too long.');
                 return false;
             }
-        }
-
-        //超过最大允许的长度了
-        if ($length > $this->max_frame_size)
-        {
-            $this->log('Message is too long.');
-            return false;
         }
 
         if(0x0 !== $ws['mask'])
@@ -237,29 +244,23 @@ abstract class WSServer implements ICallback
             $data_offset += 4;
         }
 
-        $frame_length = $data_offset + $length;
-        //设置buffer区
-        $ws['buffer'] = substr($data, $data_offset, $length);
-        //帧长度等于$data长度，说明这份数据是单独的一帧
-        if ($frame_length == $data_length)
-        {
-            $data = "";
-        }
-        //帧长度小于数据长度，可能还有下一帧
-        else if($frame_length < $data_length)
-        {
-            $data = substr($data, $frame_length);
-        }
-        //需要继续等待数据
-        else
-        {
+        //把头去掉
+        $data = substr($data, $data_offset);
+        //完整的一个数据帧
+        if (strlen($data) >= $length) {
+            $ws['finish'] = true;
+            $ws['buffer'] =  substr($data, 0, $length);
+            $ws['message'] = $this->parseMessage($ws);
+            //截取数据
+            $data = substr($data, $length);
+            return $ws;
+        } else { //需要继续等待数据 
             $ws['finish'] = false;
-            $data = "";
+            $ws['buffer'] = $buffer;
+            $buffer = "";
             return $ws;
         }
-        $ws['finish'] = true;
-        $ws['message'] = $this->parseMessage($ws);
-        return $ws;
+
     }
 
     private function parseMessage(&$ws)
@@ -347,7 +348,7 @@ abstract class WSServer implements ICallback
                 {
                     $this->wsOnMessage($fd, $ws);
                     //数据已处理完
-                    unset($this->_ws_list[$fd]);
+                    //unset($this->_ws_list[$fd]);
                 }
 //                else
 //                {
@@ -369,7 +370,7 @@ abstract class WSServer implements ICallback
                 {
                     $this->close($fd, self::CLOSE_PROTOCOL_ERROR);
                 }
-                unset($this->_ws_list[$fd]);
+                //unset($this->_ws_list[$fd]);
                 break;
             case self::OPCODE_CONNECTION_CLOSE:
                 $length = &$ws['length'];
@@ -407,6 +408,7 @@ abstract class WSServer implements ICallback
             default:
                 $this->close($fd, self::CLOSE_PROTOCOL_ERROR);
         }
+        unset($this->_ws_list[$fd]);
     }
     
     private function doHandshake($data)
