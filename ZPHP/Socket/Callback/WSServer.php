@@ -453,9 +453,9 @@ abstract class WSServer implements ICallback
         $params = func_get_args();
         $fd = $params[1];   
         $this->_clearBuff($fd);
+        $this->wsOnClose($fd);
         unset($this->_ws[$fd]);
         unset($this->_ws_list[$fd]);
-        $this->wsOnClose($fd);
     }
 
     public function onShutdown()
