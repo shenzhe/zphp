@@ -51,7 +51,7 @@ abstract class WSServer implements ICallback
     private $max_frame_size = 2097152;
     public $serv;
 
-    abstract public function wsOnOpen($fd);
+    abstract public function wsOnOpen($fd, $reponse);
     abstract public function wsOnMessage($fd, $ws);
     abstract public function wsOnClose($fd);
 
@@ -91,9 +91,8 @@ abstract class WSServer implements ICallback
                 if($response) {
                     $this->_ws[$fd]['time'] = time();
                     $sendData  = join("\r\n", $response)."\r\n";
-                    $this->log($sendData); 
-                    $serv->send($fd, $sendData);
-                    $this->wsOnOpen($fd);
+                    $this->log($sendData);
+                    $this->wsOnOpen($fd, $sendData);
                 } else {
                     $serv->close($fd);
                 }
