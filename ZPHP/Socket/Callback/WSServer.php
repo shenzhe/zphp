@@ -46,7 +46,7 @@ abstract class WSServer implements ICallback
     const GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
     private $max_frame_size = 2097152;
     public  $serv;
-    private $conn;
+    public $conn;
 
     abstract public function wsOnOpen($fd, $reponse);
     abstract public function wsOnMessage($fd, $ws);
@@ -480,7 +480,9 @@ abstract class WSServer implements ICallback
         $params = func_get_args();
         $fd = $params[1]; 
         $this->wsOnClose($fd);
-        $this->conn->clear();
+        if($this->conn) {
+            $this->conn->clear();
+        }
         unset($this->_ws_list[$fd]);
     }
 
