@@ -78,7 +78,7 @@ abstract class WSServer implements ICallback
         return $info;
     }
 
-    public function addConnInfo($fd, $data)
+    public function addConnInfo($fd, array $data)
     {
         $info = $this->getConnInfo($fd);
         foreach($data as $key=>$val) {
