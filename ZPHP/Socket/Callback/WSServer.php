@@ -104,10 +104,9 @@ abstract class WSServer implements ICallback
             if(empty($buffer)) {
                 $buffer = "";
             }
-            $nparsed = $this->getBuff($fd, 'nparsed') {
-                if(empty($nparsed)) {
-                    $nparsed = 0;
-                }
+            $nparsed = $this->getBuff($fd, 'nparsed'); 
+            if(empty($nparsed)) {
+                $nparsed = 0;
             }
             $buffer .= $data;
             $nparsed = $parser->execute($buffer, $nparsed);
