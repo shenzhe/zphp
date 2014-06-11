@@ -44,12 +44,9 @@ abstract class WSServer implements ICallback
      * @const string
      */
     const GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
-
-    public $_ws = array();
-    private $_buff = array();
-    private $_ws_list = array();
     private $max_frame_size = 2097152;
-    public $serv;
+    public  $serv;
+    private $conn;
 
     abstract public function wsOnOpen($fd, $reponse);
     abstract public function wsOnMessage($fd, $ws);
@@ -65,6 +62,31 @@ abstract class WSServer implements ICallback
 
     }
 
+    public function getConnection()
+    {
+        if(empty($this->conn)) {
+            $this->conn = ZConn::getInstance();
+        }
+    }
+
+    public function getConnInfo($fd)
+    {
+        $info =  $this->conn->getBuff($fd, 'info');
+        if(empty($info)) {
+            $info = array();
+        }
+        return $info;
+    }
+
+    public function addConnInfo($fd, $data)
+    {
+        $info = $this->getConnInfo($fd);
+        foreach($data as $key=>$val) {
+            $info[$key] = $val;
+        }
+        $this->conn->setBuff($fd, $info, 'info');
+    }
+
     /**
      *  
      */
@@ -75,21 +97,28 @@ abstract class WSServer implements ICallback
         $data = $params[3];
         $serv = $params[0];
 
-        if(!isset($this->_ws[$fd])) {  //未连接
+        if(empty($this->getConnInfo($fd))) {  //未连接
 
             $parser = new HttpParser();
-            $buffer = !empty($this->_buff[$fd]['buff']) ? $this->_buff[$fd]['buff'] : "";
-            $nparsed = !empty($this->_buff[$fd]['nparsed']) ? $this->_buff[$fd]['nparsed'] : 0;
+            $buffer = $this->getBuff($fd);
+            if(empty($buffer)) {
+                $buffer = "";
+            }
+            $nparsed = $this->getBuff($fd, 'nparsed') {
+                if(empty($nparsed)) {
+                    $nparsed = 0;
+                }
+            }
             $buffer .= $data;
             $nparsed = $parser->execute($buffer, $nparsed);
             if($parser->hasError()) {
                 $serv->close($fd);
-                $this->_clearBuff($fd);
+                $this->conn->delBuff($fd);
             } elseif ($parser->isFinished()) {
-                $this->_clearBuff($fd);
+                $this->conn->delBuff($fd);
                 $response = $this->doHandshake($parser->getEnvironment());
                 if($response) {
-                    $this->_ws[$fd]['time'] = time();
+                    $this->addConnInfo($fd, array('time'=>time()));
                     $sendData  = join("\r\n", $response)."\r\n";
                     $this->log($sendData);
                     $this->wsOnOpen($fd, $sendData);
@@ -97,8 +126,8 @@ abstract class WSServer implements ICallback
                     $serv->close($fd);
                 }
             } else {
-                $this->_buff[$fd]['buff'] = $buffer;
-                $this->_buff[$fd]['nparsed'] = intval($nparsed);
+                $this->conn->setBuff($fd, $buffer);
+                $this->conn->setBuff($fd, intval($nparsed), 'nparsed');
             }
             return;
         } else {
@@ -361,7 +390,7 @@ abstract class WSServer implements ICallback
                     $this->close($fd, self::CLOSE_PROTOCOL_ERROR);
                     break;
                 }
-                $this->_ws[$fd]['time'] = time();
+                $this->addConnInfo($fd, array('time'=>time()));
                 $this->send($fd, $message, self::OPCODE_PONG, true);
                 break;
             case self::OPCODE_PONG:
@@ -450,10 +479,9 @@ abstract class WSServer implements ICallback
     public function onClose()
     {
         $params = func_get_args();
-        $fd = $params[1];   
-        $this->_clearBuff($fd);
+        $fd = $params[1]; 
         $this->wsOnClose($fd);
-        unset($this->_ws[$fd]);
+        $this->conn->clear();
         unset($this->_ws_list[$fd]);
     }
 
@@ -467,6 +495,7 @@ abstract class WSServer implements ICallback
     {
         $params = func_get_args();
         $this->serv = $params[0];
+        $this->conn = $this->getConnection();
     }
 
     public function onWorkerStop()
