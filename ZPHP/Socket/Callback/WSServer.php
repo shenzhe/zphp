@@ -101,6 +101,7 @@ abstract class WSServer implements ICallback
 
             $parser = new HttpParser();
             $buffer = $this->conn->getBuff($fd);
+            $this->log("buffer cache.". strlen($buffer));
             if(empty($buffer)) {
                 $buffer = "";
             }
@@ -111,7 +112,7 @@ abstract class WSServer implements ICallback
             $buffer .= $data;
             $nparsed = $parser->execute($buffer, $nparsed);
             if($parser->hasError()) {
-                $this->log("parser error ". $buffer);
+                $this->log("parser error ");
                 $serv->close($fd);
                 $this->conn->delBuff($fd);
             } elseif ($parser->isFinished()) {
