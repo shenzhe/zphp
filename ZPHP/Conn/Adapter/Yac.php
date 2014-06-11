@@ -65,7 +65,7 @@ class Yac implements IConn
     {   
         $channelInfo = $this->getChannel($channel);
         $channelInfo[$uid] = $fd;
-        $this->yac->set($this->getKey($channel), json_encode(channelInfo));
+        $this->yac->set($this->getKey($channel), json_encode($channelInfo));
         return true;
     }
 
@@ -74,7 +74,7 @@ class Yac implements IConn
         $channelInfo = $this->getChannel($channel);
         if(!empty($channelInfo[$uid])) {
             unset($channelInfo[$uid]);
-             $this->yac->set($this->getKey($channel), json_encode(channelInfo));
+             $this->yac->set($this->getKey($channel), json_encode($channelInfo));
         }
         return true;
     }
