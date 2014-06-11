@@ -111,7 +111,7 @@ abstract class WSServer implements ICallback
             $buffer .= $data;
             $nparsed = $parser->execute($buffer, $nparsed);
             if($parser->hasError()) {
-                $this->log("parser error");
+                $this->log("parser error ". $buffer);
                 $serv->close($fd);
                 $this->conn->delBuff($fd);
             } elseif ($parser->isFinished()) {
