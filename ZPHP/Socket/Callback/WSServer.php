@@ -111,6 +111,7 @@ abstract class WSServer implements ICallback
             $buffer .= $data;
             $nparsed = $parser->execute($buffer, $nparsed);
             if($parser->hasError()) {
+                $this->log("parser error");
                 $serv->close($fd);
                 $this->conn->delBuff($fd);
             } elseif ($parser->isFinished()) {
@@ -122,9 +123,11 @@ abstract class WSServer implements ICallback
                     $this->log($sendData);
                     $this->wsOnOpen($fd, $sendData);
                 } else {
+                    $this->log("reponse error".json_encode($response));
                     $serv->close($fd);
                 }
             } else {
+                $this->log("parser no finish");
                 $this->conn->setBuff($fd, $buffer);
                 $this->conn->setBuff($fd, intval($nparsed), 'nparsed');
             }
@@ -520,6 +523,7 @@ abstract class WSServer implements ICallback
 
     public function close($fd, $code = self::CLOSE_NORMAL, $reason = '')
     {
+        $this->log("close". json_encode(debug_backtrace()));
         $this->send($fd, pack('n', $code).$reason, self::OPCODE_CONNECTION_CLOSE);
         $this->serv->close($fd);
     }
