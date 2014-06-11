@@ -123,7 +123,7 @@ class Redis implements IConn
 
     public function getBuff($fd, $prev='buff')
     {
-        return $this->redis->get($this->getKey($fd, $buff));
+        return $this->redis->get($this->getKey($fd, $prev));
     }
 
     public function setBuff($fd, $data, $prev='buff')
