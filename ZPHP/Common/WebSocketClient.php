@@ -73,6 +73,11 @@ class WebSocketClient
         return $this->recv();
     }
 
+    public function getSocket()
+    {
+        return $this->socket;
+    }
+
     /**
      * Disconnect from server
      */
