@@ -111,7 +111,7 @@ class WebSocketClient
      */
     public function send($data, $type = 'text', $masked = true)
     {
-        $this->socket->send($this->hybi10Encode($data, $type, $masked));
+        return $this->socket->send($this->hybi10Encode($data, $type, $masked));
     }
 
     /**

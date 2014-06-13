@@ -212,7 +212,7 @@ abstract class WSServer implements ICallback
                     // //等待数据
                 }
                 break;
-            } while(strlen($data) > 0 and isset($this->_ws_list[$fd]));;
+            } while(strlen($data) > 0 and $this->getConnInfo($fd));
         }
     }
 
@@ -242,7 +242,7 @@ abstract class WSServer implements ICallback
 
         if(0x0 !== $ws['rsv1'] || 0x0 !== $ws['rsv2'] || 0x0 !== $ws['rsv3'])
         {
-            $this->close(self::CLOSE_PROTOCOL_ERROR);
+            //$this->close(self::CLOSE_PROTOCOL_ERROR);
             return false;
         }
         if(0 === $length)
@@ -299,7 +299,7 @@ abstract class WSServer implements ICallback
 
     }
 
-    private function parseMessage(&$ws)
+    protected function parseMessage($ws)
     {
         $buffer = $ws['buffer'];
         //没有mask
@@ -311,7 +311,6 @@ abstract class WSServer implements ICallback
                 $buffer[$j] = chr(ord($buffer[$j]) ^ $ws['mask'][$maskC]);
                 $maskC       = ($maskC + 1) % 4;
             }
-            $ws['message'] = $buffer;
         }
         return $buffer;
     }
@@ -324,7 +323,7 @@ abstract class WSServer implements ICallback
      * @param   bool    $end        Whether it is the last frame of the message.
      * @return  int
      */
-    private function newFrame ($message,  $opcode = self::OPCODE_TEXT_FRAME, $end = true )
+    public function newFrame ($message,  $opcode = self::OPCODE_TEXT_FRAME, $end = true )
     {
         $fin    = true === $end ? 0x1 : 0x0;
         $rsv1   = 0x0;
@@ -365,16 +364,17 @@ abstract class WSServer implements ICallback
         if((self::OPCODE_TEXT_FRAME  === $opcode or self::OPCODE_CONTINUATION_FRAME === $opcode) and false === (bool) preg_match('//u', $message))
         {
             $this->log('Message [%s] is not in UTF-8, cannot send it.', 2, 32 > strlen($message) ? substr($message, 0, 32) . ' ' : $message);
+            return false;
         }
         else
         {
             $out = $this->newFrame($message, $opcode, $end);
-            $this->log("send {$fd} {$out}");
+            //$this->log("send {$fd} {$out}");
             return $this->serv->send($fd, $out);
         }
     }
 
-    private function opcodeSwitch($fd, $ws)
+    public function opcodeSwitch($fd, $ws)
     {
         switch($ws['opcode'])
         {
