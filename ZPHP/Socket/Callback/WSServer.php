@@ -524,7 +524,7 @@ abstract class WSServer implements ICallback
 
     public function close($fd, $code = self::CLOSE_NORMAL, $reason = '')
     {
-        $this->log("close". json_encode(debug_backtrace()));
+        $this->log("close {$code}". json_encode(debug_backtrace()));
         $this->send($fd, pack('n', $code).$reason, self::OPCODE_CONNECTION_CLOSE);
         $this->serv->close($fd);
     }
