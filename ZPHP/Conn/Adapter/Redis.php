@@ -133,7 +133,7 @@ class Redis implements IConn
 
     public function delBuff($fd, $prev='buff')
     {
-        return $this->redis->get($this->getKey($fd, $prev));
+        return $this->redis->delete($this->getKey($fd, $prev));
     }
 
     private function getKey($uid, $prefix = 'uf')
