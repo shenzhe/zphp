@@ -87,6 +87,11 @@ abstract class WSServer implements ICallback
         $this->conn->setBuff($fd, $info, 'info');
     }
 
+    public function delConnInfo($fd)
+    {
+        $this->conn->delBuff($fd, 'info');
+    }
+
     /**
      *  
      */
@@ -483,10 +488,8 @@ abstract class WSServer implements ICallback
     {
         $params = func_get_args();
         $fd = $params[1]; 
+        $this->delConnInfo($fd);
         $this->wsOnClose($fd);
-        if($this->conn) {
-            $this->conn->delBuff($fd, 'info');
-        }
         unset($this->_ws_list[$fd]);
     }
 
