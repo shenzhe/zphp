@@ -102,7 +102,9 @@ abstract class WSServer implements ICallback
         $data = $params[3];
         $serv = $params[0];
 
-        if(empty($this->getConnInfo($fd))) {  //未连接
+        $connInfo = $this->getConnInfo($fd);
+
+        if(empty($connInfo)) {  //未连接
 
             $parser = new HttpParser();
             $buffer = $this->conn->getBuff($fd);
