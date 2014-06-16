@@ -71,7 +71,6 @@ abstract class WSServer implements ICallback
 
     public function getConnInfo($fd)
     {
-        $this->getConnection();
         $info =  $this->conn->getBuff($fd, 'info');
         if(empty($info)) {
             $info = array();
@@ -90,7 +89,6 @@ abstract class WSServer implements ICallback
 
     public function delConnInfo($fd)
     {
-        $this->getConnection();
         $this->conn->delBuff($fd, 'info');
     }
 
@@ -505,7 +503,7 @@ abstract class WSServer implements ICallback
     {
         $params = func_get_args();
         $this->serv = $params[0];
-        $this->conn = $this->getConnection();
+        $this->getConnection();
     }
 
     public function onWorkerStop()
