@@ -49,12 +49,14 @@ class Route
             return false;
         }
 
-        if (isset($route['static'][$pathinfo])) {
-            return $route['static'][$pathinfo];
-        }
+        
 
         if(isset($route['ext'])) {
             $pathinfo = str_replace($route['ext'], '', $pathinfo);
+        }
+
+        if (isset($route['static'][$pathinfo])) {
+            return $route['static'][$pathinfo];
         }
 
         if (!empty($route['cache'])) {
