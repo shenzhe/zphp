@@ -31,7 +31,6 @@ class Route
 
         if ($before) {
             try {
-                $view = $before;
                 $method = $server->getMethod();
                 if (\method_exists($class, $method)) {
                     $view = $class->$method();
