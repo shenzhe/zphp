@@ -168,9 +168,9 @@ class Route
                         }
                         if ('static' == $type) {
                             if (empty($params)) {
-                                $result = $appUrl . $path;
+                                $result = $appUrl . $path. $ext;
                             } else {
-                                $result = $appUrl . $path . '?' . http_build_query($params);
+                                $result = $appUrl . $path . $ext . '?' . http_build_query($params);
                             }
                         } else {
                             $realPath = $rule[3];
