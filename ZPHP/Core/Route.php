@@ -35,7 +35,7 @@ class Route
                 if (\method_exists($class, $method)) {
                     $view = $class->$method();
                 } else {
-                    $exception = new \Exception("no method {$method}");
+                    throw new \Exception("no method {$method}");
                 }
             } catch (\Exception $e) {
                 $exception = $e;
