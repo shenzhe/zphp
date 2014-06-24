@@ -31,11 +31,12 @@ class Route
 
         if ($before) {
             try {
+                $view = $before;
                 $method = $server->getMethod();
                 if (\method_exists($class, $method)) {
                     $view = $class->$method();
                 } else {
-                    throw new \Exception("no method {$method}");
+                    $exception = new \Exception("no method {$method}");
                 }
             } catch (\Exception $e) {
                 $exception = $e;
@@ -47,6 +48,7 @@ class Route
                 return call_user_func(Config::getField('project', 'exception_handler', 'ZPHP\ZPHP::exceptionHandler'), $exception);
             }
             throw $exception;
+            return;
         }
         if (null === $view) {
             return;
