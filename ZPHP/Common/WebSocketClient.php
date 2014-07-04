@@ -30,6 +30,7 @@ class WebSocketClient
     private $path;
     private $socket;
     private $buffer = '';
+    private $origin = null;
 
     /**
      * @var bool
@@ -41,11 +42,12 @@ class WebSocketClient
      * @param int $port
      * @param string $path
      */
-    function __construct($host = '127.0.0.1', $port = 8080, $path = '/')
+    function __construct($host = '127.0.0.1', $port = 8080, $path = '/', $origin=null)
     {
         $this->host = $host;
         $this->port = $port;
         $this->path = $path;
+        $this->origin = $origin;
         $this->key = $this->generateToken(self::TOKEN_LENGHT);
     }
 
@@ -144,7 +146,7 @@ class WebSocketClient
         }
 
         return "GET {$this->path} HTTP/1.1" . "\r\n" .
-        "Origin: null" . "\r\n" .
+        "Origin: {$this->origin}" . "\r\n" .
         "Host: {$host}:{$this->port}" . "\r\n" .
         "Sec-WebSocket-Key: {$this->key}" . "\r\n" .
         "User-Agent: PHPWebSocketClient/" . self::VERSION . "\r\n" .
