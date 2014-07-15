@@ -68,6 +68,23 @@ class Php implements IConn
         return true;
     }
 
+    public function delChannel($uid, $channel)
+    {
+        $channelInfo = $this->getChannel($channel);
+        if(isset($channelInfo[$uid])) {
+            unset($channelInfo[$uid]);
+            $key = $this->getKey($channel);
+            $this->_cache[$key] = $channelInfo;
+            $uinfo = $this->get($uid);
+            if(isset($uinfo['types'][$channel])) {
+                unset($uinfo['types'][$channel]);
+                $key = $this->getKey($uid);
+                $this->_cache[$key] = $uinfo;
+            }
+        }
+        return true;
+    }
+
     public function getChannel($channel = 'ALL')
     {
         $key = $this->getKey($channel);

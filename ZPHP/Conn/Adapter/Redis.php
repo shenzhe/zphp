@@ -61,6 +61,18 @@ class Redis implements IConn
         }
     }
 
+    public function delChannel($uid, $channel)
+    {
+        if($this->redis->hDel($this->getKey($channel), $uid)){
+            $uinfo = $this->get($uid);
+            if(isset($uinfo['types'][$channel])) {
+                unset($uinfo['types'][$channel]);
+                $this->redis->set($this->getKey($uid), json_encode($uinfo));
+            }
+        }
+        return true;
+    }
+
     public function getChannel($channel = 'ALL')
     {
         return $this->redis->hGetAll($this->getKey($channel));

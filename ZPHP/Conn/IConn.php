@@ -13,6 +13,8 @@ interface IConn
     public function add($uid, $fd);
     //把uid加入到指定的channel
     public function addChannel($uid, $channel);
+    //把uid从指定的channel删除
+    public function delChannel($uid, $channel);
     //获取指定的channel
     public function getChannel($channel);
     //获取指定的uid的信息

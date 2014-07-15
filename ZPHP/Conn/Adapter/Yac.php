@@ -61,6 +61,22 @@ class Yac implements IConn
         }
     }
 
+    public function delChannel($uid, $channel)
+    {
+        $channelInfo = $this->getChannel($channel);
+        if(!empty($channelInfo[$uid])) {
+            unset($channelInfo[$uid]);
+            $this->yac->set($this->getKey($channel), json_encode($channelInfo));
+            $uinfo = $this->get($uid);
+            if(!empty($uinfo['types'][$channel])) {
+                unset($uinfo['types'][$channel]);
+                $this->yac->set($this->getKey($uid), json_encode($uinfo));
+            }
+        }
+
+        return true;
+    }
+
     private function upChannel($uid, $fd, $channel = 'ALL')
     {   
         $channelInfo = $this->getChannel($channel);
