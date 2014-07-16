@@ -48,6 +48,8 @@ class Swoole implements IServer
             'onTask', 
             'onFinish',
             'onWorkerError',
+            'onManagerStart',
+            'onManagerStop'
         );
         foreach($handlerArray as $handler) {
             if(method_exists($this->client, $handler)) {

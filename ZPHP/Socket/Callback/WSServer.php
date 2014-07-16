@@ -55,6 +55,8 @@ abstract class WSServer implements ICallback
     public function onStart()
     {
         $this->log('server start, swoole version: ' . SWOOLE_VERSION);
+
+        \swoole_set_process_name(ZConfig::get('project_name', 'websocket').":master,tcp://".ZConfig::getField('socket', 'host').":".ZConfig::getField('socket', 'port'));
     }
 
     public function onConnect()
@@ -504,6 +506,12 @@ abstract class WSServer implements ICallback
         $params = func_get_args();
         $this->serv = $params[0];
         $this->getConnection();
+        $workerNum = ZConfig::getField('socket', 'worker_num');
+        if($params[1] >= $workerNum) {
+            \swoole_set_process_name(ZConfig::get('project_name', 'websocket').":task, id:".($params[1] - $workerNum));
+        } else {
+            \swoole_set_process_name(ZConfig::get('project_name', 'websocket').":worker, id:".$params[1]);
+        }
     }
 
     public function onWorkerStop()
@@ -514,6 +522,12 @@ abstract class WSServer implements ICallback
         echo "WorkerStop[$worker_id]|pid=" . posix_getpid() . ".\n";
         */
     }
+
+    public function onManagerStart()
+    {
+        \swoole_set_process_name(ZConfig::get('project_name', 'websocket').":manager");
+    }
+    
     
     public function onTask()
     {

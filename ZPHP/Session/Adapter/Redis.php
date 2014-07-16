@@ -17,6 +17,7 @@ class Redis
     {
         if (empty($this->redis)) {
             $this->redis = Manager\Redis::getInstance($config);
+            $this->gcTime = \session_cache_expire();
         }
     }
 
@@ -47,7 +48,7 @@ class Redis
     public function write($sid, $data)
     {
         if(empty($data)) {
-            return;
+            return true;
         }
         return $this->redis->setex($sid, $this->gcTime, $data);
     }

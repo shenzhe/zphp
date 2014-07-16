@@ -27,10 +27,8 @@ class Factory
         if(false === self::$isStart) {
             if(empty($config)) {
                 $config = ZConfig::get('session');
-                if(!empty($config['adapter'])) {
-                    $sessionType = $config['adapter'];
-                }
             }
+
             if (!empty($sessionType)) {
                 $handler = self::getInstance($sessionType, $config);
                 \session_set_save_handler(
@@ -42,7 +40,18 @@ class Factory
                     array($handler, 'gc')
                 );
             }
+            
+            if(!empty($config['adapter'])) {
+                $sessionType = $config['adapter'];
+            }
+
+            if(!empty($config['cache_expire'])) {
+                \session_cache_expire($config['cache_expire']);
+            }
+
+            $sessionName = empty($config['session_name']) ? 'ZPHPSESSID' : $config['session_name'];
             \session_name(ZConfig::getField('project', 'session_name', 'ZPHPSESSID'));
+            
             \session_start();
             self::$isStart = true;
         }
