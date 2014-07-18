@@ -33,6 +33,13 @@ class Factory
                 $sessionType = $config['adapter'];
             }
 
+            if(!empty($config['cache_expire'])) {
+                \session_cache_expire($config['cache_expire']);
+            }
+
+            $sessionName = empty($config['session_name']) ? 'ZPHPSESSID' : $config['session_name'];
+            \session_name($sessionName);
+
             if (!empty($sessionType)) {
                 $handler = self::getInstance($sessionType, $config);
                 \session_set_save_handler(
@@ -45,13 +52,6 @@ class Factory
                 );
             }
             
-
-            if(!empty($config['cache_expire'])) {
-                \session_cache_expire($config['cache_expire']);
-            }
-
-            $sessionName = empty($config['session_name']) ? 'ZPHPSESSID' : $config['session_name'];
-            \session_name($sessionName);
             
             \session_start();
             self::$isStart = true;
