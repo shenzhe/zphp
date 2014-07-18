@@ -50,7 +50,7 @@ class Factory
             }
 
             $sessionName = empty($config['session_name']) ? 'ZPHPSESSID' : $config['session_name'];
-            \session_name(ZConfig::getField('project', 'session_name', 'ZPHPSESSID'));
+            \session_name($sessionName);
             
             \session_start();
             self::$isStart = true;
