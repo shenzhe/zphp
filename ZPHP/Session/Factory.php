@@ -29,6 +29,10 @@ class Factory
                 $config = ZConfig::get('session');
             }
 
+            if(!empty($config['adapter'])) {
+                $sessionType = $config['adapter'];
+            }
+
             if (!empty($sessionType)) {
                 $handler = self::getInstance($sessionType, $config);
                 \session_set_save_handler(
@@ -41,9 +45,6 @@ class Factory
                 );
             }
             
-            if(!empty($config['adapter'])) {
-                $sessionType = $config['adapter'];
-            }
 
             if(!empty($config['cache_expire'])) {
                 \session_cache_expire($config['cache_expire']);
