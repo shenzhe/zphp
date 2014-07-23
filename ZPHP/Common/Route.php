@@ -170,7 +170,12 @@ class Route
                         }
                         if ('static' == $type) {
                             if (empty($params)) {
-                                $result = $appUrl . $path. $ext;
+                                if('' == $path || '/'==$path) {
+                                    $result = $appUrl . $path;
+                                } else {
+                                    $result = $appUrl . $path. $ext;
+                                }
+                                
                             } else {
                                 $result = $appUrl . $path . $ext . '?' . http_build_query($params);
                             }
