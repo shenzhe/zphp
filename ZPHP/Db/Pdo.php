@@ -286,7 +286,8 @@ class Pdo
     {
         $statement = $this->pdo->prepare($sql);
         $statement->execute();
-        return $statement->fetch();
+        $statement->setFetchMode(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll();
     }
 
 
