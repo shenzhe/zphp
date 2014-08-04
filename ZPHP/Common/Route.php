@@ -51,9 +51,11 @@ class Route
 
         
 
-        if(isset($route['ext'])) {
+        /*if(isset($route['ext'])) {
             $pathinfo = str_replace($route['ext'], '', $pathinfo);
-        }
+        }*/
+        $pathinfo = explode('.', $pathinfo);
+        $pathinfo = $pathinfo[0];
 
         if (isset($route['static'][$pathinfo])) {
             return $route['static'][$pathinfo];
