@@ -108,7 +108,7 @@ class ZPHP
         self::$zPath = \dirname(__DIR__);
         self::setRootPath($rootPath);
         if (!empty($_SERVER['HTTP_HOST'])) {
-            $configPath = $_SERVER['HTTP_HOST'];
+            $configPath = \str_replace(':', '_', $_SERVER['HTTP_HOST']);
         } elseif (!empty($_SERVER['argv'][1])) {
             $configPath = $_SERVER['argv'][1];
         }
