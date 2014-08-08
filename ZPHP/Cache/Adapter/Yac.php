@@ -33,7 +33,7 @@ class Yac implements ICache
     {
         $data = $this->yac->get($key);
         if (!empty($data)) {
-            throw new Exception("{$key} exitst");
+            throw new \Exception("{$key} exitst");
         }
         return $this->yac->set($key, $value, $timeOut);
     }
@@ -60,7 +60,7 @@ class Yac implements ICache
             $this->yac->set($key, $step);
         }
         if (!\is_numeric($data)) {
-            throw new Exception("value no numeric");
+            throw new \Exception("value no numeric");
         }
         return $this->yac->set($key, ($data + $step));
     }
@@ -69,7 +69,7 @@ class Yac implements ICache
     {
         $data = $this->yac->get($key);
         if (!\is_numeric($data)) {
-            throw new Exception("value no numeric");
+            throw new \Exception("value no numeric");
         }
         return $this->yac->set($key, ($data - $step));
     }

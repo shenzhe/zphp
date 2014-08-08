@@ -15,7 +15,7 @@ class ZPHP
 {
     public function run($data, $fd=null)
     {
-        $server = Protocol\Factory::getInstance('Http');
+        $server = Protocol\Factory::getInstance(Core\Config::getField('socket', 'protocol', 'Http'));
         $server->setFd($fd);
         $server->parse($data);
         return Core\Route::route($server);

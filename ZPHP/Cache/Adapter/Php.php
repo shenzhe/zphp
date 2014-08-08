@@ -30,7 +30,7 @@ class Php implements ICache
     public function add($key, $value, $timeOut = 0)
     {
         if (isset($this->_cache[$key])) {
-            throw new Exception("{$key} exitst");
+            throw new \Exception("{$key} exitst");
         }
         $timeOut = $timeOut ? (time() + $timeOut) : 0;
         return $this->_cache[$key] = array(
@@ -69,7 +69,7 @@ class Php implements ICache
     {
         if(!empty($this->_cache[$key][0])) {
             if (!\is_numeric($this->_cache[$key][0])) {
-                throw new Exception("value no numeric");
+                throw new \Exception("value no numeric");
             }
             $this->_cache[$key][0] += $step;
         } else {
@@ -85,7 +85,7 @@ class Php implements ICache
     {
         if(!empty($this->_cache[$key][0])) {
             if (!\is_numeric($this->_cache[$key][0])) {
-                throw new Exception("value no numeric");
+                throw new \Exception("value no numeric");
             }
             $this->_cache[$key][0] -= $step;
         } else {
