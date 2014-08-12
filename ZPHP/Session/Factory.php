@@ -33,9 +33,18 @@ class Factory
                 $sessionType = $config['adapter'];
             }
 
+            $lifetime = 0;
             if(!empty($config['cache_expire'])) {
                 \session_cache_expire($config['cache_expire']);
+                $lifetime = $config['cache_expire'];
             }
+            $path = empty($config['path']) ? '/' : $config['path'];
+            $domain = empty($config['domain']) ? '' : $config['domain'];
+            $secure = empty($config['secure']) ? false : $config['secure'];
+            $httponly = empty($config['httponly']) ? true : $config['httponly'];
+            \session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
+
+
 
             $sessionName = empty($config['session_name']) ? 'ZPHPSESSID' : $config['session_name'];
             \session_name($sessionName);
