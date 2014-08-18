@@ -15,8 +15,15 @@ class Json extends Base
     public function display()
     {
         if (Config::get('server_mode') == 'Http') {
-            \header("Content-Type: application/json; charset=utf-8");
-            echo \json_encode($this->model);
+            $data = \json_encode($this->model);
+            if(isset($_GET['jsoncallback'])) {
+                \header('application/x-javascript; charset=utf-8');
+                echo $_GET['jsoncallback'].'('.$data.')';
+            } else {
+                \header("Content-Type: application/json; charset=utf-8");
+                echo $data;
+            }
+            
         } else {
         	return \json_encode($this->model);
         }
