@@ -91,19 +91,12 @@ class Http implements IProtocol
 
     public function display($model)
     {
-        $viewMode = $this->_view_mode;
-        if(is_array($model)) {
-            if(!empty($model['_view_mode'])) {
-                $viewMode = $model['_view_mode'];
-                unset($model['_view_mode']);
-            } else {
-                if (empty($this->_view_mode)) {
-                    $viewMode = Config::getField('project', 'view_mode', '');
-                }
-            }
+        $viewMode = $this->_view_mode || $viewMode = Config::getField('project', 'view_mode', '');
+        if(is_array($model) && !empty($model['_view_mode'])) {
+            $viewMode = $model['_view_mode'];
+            unset($model['_view_mode']);
         }
         $this->_view_mode = '';
-
         if(empty($viewMode)) {
             if (ZUtils::isAjax()) {
                 $viewMode = 'Json';
