@@ -49,6 +49,10 @@ class Factory
             $sessionName = empty($config['session_name']) ? 'ZPHPSESSID' : $config['session_name'];
             \session_name($sessionName);
 
+            if(!empty($_GET[$sessionName])) {
+                \session_id($_GET[$sessionName]);
+            }
+
             if (!empty($sessionType)) {
                 $handler = self::getInstance($sessionType, $config);
                 \session_set_save_handler(

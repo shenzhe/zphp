@@ -16,7 +16,7 @@ class Log
     public static function info($type, $params = array())
     {
         $t = \date("Ymd");
-        $logPath = Config::get('log_path', '');
+        $logPath = Config::getField('project', 'log_path', '');
         if(empty($logPath)) {
             $dir = ZPHP::getRootPath() . DS . 'log' . DS . $t;
         } else {
