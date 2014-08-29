@@ -57,7 +57,7 @@ class MessagePacker
     public function writeBinary($b, $len=null)
     {
         if(null === $len) {
-            $len = strlen($s);
+            $len = strlen($b);
         }
         $this->writeInt($len);
         $this->data .= $b;
