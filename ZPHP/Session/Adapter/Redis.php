@@ -18,6 +18,7 @@ class Redis
         if (empty($this->redis)) {
             $this->redis = Manager\Redis::getInstance($config);
             $this->gcTime = \session_cache_expire();
+            $this->gcTime *= 60;
         }
     }
 
