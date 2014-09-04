@@ -36,7 +36,7 @@ class Factory
             $lifetime = 0;
             if(!empty($config['cache_expire'])) {
                 \session_cache_expire($config['cache_expire']);
-                $lifetime = $config['cache_expire'];
+                $lifetime = $config['cache_expire'] * 60;
             }
             $path = empty($config['path']) ? '/' : $config['path'];
             $domain = empty($config['domain']) ? '' : $config['domain'];
