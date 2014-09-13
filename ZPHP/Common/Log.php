@@ -23,8 +23,13 @@ class Log
             $dir = $logPath . DS . $t;
         }
         Dir::make($dir);
-        $str = \date('Y-m-d H:i:s', Config::get('now_time', time())) . self::SEPARATOR . \implode(self::SEPARATOR, array_map('json_encode', $params));
+        $str = \date('Y-m-d H:i:s', Config::get('now_time', time())) . self::SEPARATOR . \implode(self::SEPARATOR, array_map('ZPHP\Common\Log::myJson', $params));
         $logFile = $dir . \DS . $type . '.log';
         \error_log($str . "\n", 3, $logFile);
     }
+    
+    public static function myJson($data)
+    {
+		return json_encode($data,  JSON_UNESCAPED_UNICODE);
+	}
 }
