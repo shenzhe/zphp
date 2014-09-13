@@ -117,10 +117,10 @@ class ZPHP
         }
         \spl_autoload_register(__CLASS__ . '::autoLoader');
         Config::load(self::getConfigPath());
+        self::$libPath = Config::get('lib_path', self::$zPath . DS .'lib');
         if (Config::getField('project', 'debug_mode', 0)) {
             Debug::start();
         }
-        self::$libPath = Config::get('lib_path', self::$zPath . DS .'lib');
         $appPath = Config::get('app_path', self::$appPath);
         self::setAppPath($appPath);
         $eh = Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler');
