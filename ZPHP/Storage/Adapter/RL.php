@@ -15,6 +15,7 @@ class RL implements IStorage
     private $sRedis = null;
     private $suffix = "";
     private $pconnect;
+    private $hash = true;
 
     public function __construct($config)
     {
@@ -22,6 +23,11 @@ class RL implements IStorage
             $this->redis = Manager\Redis::getInstance($config);
             $this->pconnect = $config['pconnect'];
         }
+    }
+
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
     }
 
     public function setSlave($config)
@@ -45,25 +51,42 @@ class RL implements IStorage
     public function getMutilMD($userId, $keys, $slaveConfig = "")
     {
         $uKey = $this->uKey($userId);
-        return $this->redis->rlHMGet($uKey, $keys);
+        if($this->hash) {
+            return $this->redis->rlHMGet($uKey, $keys);
+        }
+        foreach ($keys as $key => $value) {
+            $nkey = $uKey.$key;
+            $keys[$nkey] = $value;
+            unset($keys[$key]);
+        }
+        return $this->redis->rlMGET($keys);
     }
 
     public function getMD($userId, $key, $slaveConfig = "")
     {
         $uKey = $this->uKey($userId);
-        return $this->redis->rlHGet($uKey, $key);
+        if($this->hash) {
+            return $this->redis->rlHGet($uKey, $key);
+        }
+        return $this->redis->rlGet($uKey.$key);
     }
 
     public function getSD($userId, $key, $slaveConfig = "")
     {
         $uKey = $this->uKey($userId);
-        return $this->redis->dsHGet($uKey, $key);
+        if($this->hash) {
+            return $this->redis->dsHGet($uKey, $key);
+        }
+        return $this->redis->dsGet($uKey.$key);
     }
 
     public function setSD($userId, $key, $data)
     {
         $uKey = $this->uKey($userId);
-        return $this->redis->dsHSet($uKey, $key, $data);
+        if($this->hash) {
+            return $this->redis->dsHSet($uKey, $key, $data);
+        }
+        return $this->redis->dsSet($uKey.$key, $data);
     }
 
     public function setMD($userId, $key, $data, $cas = false)
@@ -72,17 +95,30 @@ class RL implements IStorage
             return $this->setMDCAS($userId, $key, $data);
         }
         $uKey = $this->uKey($userId);
-        return $this->redis->rlHSet($uKey, $key, $data);
+        if($this->hash) {
+            return $this->redis->rlHSet($uKey, $key, $data);
+        }
+
+        return $this->redis->rlSet($uKey.$key, $data);
     }
 
     public function addMD($userId, $key, $data)
     {
         $uKey = $this->uKey($userId);
-        if ($this->redis->dsHGet($uKey, $key)) {
-            throw new \Exception("{$key} exist");
+        if($this->hash) {
+            if ($this->redis->dsHGet($uKey, $key)) {
+                throw new \Exception("{$key} exist");
+            }
+            if ($this->redis->dsHSet($uKey, $key, $data)) {
+                return $this->redis->hSetNx($uKey, $key, $data);
+            }
         }
-        if ($this->redis->dsHSet($uKey, $key, $data)) {
-            return $this->redis->hSetNx($uKey, $key, $data);
+        $uKey .= $key;
+        if ($this->redis->dsGet($uKey)) {
+            throw new \Exception("{$uKey} exist");
+        }
+        if ($this->redis->dsSet($uKey, $data)) {
+            return $this->redis->setnx($uKey, $data);
         }
         return false;
     }
@@ -90,14 +126,27 @@ class RL implements IStorage
     public function setMDCAS($userId, $key, $data)
     {
         $uKey = $this->uKey($userId);
+        if($this->hash) {
+            $this->redis->watch($uKey);
+            $result = $this->redis->multi()->hSet($uKey, $key, $data)->exec();
+            if (false === $result) {
+                throw new \Exception('cas error');
+            }
+            if ($this->redis->dsHSet($uKey, $key, $data)) {
+                return true;
+            }
+        }
+        $uKey .= $key;
         $this->redis->watch($uKey);
-        $result = $this->redis->multi()->hSet($uKey, $key, $data)->exec();
+        $result = $this->redis->multi()->set($uKey,  $data)->exec();
         if (false === $result) {
             throw new \Exception('cas error');
         }
-        if ($this->redis->dsHSet($uKey, $key, $data)) {
+        if ($this->redis->dsSet($uKey, $data)) {
             return true;
         }
+
+
 
         throw new \Exception('dsSet error');
     }
@@ -105,19 +154,33 @@ class RL implements IStorage
     public function del($userId, $key)
     {
         $uKey = $this->uKey($userId);
-        return $this->redis->rlHDel($uKey, $key);
+        if($this->hash) {
+            return $this->redis->rlHDel($uKey, $key);
+        }
+        return $this->redis->rlDel($uKey.$key);
     }
 
     public function delSD($userId, $key, $slavename = '')
     {
         $uKey = $this->uKey($userId);
-        return $this->redis->dsHDel($uKey, $key);
+        if($this->hash) {
+            return $this->redis->dsHDel($uKey, $key);
+        }
+        return $this->redis->dsDel($uKey.$key);
     }
 
     public function setMultiMD($userId, $keys)
     {
         $uKey = $this->uKey($userId);
-        return $this->redis->rlHMSet($uKey, $keys);
+        if($this->hash) {
+            return $this->redis->rlHMSet($uKey, $keys);
+        }
+        foreach($keys as $key=>$val) {
+            $nkey = $uKey.$key;
+            $keys[$nkey] = $val;
+            unset($keys[$key]);
+        }
+        return $this->redis->rlMset($keys);
     }
 
     public function close()
@@ -142,7 +205,11 @@ class RL implements IStorage
         foreach ($cmds as $userId => $key) {
             $uids[] = $userId;
             $uKey = $this->uKey($userId);
-            $this->redis->rlHGet($uKey, $key);
+            if($this->hash) {
+                $this->redis->rlHGet($uKey, $key);
+            } else {
+                $this->redis->rlGet($uKey.$key);
+            }
         }
 
         return $this->redis->exec();
