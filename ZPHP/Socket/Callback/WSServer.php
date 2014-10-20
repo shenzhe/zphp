@@ -91,7 +91,9 @@ abstract class WSServer implements ICallback
 
     public function delConnInfo($fd)
     {
-        $this->conn->delBuff($fd, 'info');
+        if($this->conn) {
+            $this->conn->delBuff($fd, 'info');
+        }
     }
 
     /**
