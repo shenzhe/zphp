@@ -27,4 +27,16 @@ class Redis
     {
         return $this->redis->lPop($key);
     }
+
+    /**
+     * 批量取出并清空所有的数据
+     * 需最新redis-storage支持
+     * @param $key
+     * @return mixed
+     */
+    public function getAll($key)
+    {
+        return $this->redis-lAll($key);
+    }
+
 }

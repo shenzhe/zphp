@@ -24,9 +24,10 @@ interface IRank
      * @param int $start    起始名次
      * @param int $limit    结束名次
      * @param bool $score   是否返回分数
+     * @param int $desc     是否返回倒
      * @return mixed
      */
-    public function getRank($rankType, $start = 0, $limit = 100, $score = true);
+    public function getRank($rankType, $start = 0, $limit = 100, $score = true, $desc=0);
 
     /**
      * 返回某一区间分数排行
