@@ -36,7 +36,7 @@ class Redis
      */
     public function getAll($key)
     {
-        return $this->redis-lAll($key);
+        return $this->redis->lAll($key);
     }
 
 }
