@@ -32,11 +32,7 @@ class Route
         if ($before) {
             try {
                 $method = $server->getMethod();
-                if (\method_exists($class, $method)) {
-                    $view = $class->$method();
-                } else {
-                    throw new \Exception("no method {$method}");
-                }
+                $view = $class->$method();
             } catch (\Exception $e) {
                 $exception = $e;
             }
