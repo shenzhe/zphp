@@ -100,7 +100,7 @@ class ZPHP
         $exceptionView->display();
     }
 
-    public static function run($rootPath)
+    public static function run($rootPath, $run=true)
     {
         if (!defined('DS')) {
             define('DS', DIRECTORY_SEPARATOR);
@@ -118,7 +118,7 @@ class ZPHP
         \spl_autoload_register(__CLASS__ . '::autoLoader');
         Config::load(self::getConfigPath());
         self::$libPath = Config::get('lib_path', self::$zPath . DS .'lib');
-        if (Config::getField('project', 'debug_mode', 0)) {
+        if ($run && Config::getField('project', 'debug_mode', 0)) {
             Debug::start();
         }
         $appPath = Config::get('app_path', self::$appPath);
@@ -129,8 +129,12 @@ class ZPHP
         \date_default_timezone_set($timeZone);
         $serverMode = Config::get('server_mode', 'Http');
         $service = Server\Factory::getInstance($serverMode);
-        $service->run();
-        if (Config::getField('project', 'debug_mode', 0)) {
+        if($run) {
+            $service->run();
+        }else{
+            return $service;
+        }
+        if ($run && Config::getField('project', 'debug_mode', 0)) {
             Debug::end();
         }
     }
