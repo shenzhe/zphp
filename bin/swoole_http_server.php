@@ -47,6 +47,8 @@ class HttpServer
 			if( isset($request->post) ) {
 			    $_POST = $request->post;
 			}
+
+			$_REQUEST = $_GET + $_POST;
 			ob_start();
             $this->zphp->run();
 			$result = ob_get_contents();

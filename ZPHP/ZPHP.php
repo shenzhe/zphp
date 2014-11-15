@@ -100,17 +100,19 @@ class ZPHP
         $exceptionView->display();
     }
 
-    public static function run($rootPath, $run=true)
+    public static function run($rootPath, $run=true, $configPath=null)
     {
         if (!defined('DS')) {
             define('DS', DIRECTORY_SEPARATOR);
         }
         self::$zPath = \dirname(__DIR__);
         self::setRootPath($rootPath);
-        if (!empty($_SERVER['HTTP_HOST'])) {
-            $configPath = \str_replace(':', '_', $_SERVER['HTTP_HOST']);
-        } elseif (!empty($_SERVER['argv'][1])) {
-            $configPath = $_SERVER['argv'][1];
+        if(empty($configPath)) {
+            if (!empty($_SERVER['HTTP_HOST'])) {
+                $configPath = \str_replace(':', '_', $_SERVER['HTTP_HOST']);
+            } elseif (!empty($_SERVER['argv'][1])) {
+                $configPath = $_SERVER['argv'][1];
+            }
         }
         if (!empty($configPath)) {
             self::setConfigPath($configPath);
