@@ -45,6 +45,19 @@ class Config
         return $result;
     }
 
+    public static function set($key, $value, $set=true)
+    {
+        if($set) {
+            self::$config[$key] = $value;
+        }else{
+            if(empty(self::$config[$key])) {
+                self::$config[$key] = $value;
+            }
+        }
+
+        return true;
+    }
+
     public static function getField($key, $filed, $default = null, $throw = false)
     {
         $result = isset(self::$config[$key][$filed]) ? self::$config[$key][$filed] : $default;
