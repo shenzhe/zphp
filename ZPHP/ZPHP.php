@@ -100,11 +100,7 @@ class ZPHP
         $exceptionView->display();
     }
 
-<<<<<<< HEAD
-    public static function run($rootPath, $run=true, $configPath=null)
-=======
-    public static function run($rootPath, $run=true, $configPath)
->>>>>>> FETCH_HEAD
+    public static function run($rootPath, $run=true, $configPath=null)、
     {
         if (!defined('DS')) {
             define('DS', DIRECTORY_SEPARATOR);
