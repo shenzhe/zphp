@@ -100,7 +100,17 @@ class ZPHP
         $exceptionView->display();
     }
 
-    public static function run($rootPath, $run=true, $configPath=null)、
+    final public static function fatalHandler($error)
+    {
+        if(empty($error)) {
+            return;
+        }
+        $exceptionView = View\Factory::getInstance();
+        $exceptionView->setModel(Formater::fatal($exception));
+        $exceptionView->display();
+    }
+
+    public static function run($rootPath, $run=true, $configPath=null)
     {
         if (!defined('DS')) {
             define('DS', DIRECTORY_SEPARATOR);
@@ -127,6 +137,7 @@ class ZPHP
         self::setAppPath($appPath);
         $eh = Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler');
         \set_exception_handler($eh);
+        \register_shutdown_function(__CLASS__ . '::fatalHandler')
         $timeZone = Config::get('time_zone', 'Asia/Shanghai');
         \date_default_timezone_set($timeZone);
         $serverMode = Config::get('server_mode', 'Http');
