@@ -100,8 +100,9 @@ class ZPHP
         $exceptionView->display();
     }
 
-    final public static function fatalHandler($error)
+    final public static function fatalHandler()
     {
+        $error = \error_get_last();
         if(empty($error)) {
             return;
         }
