@@ -107,7 +107,7 @@ class ZPHP
             return;
         }
         $exceptionView = View\Factory::getInstance();
-        $exceptionView->setModel(Formater::fatal($exception));
+        $exceptionView->setModel(Formater::fatal($error));
         $exceptionView->display();
     }
 
