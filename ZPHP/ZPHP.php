@@ -106,6 +106,9 @@ class ZPHP
         if(empty($error)) {
             return;
         }
+        if($error['type'] != 4) {
+            return;
+        }
         \header('HTTP/1.1 200 OK');
         $exceptionView = View\Factory::getInstance();
         $exceptionView->setModel(Formater::fatal($error));
