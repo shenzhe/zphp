@@ -32,4 +32,5 @@ abstract class Base implements IView
         \ob_end_clean();
         return $content;
     }
+
 }

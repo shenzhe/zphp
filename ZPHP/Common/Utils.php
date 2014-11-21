@@ -23,4 +23,13 @@ class Utils
         return false;
     }
 
+    public static function header($key, $val)
+    {
+        if(defined('USE_SWOOLE_HTTP_SERVER') && USE_SWOOLE_HTTP_SERVER) {
+            \HttpServer::$response->header($key, $val);
+        } else {
+            \header("{$key}: {$val}");
+        }
+    }
+
 }

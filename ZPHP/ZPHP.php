@@ -109,7 +109,7 @@ class ZPHP
         if($error['type'] != 4) {
             return;
         }
-        \header('HTTP/1.1 200 OK');
+        ZPHP\Common\Utils::header('HTTP/1.1 200 OK');
         $exceptionView = View\Factory::getInstance();
         $exceptionView->setModel(Formater::fatal($error));
         $exceptionView->display();

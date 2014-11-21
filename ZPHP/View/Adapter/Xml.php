@@ -38,7 +38,7 @@ class Xml extends Base
     public function display()
     {
         if (Config::get('server_mode') == 'Http') {
-            \header("Content-Type:text/xml; charset=utf-8");
+            ZPHP\Common\Utils::header("Content-Type:text/xml; charset=utf-8");
             echo $this->xmlEncode();
             return null;
         }

@@ -135,7 +135,7 @@ class ZRpack implements IProtocol
     public function getData()
     {
         if (Config::get('server_mode') == 'Http') {
-            \header("Content-Type: application/zrpack; charset=utf-8");
+            ZPHP\Common\Utils::header("Content-Type: application/zrpack; charset=utf-8");
         }
         $data = $this->_data;
         unset($data['cmd'], $data['fd']);

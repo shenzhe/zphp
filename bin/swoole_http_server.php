@@ -6,8 +6,11 @@ class HttpServer
 
     private static $instance;
     public static $server;
+    public static $request;
+    public static $response;
     private $zphp;
     private $webPath;
+
 
 
     public function __construct($webPath)
@@ -29,6 +32,8 @@ class HttpServer
         $http->on('WorkerStart', array($this, 'onWorkerStart'));
 
         $http->on('request', function ($request, $response) {
+            HttpServer::$request = $request;
+            HttpServer::$reponse = $response;
             $_GET = $_POST = $_REQUEST = $_SERVER = array();
             $_SERVER['REQUEST_TIME'] = time();
             if(empty(HttpServer::$server)) {
@@ -87,4 +92,5 @@ if (empty($argv[1])) {
     return;
 }
 
+define('USE_SWOOLE_HTTP_SERVER', 1);
 HttpServer::getInstance($argv[1]);

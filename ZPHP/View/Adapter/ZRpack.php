@@ -24,7 +24,7 @@ class ZRpack extends Base
         $pack->writeInt($this->model['rid']);
         $pack->writeString($data, $len);
         if (Config::get('server_mode') == 'Http') {
-            \header("Content-Type: application/zrpack; charset=utf-8");
+            ZPHP\Common\Utils::header("Content-Type: application/zrpack; charset=utf-8");
             echo $pack->getData();
         } else {
             return array(
