@@ -8,6 +8,7 @@ namespace ZPHP;
 use ZPHP\View,
     ZPHP\Core\Config,
     ZPHP\Common\Debug,
+    ZPHP\Common\Utils,
     ZPHP\Common\Formater;
 
 class ZPHP
@@ -106,10 +107,10 @@ class ZPHP
         if(empty($error)) {
             return;
         }
-        if($error['type'] != 4) {
+        if(!in_array($error['type'], array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR))) {
             return;
         }
-        ZPHP\Common\Utils::header('HTTP/1.1 200 OK');
+        Utils::status('200');
         $exceptionView = View\Factory::getInstance();
         $exceptionView->setModel(Formater::fatal($error));
         $exceptionView->display();
@@ -142,7 +143,7 @@ class ZPHP
         self::setAppPath($appPath);
         $eh = Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler');
         \set_exception_handler($eh);
-//        \register_shutdown_function(__CLASS__ . '::fatalHandler');
+        \register_shutdown_function( Config::getField('project', 'fatal_handler',__CLASS__ . '::fatalHandler') );
         $timeZone = Config::get('time_zone', 'Asia/Shanghai');
         \date_default_timezone_set($timeZone);
         $serverMode = Config::get('server_mode', 'Http');

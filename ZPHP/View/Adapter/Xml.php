@@ -8,6 +8,7 @@
 
 namespace ZPHP\View\Adapter;
 use ZPHP\View\Base,
+    ZPHP\Common\Utils,
     ZPHP\Core\Config;
 
 class Xml extends Base
@@ -38,7 +39,7 @@ class Xml extends Base
     public function display()
     {
         if (Config::get('server_mode') == 'Http') {
-            ZPHP\Common\Utils::header("Content-Type:text/xml; charset=utf-8");
+            Utils::header("Content-Type:text/xml; charset=utf-8");
             echo $this->xmlEncode();
             return null;
         }

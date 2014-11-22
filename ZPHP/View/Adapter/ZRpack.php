@@ -9,6 +9,7 @@
 namespace ZPHP\View\Adapter;
 use ZPHP\View\Base,
     ZPHP\Core\Config,
+    ZPHP\Common\Utils,
     ZPHP\Common\MessagePacker;;
 
 class ZRpack extends Base
@@ -24,7 +25,7 @@ class ZRpack extends Base
         $pack->writeInt($this->model['rid']);
         $pack->writeString($data, $len);
         if (Config::get('server_mode') == 'Http') {
-            ZPHP\Common\Utils::header("Content-Type: application/zrpack; charset=utf-8");
+            Utils::header("Content-Type: application/zrpack; charset=utf-8");
             echo $pack->getData();
         } else {
             return array(
