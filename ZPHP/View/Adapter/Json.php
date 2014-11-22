@@ -18,10 +18,10 @@ class Json extends Base
         if (Config::get('server_mode') == 'Http') {
             $data = \json_encode($this->model);
             if(isset($_GET['jsoncallback'])) {
-                Utils::header('application/x-javascript; charset=utf-8');
+                Utils::header("Content-Type", 'application/x-javascript; charset=utf-8');
                 echo $_GET['jsoncallback'].'('.$data.')';
             } else {
-                Utils::header("Content-Type: application/json; charset=utf-8");
+                Utils::header("Content-Type", "application/json; charset=utf-8");
                 echo $data;
             }
             

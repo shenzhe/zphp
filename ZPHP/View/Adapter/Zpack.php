@@ -19,7 +19,7 @@ class Zpack extends Base
         $pack = new MessagePacker();
         $pack->writeString(json_encode($this->model));
         if (Config::get('server_mode') == 'Http') {
-            Utils::header("Content-Type: application/zpack; charset=utf-8");
+            Utils::header("Content-Type", "application/zpack; charset=utf-8");
             echo $pack->getData();
         } else {
             return array($this->model, $pack->getData);

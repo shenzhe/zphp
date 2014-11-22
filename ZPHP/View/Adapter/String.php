@@ -16,7 +16,7 @@ class String extends Base
     public function display()
     {
         if (Config::get('server_mode') == 'Http') {
-            Utils::header("Content-Type: text/plain; charset=utf-8");
+            Utils::header("Content-Type", "text/plain; charset=utf-8");
             if (\is_string($this->model)) {
                 echo $this->model;
             } else {
