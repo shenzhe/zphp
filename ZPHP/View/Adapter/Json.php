@@ -8,6 +8,7 @@
 
 namespace ZPHP\View\Adapter;
 use ZPHP\View\Base,
+    ZPHP\Common\Utils,
     ZPHP\Core\Config;
 
 class Json extends Base

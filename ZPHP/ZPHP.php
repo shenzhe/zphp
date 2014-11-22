@@ -143,7 +143,7 @@ class ZPHP
         self::setAppPath($appPath);
         $eh = Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler');
         \set_exception_handler($eh);
-        \register_shutdown_function( Config::getField('project', 'fatal_handler',__CLASS__ . '::fatalHandler') );
+        \register_shutdown_function( Config::getField('project', 'fatal_handler', __CLASS__ . '::fatalHandler') );
         $timeZone = Config::get('time_zone', 'Asia/Shanghai');
         \date_default_timezone_set($timeZone);
         $serverMode = Config::get('server_mode', 'Http');

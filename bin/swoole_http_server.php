@@ -35,7 +35,7 @@ class HttpServer
             HttpServer::$request = $request;
             HttpServer::$reponse = $response;
             $_GET = $_POST = $_REQUEST = $_SERVER = array();
-            $_SERVER['REQUEST_TIME'] = time();
+            
             if(empty(HttpServer::$server)) {
                 if (isset($request->server)) {
                     foreach ($request->server as $key => $value) {
@@ -51,6 +51,8 @@ class HttpServer
             }else{
                 $_SERVER = HttpServer::$server;
             }
+
+            $_SERVER['REQUEST_TIME'] = HttpServer::$server['request_time'];
 
             if (isset($request->get)) {
                 $_GET = $request->get;
