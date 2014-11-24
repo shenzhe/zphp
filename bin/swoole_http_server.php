@@ -63,8 +63,10 @@ class HttpServer
             }
 
             ob_start();
-            $this->zphp->run();
-            $result = ob_get_contents();
+            $result = $this->zphp->run();
+            if(null == $result) {
+                $result = ob_get_contents();
+            }
             ob_end_clean();
             $response->end($result);
         });
