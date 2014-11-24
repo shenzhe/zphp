@@ -18,12 +18,12 @@ class HttpServer
 
         $this->webPath = $webPath;
 
-        $http = new swoole_http_server("127.0.0.1", 9502);
+        $http = new swoole_http_server("0.0.0.0", 9502);
 
         $http->set(
             array(
-                'worker_num' => 16,
-                'daemonize' => 1,
+                'worker_num' => 4,
+                'daemonize' => 0,
                 'max_request' => 10000,
                 'dispatch_mode' => 1
             )
@@ -33,7 +33,7 @@ class HttpServer
 
         $http->on('request', function ($request, $response) {
             HttpServer::$request = $request;
-            HttpServer::$reponse = $response;
+            HttpServer::$response = $response;
             $_GET = $_POST = $_REQUEST = $_SERVER = array();
             
             if(empty(HttpServer::$server)) {

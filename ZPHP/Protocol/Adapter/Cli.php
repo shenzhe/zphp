@@ -71,6 +71,6 @@ class Cli implements IProtocol
         $this->_view_mode = '';
         $view = View\Factory::getInstance($viewMode);
         $view->setModel($model);
-        $view->display();
+        return $view->display();
     }
 }
