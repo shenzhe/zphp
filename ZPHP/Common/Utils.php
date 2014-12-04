@@ -26,7 +26,9 @@ class Utils
     public static function header($key, $val)
     {
         if(defined('USE_SWOOLE_HTTP_SERVER') && USE_SWOOLE_HTTP_SERVER) {
-            \HttpServer::$response->header($key, $val);
+            if(is_object(\HttpServer::$response)) {
+                \HttpServer::$response->header($key, $val);
+            }
         } else {
             \header("{$key}: {$val}");
         }
@@ -35,7 +37,9 @@ class Utils
     public static function status($code)
     {
         if(defined('USE_SWOOLE_HTTP_SERVER') && USE_SWOOLE_HTTP_SERVER) {
-            \HttpServer::$response->status($code);
+            if(is_object(\HttpServer::$response)) {
+                \HttpServer::$response->status($code);
+            }
         } else {
             \http_response_code($code);
         }
