@@ -15,7 +15,7 @@ class Cli
     {
         $server = Protocol\Factory::getInstance('Cli');
         $server->parse($_SERVER['argv']);
-        Core\Route::route($server);
+        return Core\Route::route($server);
     }
 
 }

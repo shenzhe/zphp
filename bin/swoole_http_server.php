@@ -1,5 +1,6 @@
 <?php
 use ZPHP\ZPHP;
+use ZPHP\Core\Config as ZConfig;
 
 class HttpServer
 {
@@ -10,6 +11,7 @@ class HttpServer
     public static $response;
     private $zphp;
     private $webPath;
+    private $defaultFiles = ['index.html', 'main.html', 'default.html'];
 
 
 
@@ -36,23 +38,41 @@ class HttpServer
             HttpServer::$response = $response;
             $_GET = $_POST = $_REQUEST = $_SERVER = array();
             
-            if(empty(HttpServer::$server)) {
-                if (isset($request->server)) {
-                    foreach ($request->server as $key => $value) {
-                        $_SERVER[strtoupper($key)] = $value;
+            if (isset($request->server)) {
+                foreach ($request->server as $key => $value) {
+                    $_SERVER[strtoupper($key)] = $value;
+                }
+            }
+            if (isset($request->header)) {
+                foreach ($request->server as $key => $value) {
+                    $_SERVER['HTTP_' . strtoupper($key)] = $value;
+                }
+            }
+            HttpServer::$server = $_SERVER;
+
+            if($_SERVER['PATH_INFO'] == '/') {
+                if(!empty($this->defaultFiles)) {
+                    foreach ($this->defaultFiles as $file) {
+                        $staticFile = $this->getStaticFile(DIRECTORY_SEPARATOR.$file);
+                        if(is_file($staticFile) {
+                            $response->end(file_get_contents($staticFile));
+                            return;
+                        }
                     }
                 }
-                if (isset($request->header)) {
-                    foreach ($request->server as $key => $value) {
-                        $_SERVER['HTTP_' . strtoupper($key)] = $value;
-                    }
-                }
-                HttpServer::$server = $_SERVER;
-            }else{
-                $_SERVER = HttpServer::$server;
             }
 
-            $_SERVER['REQUEST_TIME'] = HttpServer::$server['request_time'];
+            $staticFile = $this->getStaticFile($_SERVER['PATH_INFO']);
+            if(\is_file($staticFile)) { //读取静态文件
+                $response->end(file_get_contents($staticFile));
+                return;
+            }
+
+
+            if($_SERVER['PATH_INFO'] == '/favicon.ico') {
+                $response->end('');
+                return;
+            }
 
             if (isset($request->get)) {
                 $_GET = $request->get;
@@ -80,6 +100,7 @@ class HttpServer
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ZPHP' . DIRECTORY_SEPARATOR . 'ZPHP.php';
         ///home/wwwroot/www.zphp.com, 是应用的地址
         $this->zphp = ZPHP::run($this->webPath, false);
+        ZConfig::set('server_mode', 'Http');
     }
 
     public static function getInstance($webPath)
@@ -88,6 +109,11 @@ class HttpServer
             self::$instance = new HttpServer($webPath);
         }
         return self::$instance;
+    }
+
+    private function getStaticFile($file, $path='webroot')
+    {
+        return $this->webPath.DIRECTORY_SEPARATOR.$path.$file);
     }
 }
 

@@ -15,7 +15,7 @@ class Http
     {
         $server = Protocol\Factory::getInstance('Http');
         $server->parse($_REQUEST);
-        Core\Route::route($server);
+        return Core\Route::route($server);
     }
 
 }
