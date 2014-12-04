@@ -25,13 +25,20 @@ class HttpServer
                 'worker_num' => 4,
                 'daemonize' => 0,
                 'max_request' => 10000,
-                'dispatch_mode' => 1
+                'dispatch_mode' => 0
             )
         );
 
         $http->on('WorkerStart', array($this, 'onWorkerStart'));
 
+        $http->on('message', function ($data, $response) {
+		echo "receive data:";
+		var_dump($data);
+                var_dump($response);
+                $response->message("server:".$data);
+	});
         $http->on('request', function ($request, $response) {
+            print_r($request);
             HttpServer::$request = $request;
             HttpServer::$response = $response;
             $_GET = $_POST = $_REQUEST = $_SERVER = array();
