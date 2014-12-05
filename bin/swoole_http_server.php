@@ -15,6 +15,7 @@ class HttpServer
     private $webPath;
     private $defaultFiles = ['index.html', 'main.html', 'default.html'];
     private $configPath = 'default';
+    private $mimes= [];
 
 
 
@@ -30,7 +31,7 @@ class HttpServer
 
         $http->set(
             array(
-                'worker_num' => 1,
+                'worker_num' => 4,
                 'daemonize' => 0,
                 'max_request' => 0,
                 'dispatch_mode' => 0
@@ -43,21 +44,21 @@ class HttpServer
 
         $http->on('close', function(){
             $params = func_get_args();
-            echo "{$params[1]} close".PHP_EOL;
+//            echo "{$params[1]} close".PHP_EOL;
             $conn = $params[0]->connection_info($params[1]);
             if($conn['websocket_status'] > 1) {
                 $parse = ZFactory::getInstance(ZConfig::getField('socket', 'parse_class', 'WebSocketChatParse'));
-                $_REQUEST = $parse->close();
+                $_REQUEST = $parse->close($params[1]);
                 $this->zphp->run();
             }
         });
 
         $http->on('message', function ($data, $response) {
-            echo "fd:".$response->fd." receive data:".$data.PHP_EOL;
+//            echo "fd:".$response->fd." receive data:".$data.PHP_EOL;
 //            $response->message("server:".$data);
             HttpServer::$response = $response;
-            var_dump($response);
-            echo ZConfig::getField('socket', 'parse_class')." parse class".PHP_EOL;
+//            var_dump($response);
+//            echo ZConfig::getField('socket', 'parse_class')." parse class".PHP_EOL;
             $parse =  ZFactory::getInstance(ZConfig::getField('websocket', 'parse_class', 'WebSocketChatParse'));
             $_REQUEST = $parse->parse($data);
             print_r($_REQUEST);
@@ -65,7 +66,7 @@ class HttpServer
         });
 
         $http->on('request', function ($request, $response) {
-            echo "fd:".$response->fd." path:".$request->server['path_info'].PHP_EOL;
+//            echo "fd:".$response->fd." path:".$request->server['path_info'].PHP_EOL;
             HttpServer::$request = $request;
             HttpServer::$response = $response;
             $_GET = $_POST = $_REQUEST = $_SERVER = array();
@@ -94,16 +95,36 @@ class HttpServer
                 }
             }
 
-            $staticFile = $this->getStaticFile($_SERVER['PATH_INFO']);
-            if(\is_file($staticFile)) { //读取静态文件
-                $response->end(file_get_contents($staticFile));
+            if($_SERVER['PATH_INFO'] == '/favicon.ico') {
+                $response->header('Content-Type', $this->mimes['ico']);
+                $response->end('');
                 return;
             }
 
+            $staticFile = $this->getStaticFile($_SERVER['PATH_INFO']);
 
-            if($_SERVER['PATH_INFO'] == '/favicon.ico') {
-                $response->end('');
-                return;
+            if(\is_dir($staticFile)) { //是目录
+                foreach($this->defaultFiles as $file) {
+                    if(is_file($staticFile.$file)) {
+                        $response->header('Content-Type', 'text/html');
+                        $response->end(file_get_contents($staticFile.$file));
+                        return;
+                    }
+                }
+            }
+
+            $ext  = \pathinfo($_SERVER['PATH_INFO'], PATHINFO_EXTENSION);
+
+            if(isset($this->mimes[$ext])) {  //非法的扩展名
+                if (\is_file($staticFile)) { //读取静态文件
+                    $response->header('Content-Type', $this->mimes[$ext]);
+                    $response->end(file_get_contents($staticFile));
+                    return;
+                } else {
+                    $response->status(404);
+                    $response->end('');
+                    return;
+                }
             }
 
             if (isset($request->get)) {
@@ -137,19 +158,20 @@ class HttpServer
         $this->zphp = ZPHP::run($this->webPath, false, $this->configPath);
         ZConfig::set('server_mode', 'Http');
         $params = func_get_args();
-        echo "worker {$params[1]} start".PHP_EOL;
+//        echo "worker {$params[1]} start".PHP_EOL;
+        $this->mimes = require 'mimes.php';
     }
 
     public function onWorkerStop()
     {
         $params = (func_get_args());
-        echo "{$params[1]} stop, code: {$params[3]}".PHP_EOL;
+//        echo "{$params[1]} stop, code: {$params[3]}".PHP_EOL;
     }
 
     public function onWorkerError()
     {
         $params = (func_get_args());
-        echo "{$params[1]} error, code: {$params[3]}".PHP_EOL;
+//        echo "{$params[1]} error, code: {$params[3]}".PHP_EOL;
     }
 
     public static function getInstance($webPath, $config='default')
@@ -164,6 +186,7 @@ class HttpServer
     {
         return $this->webPath.DIRECTORY_SEPARATOR.$path.$file;
     }
+
 }
 
 if (empty($argv[1])) {
