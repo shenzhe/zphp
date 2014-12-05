@@ -61,7 +61,7 @@ class HttpServer
 //            echo ZConfig::getField('socket', 'parse_class')." parse class".PHP_EOL;
             $parse =  ZFactory::getInstance(ZConfig::getField('websocket', 'parse_class', 'WebSocketChatParse'));
             $_REQUEST = $parse->parse($data);
-            print_r($_REQUEST);
+//            print_r($_REQUEST);
             $this->zphp->run();
         });
 
