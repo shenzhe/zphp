@@ -84,9 +84,7 @@ class HttpServer
                 'Connection' => 'Upgrade',
                 'Sec-WebSocket-Accept' => ''. base64_encode(sha1($request->header['sec_websocket_key'] . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true)),
                 'Sec-WebSocket-Version' => '13',
-                'Date' => gmdate("D, d M Y H:i:s T"),
-                'KeepAlive' => 'off',
-                'Server' => 'swoole_http_server'
+                'KeepAlive' => 'off'
             );
 
             foreach($headers as $key => $val) {
