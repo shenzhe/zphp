@@ -65,6 +65,39 @@ class HttpServer
             $this->zphp->run();
         });
 
+        $http->on('handshake', function ($request, $response) {
+            if (!isset($request->header['sec_websocket_key']))
+            {
+                $this->log('Bad protocol implementation: it is not RFC6455.');
+                $response->end('');
+                return false;
+            }
+            if (0 === preg_match('#^[+/0-9A-Za-z]{21}[AQgw]==$#', $request->header['sec_websocket_key']) || 16 !== strlen(base64_decode($request->header['sec_websocket_key'])))
+            {
+                $this->log('Header Sec-WebSocket-Key: $key is illegal.');
+                $response->end('');
+                return false;
+            }
+
+            $headers =  array(
+                'Upgrade' => 'websocket',
+                'Connection' => 'Upgrade',
+                'Sec-WebSocket-Accept' => ''. base64_encode(sha1($request->header['sec_websocket_key'] . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true)),
+                'Sec-WebSocket-Version' => '13',
+                'Date' => gmdate("D, d M Y H:i:s T"),
+                'KeepAlive' => 'off',
+                'Server' => 'swoole_http_server'
+            );
+
+            foreach($headers as $key => $val) {
+                $response->header($key, $val);
+            }
+
+            $response->status(101);
+
+            $response->end('');
+        });
+
         $http->on('request', function ($request, $response) {
 //            echo "fd:".$response->fd." path:".$request->server['path_info'].PHP_EOL;
             HttpServer::$request = $request;
@@ -77,7 +110,7 @@ class HttpServer
                 }
             }
             if (isset($request->header)) {
-                foreach ($request->server as $key => $value) {
+                foreach ($request->header as $key => $value) {
                     $_SERVER['HTTP_' . strtoupper($key)] = $value;
                 }
             }
