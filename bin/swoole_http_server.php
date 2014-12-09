@@ -66,13 +66,13 @@ class HttpServer
         });
 
         $http->on('handshake', function ($request, $response) {
-            if (!isset($request->header['sec_websocket_key']))
+            if (!isset($request->header['sec-websocket-key']))
             {
                 $this->log('Bad protocol implementation: it is not RFC6455.');
                 $response->end('');
                 return false;
             }
-            if (0 === preg_match('#^[+/0-9A-Za-z]{21}[AQgw]==$#', $request->header['sec_websocket_key']) || 16 !== strlen(base64_decode($request->header['sec_websocket_key'])))
+            if (0 === preg_match('#^[+/0-9A-Za-z]{21}[AQgw]==$#', $request->header['sec-websocket-key']) || 16 !== strlen(base64_decode($request->header['sec-websocket-key'])))
             {
                 $this->log('Header Sec-WebSocket-Key: $key is illegal.');
                 $response->end('');
@@ -82,7 +82,7 @@ class HttpServer
             $headers =  array(
                 'Upgrade' => 'websocket',
                 'Connection' => 'Upgrade',
-                'Sec-WebSocket-Accept' => ''. base64_encode(sha1($request->header['sec_websocket_key'] . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true)),
+                'Sec-WebSocket-Accept' => ''. base64_encode(sha1($request->header['sec-websocket-key'] . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true)),
                 'Sec-WebSocket-Version' => '13',
                 'KeepAlive' => 'off'
             );
