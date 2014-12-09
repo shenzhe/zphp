@@ -181,6 +181,11 @@ class HttpServer
         self::$http ->start();
     }
 
+    public function log($msg)
+    {
+        echo $msg.PHP_EOL;
+    }
+
     public function onWorkerStart()
     {
         //这里require zphp框架目录地址
