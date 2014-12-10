@@ -10,6 +10,7 @@ class HttpServer
     public static $server;
     public static $request;
     public static $response;
+    public static $wsresponse;
     public static $http;
     private $zphp;
     private $webPath;
@@ -28,6 +29,7 @@ class HttpServer
         }
 
         $http = new swoole_http_server("0.0.0.0", 9502);
+        self::$wsresponse = new swoole_http_wsresponse();
 
         $http->set(
             array(
@@ -53,10 +55,21 @@ class HttpServer
             }
         });
 
-        $http->on('message', function ($data, $response) {
-//            echo "fd:".$response->fd." receive data:".$data.PHP_EOL;
+        $http->on('message', function ($response) {
+            var_dump($response);
+            $data = $response->data;
+            print_r(json_decode($data, true));
+            echo "fd:".$response->fd." receive data:".$data.PHP_EOL;
 //            $response->message("server:".$data);
-            HttpServer::$response = $response;
+            if(method_exists($response, 'message')) {
+                echo "has method message=====".PHP_EOL;
+            } else {
+                var_dump($response);
+                var_dump(get_class_methods($response));
+                echo "no method message=====".PHP_EOL;
+            }
+
+            HttpServer::$wsresponse->fd = $response->fd;
 //            var_dump($response);
 //            echo ZConfig::getField('socket', 'parse_class')." parse class".PHP_EOL;
             $parse =  ZFactory::getInstance(ZConfig::getField('websocket', 'parse_class', 'WebSocketChatParse'));
@@ -131,6 +144,13 @@ class HttpServer
                 $response->end('');
                 return;
             }
+            if($_SERVER['PATH_INFO'] == '/jump') {
+                $this->log("jump to baidu");
+                $response->header('Location', 'http://www.baidu.com');
+                $response->status(302);
+                $response->end();
+                return;
+            }
 
             $staticFile = $this->getStaticFile($_SERVER['PATH_INFO']);
 
@@ -184,6 +204,15 @@ class HttpServer
     public function log($msg)
     {
         echo $msg.PHP_EOL;
+    }
+
+
+    public function message($data) {
+        if(empty(self::$wsresponse)) {
+            self::$wsresponse = new swoole_http_wsresponse();
+        }
+
+        self::$wsresponse->message($data);
     }
 
     public function onWorkerStart()
