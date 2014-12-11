@@ -34,7 +34,7 @@ class HttpServer
         $http->set(
             array(
                 'worker_num' => 4,
-                'daemonize' => 0,
+                'daemonize' => 1,
                 'max_request' => 0,
                 'dispatch_mode' => 0
             )
@@ -56,17 +56,17 @@ class HttpServer
         });
 
         $http->on('message', function ($response) {
-            var_dump($response);
+            //var_dump($response);
             $data = $response->data;
-            print_r(json_decode($data, true));
-            echo "fd:".$response->fd." receive data:".$data.PHP_EOL;
+            //print_r(json_decode($data, true));
+            //echo "fd:".$response->fd." receive data:".$data.PHP_EOL;
 //            $response->message("server:".$data);
             if(method_exists($response, 'message')) {
-                echo "has method message=====".PHP_EOL;
+                //echo "has method message=====".PHP_EOL;
             } else {
-                var_dump($response);
-                var_dump(get_class_methods($response));
-                echo "no method message=====".PHP_EOL;
+                //var_dump($response);
+                //var_dump(get_class_methods($response));
+                //echo "no method message=====".PHP_EOL;
             }
 
             HttpServer::$wsresponse->fd = $response->fd;
@@ -203,7 +203,7 @@ class HttpServer
 
     public function log($msg)
     {
-        echo $msg.PHP_EOL;
+        //echo $msg.PHP_EOL;
     }
 
 
