@@ -56,24 +56,25 @@ class HttpServer
         });
 
         $http->on('open', function($response) {
-            echo "handshake success====".PHP_EOL;
-            var_dump($response);
+            //echo "handshake success====".PHP_EOL;
+            //var_dump($response);
         });
-        $http->on('message', function ($response) {
+        
+	$http->on('message', function ($response) {
             //var_dump($response);
             $data = $response->data;
             //print_r(json_decode($data, true));
             //echo "fd:".$response->fd." receive data:".$data.PHP_EOL;
 //            $response->message("server:".$data);
-            if(method_exists($response, 'message')) {
+            //if(method_exists($response, 'message')) {
                 //echo "has method message=====".PHP_EOL;
-            } else {
+            //} else {
                 //var_dump($response);
                 //var_dump(get_class_methods($response));
                 //echo "no method message=====".PHP_EOL;
-            }
+            //}
 
-            HttpServer::$wsresponse->fd = $response->fd;
+            HttpServer::$wsresponse = $response;
 //            var_dump($response);
 //            echo ZConfig::getField('socket', 'parse_class')." parse class".PHP_EOL;
             $parse =  ZFactory::getInstance(ZConfig::getField('websocket', 'parse_class', 'WebSocketChatParse'));
@@ -105,7 +106,7 @@ class HttpServer
             );
 
 
-           print_r($headers);
+           //print_r($headers);
 
             foreach($headers as $key => $val) {
                 $response->header($key, $val);
