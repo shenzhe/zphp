@@ -55,6 +55,10 @@ class HttpServer
             }
         });
 
+        $http->on('open', function($response) {
+            echo "handshake success====".PHP_EOL;
+            var_dump($response);
+        });
         $http->on('message', function ($response) {
             var_dump($response);
             $data = $response->data;
@@ -99,6 +103,9 @@ class HttpServer
                 'Sec-WebSocket-Version' => '13',
                 'KeepAlive' => 'off'
             );
+
+
+           print_r($headers);
 
             foreach($headers as $key => $val) {
                 $response->header($key, $val);
