@@ -10,7 +10,7 @@ class HttpServer
     public static $server;
     public static $request;
     public static $response;
-    public static $wsresponse;
+    public static $wsfarme;
     public static $http;
     private $zphp;
     private $webPath;
@@ -20,23 +20,30 @@ class HttpServer
 
 
 
-    public function __construct($webPath, $config='default')
+    public function __construct($opt, $config='default')
     {
 
-        $this->webPath = $webPath;
+        $this->webPath = $opt['path'];
         if(!empty($config)) {
             $this->configPath = $config;
         }
 
-        $http = new swoole_http_server("0.0.0.0", 9502);
-        self::$wsresponse = new swoole_http_wsresponse();
+        $ip = empty($opt['ip']) ? '0.0.0.0': $opt['ip'];
+        $port = empty($opt['port']) ? '9501': $opt['port'];
 
+        $http = new swoole_http_server($ip, $port);
+        self::$wsfarme = new swoole_websocket_frame();
+        if(isset($opt['d'])) {
+            $daemonize = 1;
+        } else {
+            $daemonize = 0;
+        }
+        $worker_num = empty($opt['worker']) ? 4: $opt['worker'];
         $http->set(
             array(
-                'worker_num' => 4,
-                'daemonize' => 1,
-                'max_request' => 0,
-                'dispatch_mode' => 0
+                'worker_num' => $worker_num,
+                'daemonize' => $daemonize,
+                'max_request' => 0
             )
         );
 
@@ -74,7 +81,7 @@ class HttpServer
                 //echo "no method message=====".PHP_EOL;
             //}
 
-            HttpServer::$wsresponse = $response;
+            HttpServer::$wsfarme = $response;
 //            var_dump($response);
 //            echo ZConfig::getField('socket', 'parse_class')." parse class".PHP_EOL;
             $parse =  ZFactory::getInstance(ZConfig::getField('websocket', 'parse_class', 'WebSocketChatParse'));
@@ -216,11 +223,11 @@ class HttpServer
 
 
     public function message($data) {
-        if(empty(self::$wsresponse)) {
-            self::$wsresponse = new swoole_http_wsresponse();
+        if(empty(self::$wsfarme)) {
+            self::$wsfarme = new swoole_websocket_frame();
         }
 
-        self::$wsresponse->message($data);
+        self::$wsfarme->push($data);
     }
 
     public function onWorkerStart()
@@ -262,10 +269,17 @@ class HttpServer
 
 }
 
-if (empty($argv[1])) {
-    echo "example: php swoole_http_server.php 'your webapp path' 'config dir name'" . PHP_EOL;
-    return;
-}
 
 define('USE_SWOOLE_HTTP_SERVER', 1);
-HttpServer::getInstance($argv[1], $argv[2]);
+$opt = getopt("d", [
+    "path::",
+    "ip::",
+    "port::",
+    "worker::",
+    ]);
+if(empty($opt['path'])) {
+    echo "examples:  php swoole_http_server.php -path=/home/www/zphpdemo -ip=0.0.0.0 -port=9501 -worker=4 -d".PHP_EOL;
+    echo "path is required".PHP_EOL;
+    return;
+}
+HttpServer::getInstance($opt);
