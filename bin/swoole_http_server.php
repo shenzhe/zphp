@@ -16,29 +16,27 @@ class HttpServer
     private $webPath;
     private $defaultFiles = ['index.html', 'main.html', 'default.html'];
     private $configPath = 'default';
-    private $mimes= [];
+    private $mimes = [];
 
 
-
-    public function __construct($opt, $config='default')
+    public function __construct($opt, $config = 'default')
     {
-
         $this->webPath = $opt['path'];
-        if(!empty($config)) {
+        if (!empty($config)) {
             $this->configPath = $config;
         }
 
-        $ip = empty($opt['ip']) ? '0.0.0.0': $opt['ip'];
-        $port = empty($opt['port']) ? '9501': $opt['port'];
+        $ip = empty($opt['ip']) ? '0.0.0.0' : $opt['ip'];
+        $port = empty($opt['port']) ? '9501' : $opt['port'];
 
         $http = new swoole_http_server($ip, $port);
         self::$wsfarme = new swoole_websocket_frame();
-        if(isset($opt['d'])) {
+        if (isset($opt['d'])) {
             $daemonize = 1;
         } else {
             $daemonize = 0;
         }
-        $worker_num = empty($opt['worker']) ? 4: $opt['worker'];
+        $worker_num = empty($opt['worker']) ? 4 : $opt['worker'];
         $http->set(
             array(
                 'worker_num' => $worker_num,
@@ -47,106 +45,40 @@ class HttpServer
             )
         );
 
+        $http->setGlobal(HTTP_GLOBAL_ALL, HTTP_GLOBAL_GET|HTTP_GLOBAL_POST);
+
         $http->on('WorkerStart', array($this, 'onWorkerStart'));
         $http->on('WorkerError', array($this, 'onWorkerError'));
         $http->on('WorkerStop', array($this, 'onWorkerStop'));
 
-        $http->on('close', function(){
+        $http->on('close', function () {
             $params = func_get_args();
-//            echo "{$params[1]} close".PHP_EOL;
             $conn = $params[0]->connection_info($params[1]);
-            if($conn['websocket_status'] > 1) {
+            if ($conn['websocket_status'] > 1) {
                 $parse = ZFactory::getInstance(ZConfig::getField('socket', 'parse_class', 'WebSocketChatParse'));
-                $_REQUEST = $parse->close($params[1]);
-                $this->zphp->run();
+                $parse->close($this->zphp, $params[1]);
             }
         });
 
-        $http->on('open', function($response) {
-            //echo "handshake success====".PHP_EOL;
-            //var_dump($response);
-        });
-        
-	$http->on('message', function ($response) {
-            //var_dump($response);
-            $data = $response->data;
-            //print_r(json_decode($data, true));
-            //echo "fd:".$response->fd." receive data:".$data.PHP_EOL;
-//            $response->message("server:".$data);
-            //if(method_exists($response, 'message')) {
-                //echo "has method message=====".PHP_EOL;
-            //} else {
-                //var_dump($response);
-                //var_dump(get_class_methods($response));
-                //echo "no method message=====".PHP_EOL;
-            //}
-
-            HttpServer::$wsfarme = $response;
-//            var_dump($response);
-//            echo ZConfig::getField('socket', 'parse_class')." parse class".PHP_EOL;
-            $parse =  ZFactory::getInstance(ZConfig::getField('websocket', 'parse_class', 'WebSocketChatParse'));
-            $_REQUEST = $parse->parse($data);
-//            print_r($_REQUEST);
-            $this->zphp->run();
+        $http->on('open', function ($response) {
+            $parse = ZFactory::getInstance(ZConfig::getField('socket', 'parse_class', 'WebSocketChatParse'));
+            $parse->open($this->zphp, $response->fd);
         });
 
-        $http->on('handshake', function ($request, $response) {
-            if (!isset($request->header['sec-websocket-key']))
-            {
-                $this->log('Bad protocol implementation: it is not RFC6455.');
-                $response->end('');
-                return false;
-            }
-            if (0 === preg_match('#^[+/0-9A-Za-z]{21}[AQgw]==$#', $request->header['sec-websocket-key']) || 16 !== strlen(base64_decode($request->header['sec-websocket-key'])))
-            {
-                $this->log('Header Sec-WebSocket-Key: $key is illegal.');
-                $response->end('');
-                return false;
-            }
-
-            $headers =  array(
-                'Upgrade' => 'websocket',
-                'Connection' => 'Upgrade',
-                'Sec-WebSocket-Accept' => ''. base64_encode(sha1($request->header['sec-websocket-key'] . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true)),
-                'Sec-WebSocket-Version' => '13',
-                'KeepAlive' => 'off'
-            );
-
-
-           //print_r($headers);
-
-            foreach($headers as $key => $val) {
-                $response->header($key, $val);
-            }
-
-            $response->status(101);
-
-            $response->end('');
+        $http->on('message', function ($frame) {
+            HttpServer::$wsfarme = $frame;
+            $parse = ZFactory::getInstance(ZConfig::getField('websocket', 'parse_class', 'WebSocketChatParse'));
+            $parse->message($this->zphp, $frame);
         });
 
         $http->on('request', function ($request, $response) {
-//            echo "fd:".$response->fd." path:".$request->server['path_info'].PHP_EOL;
             HttpServer::$request = $request;
             HttpServer::$response = $response;
-            $_GET = $_POST = $_REQUEST = $_SERVER = array();
-            
-            if (isset($request->server)) {
-                foreach ($request->server as $key => $value) {
-                    $_SERVER[strtoupper($key)] = $value;
-                }
-            }
-            if (isset($request->header)) {
-                foreach ($request->header as $key => $value) {
-                    $_SERVER['HTTP_' . strtoupper($key)] = $value;
-                }
-            }
-            HttpServer::$server = $_SERVER;
-
-            if($_SERVER['PATH_INFO'] == '/') {
-                if(!empty($this->defaultFiles)) {
+            if ($_SERVER['PATH_INFO'] == '/') {
+                if (!empty($this->defaultFiles)) {
                     foreach ($this->defaultFiles as $file) {
-                        $staticFile = $this->getStaticFile(DIRECTORY_SEPARATOR.$file);
-                        if(is_file($staticFile)) {
+                        $staticFile = $this->getStaticFile(DIRECTORY_SEPARATOR . $file);
+                        if (is_file($staticFile)) {
                             $response->end(file_get_contents($staticFile));
                             return;
                         }
@@ -154,58 +86,35 @@ class HttpServer
                 }
             }
 
-            if($_SERVER['PATH_INFO'] == '/favicon.ico') {
-                $response->header('Content-Type', $this->mimes['ico']);
-                $response->end('');
-                return;
-            }
-            if($_SERVER['PATH_INFO'] == '/jump') {
-                $this->log("jump to baidu");
-                $response->header('Location', 'http://www.baidu.com');
-                $response->status(302);
-                $response->end();
-                return;
-            }
-
             $staticFile = $this->getStaticFile($_SERVER['PATH_INFO']);
 
-            if(\is_dir($staticFile)) { //是目录
-                foreach($this->defaultFiles as $file) {
-                    if(is_file($staticFile.$file)) {
+            if (\is_dir($staticFile)) { //是目录
+                foreach ($this->defaultFiles as $file) {
+                    if (is_file($staticFile . $file)) {
                         $response->header('Content-Type', 'text/html');
-                        $response->end(file_get_contents($staticFile.$file));
+                        $response->end(file_get_contents($staticFile . $file));
                         return;
                     }
                 }
             }
 
-            $ext  = \pathinfo($_SERVER['PATH_INFO'], PATHINFO_EXTENSION);
+            $ext = \pathinfo($_SERVER['PATH_INFO'], PATHINFO_EXTENSION);
 
-            if(isset($this->mimes[$ext])) {  //非法的扩展名
+            if (isset($this->mimes[$ext])) {  //非法的扩展名
                 if (\is_file($staticFile)) { //读取静态文件
                     $response->header('Content-Type', $this->mimes[$ext]);
                     $response->end(file_get_contents($staticFile));
                     return;
-                } else {
-                    $response->status(404);
-                    $response->end('');
-                    return;
                 }
-            }
-
-            if (isset($request->get)) {
-                $_GET = $request->get;
-                $_REQUEST+=$_GET;
-            }
-
-            if (isset($request->post)) {
-                $_POST = $request->post;
-                $_REQUEST+=$_POST;
+            } else {
+                $response->status(404);
+                $response->end('');
+                return;
             }
 
             ob_start();
             $result = $this->zphp->run();
-            if(null == $result) {
+            if (null == $result) {
                 $result = ob_get_contents();
             }
             ob_end_clean();
@@ -213,21 +122,7 @@ class HttpServer
         });
 
         self::$http = $http;
-        self::$http ->start();
-    }
-
-    public function log($msg)
-    {
-        //echo $msg.PHP_EOL;
-    }
-
-
-    public function message($data) {
-        if(empty(self::$wsfarme)) {
-            self::$wsfarme = new swoole_websocket_frame();
-        }
-
-        self::$wsfarme->push($data);
+        self::$http->start();
     }
 
     public function onWorkerStart()
@@ -254,7 +149,7 @@ class HttpServer
 //        echo "{$params[1]} error, code: {$params[3]}".PHP_EOL;
     }
 
-    public static function getInstance($webPath, $config='default')
+    public static function getInstance($webPath, $config = 'default')
     {
         if (!self::$instance) {
             self::$instance = new HttpServer($webPath, $config);
@@ -262,9 +157,9 @@ class HttpServer
         return self::$instance;
     }
 
-    private function getStaticFile($file, $path='webroot')
+    private function getStaticFile($file, $path = 'webroot')
     {
-        return $this->webPath.DIRECTORY_SEPARATOR.$path.$file;
+        return $this->webPath . DIRECTORY_SEPARATOR . $path . $file;
     }
 
 }
@@ -276,10 +171,10 @@ $opt = getopt("d", [
     "ip::",
     "port::",
     "worker::",
-    ]);
-if(empty($opt['path'])) {
-    echo "examples:  php swoole_http_server.php -path=/home/www/zphpdemo -ip=0.0.0.0 -port=9501 -worker=4 -d".PHP_EOL;
-    echo "path is required".PHP_EOL;
+]);
+if (empty($opt['path'])) {
+    echo "examples:  php swoole_http_server.php -path=/home/www/zphpdemo -ip=0.0.0.0 -port=9501 -worker=4 -d" . PHP_EOL;
+    echo "path is required" . PHP_EOL;
     return;
 }
 HttpServer::getInstance($opt);
