@@ -22,8 +22,8 @@ class HttpServer
     public function __construct($opt, $config = 'default')
     {
         $this->webPath = $opt['path'];
-        if (!empty($config)) {
-            $this->configPath = $config;
+        if (!empty($opt['config'])) {
+            $this->configPath = $opt['config'];
         }
 
         $ip = empty($opt['ip']) ? '0.0.0.0' : $opt['ip'];
@@ -86,6 +86,12 @@ class HttpServer
                 }
             }
 
+            if($_SERVER['PATH_INFO'] == '/favicon.ico') {
+                $response->header('Content-Type', $this->mimes['ico']);
+                $response->end('');
+                return;
+            }
+
             $staticFile = $this->getStaticFile($_SERVER['PATH_INFO']);
 
             if (\is_dir($staticFile)) { //是目录
@@ -105,11 +111,11 @@ class HttpServer
                     $response->header('Content-Type', $this->mimes[$ext]);
                     $response->end(file_get_contents($staticFile));
                     return;
+                } else {
+                    $response->status(404);
+                    $response->end('');
+                    return;
                 }
-            } else {
-                $response->status(404);
-                $response->end('');
-                return;
             }
 
             ob_start();
@@ -118,6 +124,7 @@ class HttpServer
                 $result = ob_get_contents();
             }
             ob_end_clean();
+            $response->status(200);
             $response->end($result);
         });
 
@@ -128,6 +135,7 @@ class HttpServer
     public function onWorkerStart()
     {
         //这里require zphp框架目录地址
+        opcache_reset();
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ZPHP' . DIRECTORY_SEPARATOR . 'ZPHP.php';
         ///home/wwwroot/www.zphp.com, 是应用的地址
         $this->zphp = ZPHP::run($this->webPath, false, $this->configPath);
@@ -171,10 +179,12 @@ $opt = getopt("d", [
     "ip::",
     "port::",
     "worker::",
+    "config::"
 ]);
 if (empty($opt['path'])) {
-    echo "examples:  php swoole_http_server.php -path=/home/www/zphpdemo -ip=0.0.0.0 -port=9501 -worker=4 -d" . PHP_EOL;
+    echo "examples:  php swoole_http_server.php --path=/home/www/zphpdemo --config=default --ip=0.0.0.0 --port=9501 --worker=4 -d" . PHP_EOL;
     echo "path is required" . PHP_EOL;
     return;
 }
+
 HttpServer::getInstance($opt);
