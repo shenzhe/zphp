@@ -92,6 +92,8 @@ class HttpServer
                 return;
             }
 
+
+
             $staticFile = $this->getStaticFile($_SERVER['PATH_INFO']);
 
             if (\is_dir($staticFile)) { //是目录
@@ -117,13 +119,17 @@ class HttpServer
                     return;
                 }
             }
-
-            ob_start();
-            $result = $this->zphp->run();
-            if (null == $result) {
-                $result = ob_get_contents();
+            try {
+                ob_start();
+                $result = $this->zphp->run();
+                if (null == $result) {
+                    $result = ob_get_contents();
+                }
+                ob_end_clean();
+            }  catch (Exception $e) {
+                $result = json_encode($e->getTrace());
             }
-            ob_end_clean();
+
             $response->status(200);
             $response->end($result);
         });

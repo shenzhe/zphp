@@ -13,6 +13,7 @@ class Pdo
     private $tableName;
     private $className;
     private $config;
+    private $lastTime;
 
     public function __construct($config, $className = null, $dbName = null)
     {
