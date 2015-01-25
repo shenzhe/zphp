@@ -36,7 +36,7 @@ class Swoole implements IServer
     {
         $this->serv->on('Start', array($this->client, 'onStart'));
         $this->serv->on('Connect', array($this->client, 'onConnect'));
-        $this->serv->on('Receive', array($this->client, 'onReceive'));
+        $this->serv->on('Request', array($this->client, 'onRequest'));
         $this->serv->on('Close', array($this->client, 'onClose'));
         $this->serv->on('Shutdown', array($this->client, 'onShutdown'));
         $handlerArray = array(
@@ -48,7 +48,10 @@ class Swoole implements IServer
             'onWorkerError',
             'onManagerStart',
             'onManagerStop',
-            'onPipeMessage'
+            'onPipeMessage',
+            'onMessage',
+            'onHandshake',
+            'onOpen'
         );
         foreach($handlerArray as $handler) {
             if(method_exists($this->client, $handler)) {
