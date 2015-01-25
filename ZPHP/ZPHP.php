@@ -99,7 +99,7 @@ class ZPHP
     {
         $exceptionView = View\Factory::getInstance();
         $exceptionView->setModel(Formater::exception($exception));
-        $exceptionView->display();
+        return $exceptionView->display();
     }
 
     final public static function fatalHandler()

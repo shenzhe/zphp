@@ -74,6 +74,7 @@ class HttpServer
         $http->on('request', function ($request, $response) {
             HttpServer::$request = $request;
             HttpServer::$response = $response;
+            $_SERVER['PATH_INFO'] = $request->server['path_info'];
             if ($_SERVER['PATH_INFO'] == '/') {
                 if (!empty($this->defaultFiles)) {
                     foreach ($this->defaultFiles as $file) {
