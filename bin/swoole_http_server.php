@@ -146,7 +146,6 @@ class HttpServer
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ZPHP' . DIRECTORY_SEPARATOR . 'ZPHP.php';
         ///home/wwwroot/www.zphp.com, 是应用的地址
         $this->zphp = ZPHP::run($this->webPath, false, $this->configPath);
-        ZConfig::set('server_mode', 'Http');
         $params = func_get_args();
 //        echo "worker {$params[1]} start".PHP_EOL;
         $this->mimes = require 'mimes.php';
