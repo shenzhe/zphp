@@ -7,6 +7,9 @@ class Mongo
 
     private $mongo; //mongo对象
     private $db; //db mongodb对象数据库
+    /**
+     * @var
+     */
     private $collection; //集合，相当于数据表 
 
     /**
@@ -120,9 +123,9 @@ class Mongo
     public function find($query, $sort = array(), $skip = 0, $limit = 0, $fields = array())
     {
         $cursor = $this->collection->find($query, $fields);
-         if(empty($cursor->count())) {
-             return array();
-         }
+//        if(empty($cursor->count())) {
+//            return array();
+//        }
         if ($sort) $cursor->sort($sort);
         if ($skip) $cursor->skip($skip);
         if ($limit) $cursor->limit($limit);
