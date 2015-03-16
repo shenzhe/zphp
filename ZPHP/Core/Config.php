@@ -39,7 +39,7 @@ class Config
     public static function get($key, $default = null, $throw = false)
     {
         $result = isset(self::$config[$key]) ? self::$config[$key] : $default;
-        if ($throw && empty($result)) {
+        if ($throw && is_null($result)) {
             throw new \Exception("{key} config empty");
         }
         return $result;
@@ -61,7 +61,7 @@ class Config
     public static function getField($key, $filed, $default = null, $throw = false)
     {
         $result = isset(self::$config[$key][$filed]) ? self::$config[$key][$filed] : $default;
-        if ($throw && empty($result)) {
+        if ($throw && is_null($result)) {
             throw new \Exception("{key} config empty");
         }
         return $result;
