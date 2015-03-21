@@ -39,7 +39,7 @@ class Route
         }
         $class->_after();
         if ($exception !== null) {
-            if('Socket' == Config::get('server_mode', 'Http')) {
+            if(Config::get('is_long_service', 0)) {
                 return call_user_func(Config::getField('project', 'exception_handler', 'ZPHP\ZPHP::exceptionHandler'), $exception);
             }
             throw $exception;
