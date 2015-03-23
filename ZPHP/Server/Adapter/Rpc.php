@@ -27,4 +27,9 @@ class Rpc implements IServer
         $this->protocol->parse($params);
         return Core\Route::route($this->protocol);
     }
+
+    public function getProtocol()
+    {
+        return $this->protocol;
+    }
 }
