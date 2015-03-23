@@ -7,15 +7,25 @@
 
 namespace ZPHP\Server\Adapter;
 use ZPHP\Core,
+    ZPHP\Server\IServer,
     ZPHP\Protocol;
 
-class Http
+class Http implements IServer
 {
+    private $protocol;
+
     public function run()
     {
-        $server = Protocol\Factory::getInstance('Http');
-        $server->parse($_REQUEST);
-        return Core\Route::route($server);
+        if(!$this->protocol) {
+            $this->protocol = Protocol\Factory::getInstance('Http');
+        }
+        $this->protocol->parse($_REQUEST);
+        return Core\Route::route($this->protocol);
+    }
+
+    public function getProtocol()
+    {
+        return $this->protocol;
     }
 
 }

@@ -7,15 +7,25 @@
 
 namespace ZPHP\Server\Adapter;
 use ZPHP\Core,
+    ZPHP\Server\IServer,
     ZPHP\Protocol;
 
-class Cli
+class Cli implements IServer
 {
+    private $protocol;
+
     public function run()
     {
-        $server = Protocol\Factory::getInstance('Cli');
-        $server->parse($_SERVER['argv']);
-        return Core\Route::route($server);
+        if(!$this->protocol) {
+            $this->protocol = Protocol\Factory::getInstance('Cli');
+        }
+        $this->protocol->parse($_SERVER['argv']);
+        return Core\Route::route($this->protocol);
+    }
+
+    public function getProtocol()
+    {
+        return $this->protocol;
     }
 
 }

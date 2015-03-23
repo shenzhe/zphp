@@ -9,8 +9,9 @@ namespace ZPHP\Server\Adapter;
 use ZPHP\Socket\Factory as SFactory;
 use ZPHP\Core\Config;
 use ZPHP\Core\Factory as CFactory;
+use ZPHP\Server\IServer;
 
-class Socket
+class Socket implements IServer
 {
     public function run()
     {
@@ -22,6 +23,10 @@ class Socket
         $client = CFactory::getInstance($config['client_class']);
         $socket->setClient($client);
         $socket->run();
+    }
 
+    public function getProtocol()
+    {
+        return null;
     }
 }

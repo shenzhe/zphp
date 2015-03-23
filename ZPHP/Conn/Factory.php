@@ -11,7 +11,12 @@ use ZPHP\Core\Factory as ZFactory,
 class Factory
 {
 
-
+    /**
+     * @param string $adapter
+     * @param null $config
+     * @return \ZPHP\Conn\IConn
+     * @throws \Exception
+     */
     public static function getInstance($adapter = "Redis", $config = null)
     {
     	if(empty($config)) {
