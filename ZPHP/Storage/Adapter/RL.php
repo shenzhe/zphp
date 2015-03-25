@@ -54,12 +54,11 @@ class RL implements IStorage
         if($this->hash) {
             return $this->redis->rlHMGet($uKey, $keys);
         }
-        foreach ($keys as $key => $value) {
-            $nkey = $uKey.$key;
-            $keys[$nkey] = $value;
-            unset($keys[$key]);
+        $mkeys = [];
+        foreach ($keys as $key) {
+            $mkeys[] = $uKey.$key;
         }
-        return $this->redis->rlMGET($keys);
+        return $this->redis->rlMGet($mkeys);
     }
 
     public function getMD($userId, $key, $slaveConfig = "")
