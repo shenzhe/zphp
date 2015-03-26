@@ -26,6 +26,7 @@ class Pdo
         } else {
             $this->dbName = $dbName;
         }
+        $this->lastTime = time() + $this->config['pingtime'];
         $this->checkPing();
     }
 
@@ -294,19 +295,23 @@ class Pdo
 
     public function ping()
     {
-        if(empty($this->pdo)) {
-            $this->pdo = $this->connect();
-        } else {
-            try {
-                $status = $this->pdo->getAttribute(\PDO::ATTR_SERVER_INFO);
-            } catch (\Exception $e) {
-                if ($e->getCode() == 'HY000') {
-                    $this->pdo = $this->connect();
-                } else {
-                    throw $e;
+        $now = time();
+        if($this->lastTime < $now) {
+            if (empty($this->pdo)) {
+                $this->pdo = $this->connect();
+            } else {
+                try {
+                    $status = $this->pdo->getAttribute(\PDO::ATTR_SERVER_INFO);
+                } catch (\Exception $e) {
+                    if ($e->getCode() == 'HY000') {
+                        $this->pdo = $this->connect();
+                    } else {
+                        throw $e;
+                    }
                 }
             }
         }
+        $this->lastTime = $now + $this->config['pingtime'];
         return $this->pdo;
     }
 
