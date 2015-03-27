@@ -11,6 +11,10 @@ class Redis
     private static $instances;
     private static $configs;
 
+    /**
+     * @param $config
+     * @return \Redis
+     */
     public static function getInstance($config)
     {
         $name = $config['name'];

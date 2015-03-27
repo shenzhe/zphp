@@ -40,7 +40,7 @@ class Yac implements IConn
     {
         $uinfo = $this->get($uid);
         if (!empty($uinfo)) {
-            $this->delete($uid);
+            $this->delete($uinfo['fd'], $uid);
         }
         $data = array(
             'fd' => $fd,

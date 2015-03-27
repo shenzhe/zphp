@@ -36,7 +36,7 @@ class Php implements IConn
     {
         $uinfo = $this->get($uid);
         if (!empty($uinfo)) {
-            $this->delete($uid);
+            $this->delete($uinfo['fd'], $uid);
         }
         $data = array(
             'fd' => $fd,
@@ -125,9 +125,6 @@ class Php implements IConn
 
     public function delete($fd, $uid = null, $old = true)
     {
-        if (null === $uid) {
-            $uid = $this->getUid($fd);
-        }
         if ($old) {
             $okey = $this->getKey($fd, 'fu');
             if(isset($this->_cache[$okey])) {
