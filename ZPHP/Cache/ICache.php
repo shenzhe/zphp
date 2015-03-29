@@ -14,7 +14,7 @@ interface ICache
 
     function add($key, $value);
 
-    function set($key, $value);
+    function set($key, $value, $timeOut);
 
     function get($key);
 
