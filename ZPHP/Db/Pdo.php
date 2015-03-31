@@ -18,6 +18,9 @@ class Pdo
     public function __construct($config, $className = null, $dbName = null)
     {
         $this->config = $config;
+        if(empty($this->config['pingtime'])) {
+            $this->config['pingtime'] = 3600;
+        }
         if (!empty($className)) {
             $this->className = $className;
         }
