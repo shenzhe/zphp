@@ -44,6 +44,9 @@ class Debug
         $times = $endTime - self::$records[$key]['start_time'];
         $mem_use = memory_get_usage() - self::$records[$key]['memory_use'];
         unset(self::$records[$key]);
+        if(empty($_SERVER['HTTP_HOST'])) {
+            $_SERVER['HTTP_HOST'] = '';
+        }
         Log::info($logName, array($times, self::convert($mem_use), $run_id, $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'], \json_encode($_REQUEST)));
     }
 

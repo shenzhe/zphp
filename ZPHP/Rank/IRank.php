@@ -63,7 +63,7 @@ interface IRank
      * @param type $rankType
      * @param type $key
      */
-    public function getRankByKey($rankType, $key);
+    public function getRankByKey($rankType, $key, $desc);
 
     /**
      *
