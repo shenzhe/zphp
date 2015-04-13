@@ -12,7 +12,7 @@ interface ICache
 
     function selectDb($db);
 
-    function add($key, $value);
+    function add($key, $value, $timeOut);
 
     function set($key, $value, $timeOut);
 
