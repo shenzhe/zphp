@@ -62,6 +62,7 @@ class Redis implements IConn
     public function addChannel($uid, $channel)
     {
         $uinfo = $this->get($uid);
+        if(empty($uinfo)) return;
         $uinfo['types'][$channel] = 1;
         if ($this->redis->hSet($this->getKey($channel), $uid, $uinfo['fd'])) {
             $this->redis->set($this->getKey($uid), json_encode($uinfo));
@@ -72,7 +73,7 @@ class Redis implements IConn
     {
         if($this->redis->hDel($this->getKey($channel), $uid)){
             $uinfo = $this->get($uid);
-            if(isset($uinfo['types'][$channel])) {
+            if(!empty($uinfo['types'][$channel])) {
                 unset($uinfo['types'][$channel]);
                 $this->redis->set($this->getKey($uid), json_encode($uinfo));
             }
