@@ -9,6 +9,6 @@ namespace ZPHP\Server;
 
 interface IServer
 {
-	public function run($data=null);
+	public function run();
     public function getProtocol();
 }

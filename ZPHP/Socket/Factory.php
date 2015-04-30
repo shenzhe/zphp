@@ -18,7 +18,11 @@ class Factory
     			$adapter = $config['adapter'];
     		}
     	}
-        $className = __NAMESPACE__ . "\\Adapter\\{$adapter}";
+        if (is_file(__DIR__ . DS . 'Adapter' . DS . $adapter . '.php')) {
+            $className = __NAMESPACE__ . "\\Adapter\\{$adapter}";
+        } else {
+            $className = $adapter;
+        }
         return CFactory::getInstance($className, $config);
     }
 }
