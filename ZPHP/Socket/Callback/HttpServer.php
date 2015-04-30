@@ -28,7 +28,7 @@ abstract class HttpServer implements ICallback
 
     public function onStart()
     {
-        echo 'server start, swoole version: ' . SWOOLE_VERSION . PHP_EOL;
+        echo 'server start, swoole version: ' , SWOOLE_VERSION , PHP_EOL;
         $config = ZConfig::getField('cache', 'locale');
         $this->cache = ZCache::getInstance($config['adapter'], $config);
     }

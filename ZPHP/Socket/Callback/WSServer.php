@@ -552,7 +552,7 @@ abstract class WSServer implements ICallback
 
     public function log($msg)
     {
-        echo $msg."\n";
+        echo $msg,"\n";
     }
 }
 

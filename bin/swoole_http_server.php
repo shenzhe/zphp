@@ -188,8 +188,8 @@ $opt = getopt("d", [
     "config::"
 ]);
 if (empty($opt['path'])) {
-    echo "examples:  php swoole_http_server.php --path=/home/www/zphpdemo --config=default --ip=0.0.0.0 --port=9501 --worker=4 -d" . PHP_EOL;
-    echo "path is required" . PHP_EOL;
+    echo "examples:  php swoole_http_server.php --path=/home/www/zphpdemo --config=default --ip=0.0.0.0 --port=9501 --worker=4 -d" , PHP_EOL;
+    echo "path is required" , PHP_EOL;
     return;
 }
 
