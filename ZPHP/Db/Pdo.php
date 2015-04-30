@@ -15,6 +15,21 @@ class Pdo
     private $config;
     private $lastTime;
 
+    /**
+     * @param $config
+     * @param null $className
+     * entityDemo
+     * <?php
+     *    假设数据库有user表,表含有id(自增主键), username, password三个字段
+     *    class UserEntity {
+     *         const TABLE_NAME = 'user';  //对应的数据表名
+     *         const PK_ID = 'id';         //主键id名
+     *         public $id;                 //public属性与表字段一一对应
+     *         public $username;
+     *         public $password;
+     *    }
+     * @param null $dbName
+     */
     public function __construct($config, $className = null, $dbName = null)
     {
         $this->config = $config;
@@ -77,8 +92,8 @@ class Pdo
     public function getTableName()
     {
         if (empty($this->tableName)) {
-            $classRef = new \ReflectionClass($this->className);
-            $this->tableName = $classRef->getConstant('TABLE_NAME');
+            $entityRef = new \ReflectionClass($this->className);
+            $this->tableName = $entityRef->getConstant('TABLE_NAME');
         }
 
         return $this->tableName;
