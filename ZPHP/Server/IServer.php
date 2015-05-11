@@ -10,5 +10,9 @@ namespace ZPHP\Server;
 interface IServer
 {
 	public function run();
+
+    /**
+     * @return \ZPHP\Protocol\IProtocol
+     */
     public function getProtocol();
 }

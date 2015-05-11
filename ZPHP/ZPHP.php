@@ -117,6 +117,13 @@ class ZPHP
         $exceptionView->display();
     }
 
+    /**
+     * @param $rootPath
+     * @param bool $run
+     * @param null $configPath
+     * @return \ZPHP\Server\IServer
+     * @throws \Exception
+     */
     public static function run($rootPath, $run=true, $configPath=null)
     {
         if (!defined('DS')) {

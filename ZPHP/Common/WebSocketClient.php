@@ -6,7 +6,7 @@
  * Time: 下午12:18
  */
 
-namespace Common;
+namespace ZPHP\Common;
 
 
 class WebSocketClient

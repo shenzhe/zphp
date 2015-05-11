@@ -28,6 +28,7 @@ class Swoole implements IServer
 
     public function setClient($client)
     {
+
         $this->client = $client;
         return true;
     }
@@ -43,7 +44,8 @@ class Swoole implements IServer
             'onTimer', 
             'onWorkerStart', 
             'onWorkerStop', 
-            'onTask', 
+            'onWorkerError',
+            'onTask',
             'onFinish',
             'onWorkerError',
             'onManagerStart',
