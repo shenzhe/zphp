@@ -65,9 +65,13 @@ class WebSocketClient
      * @throws ConnectionException
      * @return $this
      */
-    public function connect()
+    public function connect($pconnect=false)
     {
-        $this->socket = new \swoole_client(SWOOLE_TCP|SWOOLE_KEEP);
+        if($pconnect) {
+            $this->socket = new \swoole_client(SWOOLE_TCP);
+        } else {
+            $this->socket = new \swoole_client(SWOOLE_TCP|SWOOLE_KEEP);
+        }
         if (!$this->socket->connect($this->host, $this->port)) {
             return false;
         }
