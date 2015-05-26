@@ -1,52 +1,48 @@
 <?php
 
-/**
- *  依赖于 httpparser扩展和yac扩展
- *  git地址：https://github.com/matyhtf/php-webserver/tree/master/ext
- *  git地址：https://github.com/laruence/yac
- */
 
 namespace ZPHP\Socket\Callback;
 
 use ZPHP\Socket\ICallback;
 use ZPHP\Core\Config as ZConfig;
-use ZPHP\Protocol;
 use ZPHP\Core;
-use \HttpParser;
-use ZPHP\Conn\Factory as ZCache;
+use ZPHP\Common\Utils;
+use ZPHP\Protocol;
 
 
-class SwooleHttp
+class SwooleHttp implements ICallback
 {
 
-    private $cache;
-    private $_route;
-    public $serv;
-    private $mimes = array();
+    protected $protocol;
+    protected $protocolName = 'Http';
+
+    protected $serv;
 
     public function onStart()
     {
-        $config = ZConfig::getField('cache', 'locale');
-        $this->cache = ZCache::getInstance($config['adapter'], $config);
+        if(!$this->protocol) {
+            $this->protocol = Protocol\Factory::getInstance(ZConfig::getField('project', 'protocol', $this->protocolName));
+        }
     }
 
     public function onConnect()
     {
-        $params = func_get_args();
-        $fd = $params[1];
-        //echo "{$fd} connected".PHP_EOL;
-        
+    }
+
+    public function onReceive()
+    {
+        throw new \Exception('swoole http is onRequest');
     }
 
     /**
      *  请求发起
      */
-    public function onMessage()
+    public function onRequest($request, $response)
     {
-        $params = func_get_args();
-        $_data = $params[3];
-        $serv = $params[0];
-        $fd = $params[1];
+        Utils::$response = $response;
+        $this->protocol->parse($_REQUEST);
+        $result =  Core\Route::route($this->protocol);
+        return $response->end($result);
     }
 
     public function onClose()
@@ -57,17 +53,12 @@ class SwooleHttp
 
     public function onShutdown()
     {
-        //echo "server shut dowm\n";
-        if($this->cache) {
-            $this->cache->clear();
-        }
+
     }
 
 
     public function onWorkerStart()
     {
-        $params = func_get_args();
-
     }
 
     public function onWorkerStop()
@@ -82,5 +73,10 @@ class SwooleHttp
     public function onFinish()
     {
         
+    }
+
+    public function setServer($serv)
+    {
+        $this->serv = $serv;
     }
 }

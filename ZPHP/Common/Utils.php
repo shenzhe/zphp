@@ -10,6 +10,9 @@ namespace ZPHP\Common;
 class Utils
 {
 
+    public static $swoole = 0;
+    public static $response;
+
     /**
      * 判断是否ajax方式
      * @return bool
@@ -23,12 +26,18 @@ class Utils
         return false;
     }
 
+    public function isSwoole()
+    {
+        self::$swoole = 1;
+    }
+
+
+
+
     public static function header($key, $val)
     {
-        if(defined('USE_SWOOLE_HTTP_SERVER') && USE_SWOOLE_HTTP_SERVER) {
-            if(is_object(\HttpServer::$response)) {
-                \HttpServer::$response->header($key, $val);
-            }
+        if(self::$swoole && self::$response) {
+            self::$response->header($key, $val);
         } else {
             \header("{$key}: {$val}");
         }
@@ -36,10 +45,8 @@ class Utils
 
     public static function status($code)
     {
-        if(defined('USE_SWOOLE_HTTP_SERVER') && USE_SWOOLE_HTTP_SERVER) {
-            if(is_object(\HttpServer::$response)) {
-                \HttpServer::$response->status($code);
-            }
+        if(self::$swoole && self::$response) {
+            self::$response->status($code);
         } else {
             \http_response_code($code);
         }
@@ -47,8 +54,8 @@ class Utils
 
     public static function setcookie($key,  $value = '', $expire = 0 , $path = '/', $domain  = '', $secure = false , $httponly = false)
     {
-        if(defined('USE_SWOOLE_HTTP_SERVER') && USE_SWOOLE_HTTP_SERVER) {
-            \HttpServer::$response->cookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
+        if(self::$swoole && self::$response) {
+            self::$response->cookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
         } else {
             \setcookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
         }
@@ -56,8 +63,8 @@ class Utils
 
     public static function setrawcookie($key,  $value = '', $expire = 0 , $path = '/', $domain  = '', $secure = false , $httponly = false)
     {
-        if(defined('USE_SWOOLE_HTTP_SERVER') && USE_SWOOLE_HTTP_SERVER) {
-            \HttpServer::$response->rawcookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
+        if(self::$swoole && self::$response) {
+            self::$response->rawcookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
         } else {
             \setrawcookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
         }

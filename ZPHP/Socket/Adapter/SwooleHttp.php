@@ -9,7 +9,8 @@
 namespace ZPHP\Socket\Adapter;
 use ZPHP\Socket\IServer,
     ZPHP\Socket\ICallback,
-    ZPHP\Socket\Callback\SwooleHttp as httpClient;
+    ZPHP\Socket\Callback\SwooleHttp as httpClient,
+    ZPHP\Socket\Callback\SwooleWebSocket as wsClient;
 
 class SwooleHttp implements IServer
 {
@@ -25,10 +26,9 @@ class SwooleHttp implements IServer
         $this->config = $config;
         $this->serv = new \swoole_http_server($config['host'], $config['port'], $config['work_mode']);
         $this->serv->set($config);
-        $this->client = new httpClient();
+        $this->client = new wsClient();
+        $this->client->setServer($this->serv);
     }
-
-
 
     public function run()
     {
@@ -48,12 +48,16 @@ class SwooleHttp implements IServer
             'onManagerStart',
             'onManagerStop',
             'onPipeMessage',
+            'onOpen',
+            'onMessage',
+            'onHandShake',
         );
         foreach($handlerArray as $handler) {
             if(\method_exists($this->client, $handler)) {
                 $this->serv->on(\str_replace('on', '', $handler), array($this->client, $handler));
             }
-        } 
+        }
+        $this->serv->setGlobal(HTTP_GLOBAL_ALL, HTTP_GLOBAL_GET|HTTP_GLOBAL_POST);
         $this->serv->start();
     }
 }

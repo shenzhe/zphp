@@ -66,15 +66,15 @@ class Json implements IProtocol
 
     public function display($model)
     {
-        $data = array();
-        if (is_array($model)) {
-            $data = $model;
+        if (empty($this->_view_mode)) {
+            $viewMode = Config::getField('project', 'view_mode', 'Json');
         } else {
-            $data['data'] = $model;
+            $viewMode = $this->_view_mode;
         }
-        $data['_fd'] = $this->fd;
-        $this->_data = $data;
-        return $this->_data;
+        $this->_view_mode = '';
+        $view = View\Factory::getInstance($viewMode);
+        $view->setModel($model);
+        return $view->display();
     }
 
     public function getData()
