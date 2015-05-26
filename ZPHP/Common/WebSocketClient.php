@@ -65,7 +65,7 @@ class WebSocketClient
      * @throws ConnectionException
      * @return $this
      */
-    public function connect($pconnect=true)
+    public function connect($pconnect=false)
     {
         if(!$this->socket) {
             if ($pconnect) {
