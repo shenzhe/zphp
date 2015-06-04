@@ -132,6 +132,11 @@ class Mongo
         return iterator_to_array($cursor);
     }
 
+    public function explain($query)
+    {
+        return $this->collection->find($query)->explain();
+    }
+
     /**
      * 数据统计
      */

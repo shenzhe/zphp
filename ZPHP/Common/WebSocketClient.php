@@ -73,9 +73,10 @@ class WebSocketClient
             } else {
                 $this->socket = new \swoole_client(SWOOLE_TCP);
             }
-            if (!$this->socket->connect($this->host, $this->port)) {
-                return false;
-            }
+//            if (!$this->socket->connect($this->host, $this->port)) {
+//                return false;
+//            }
+            $this->socket->connect($this->host, $this->port);
         }
         $this->socket->send($this->createHeader());
         return $this->recv();
