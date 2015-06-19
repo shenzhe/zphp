@@ -29,8 +29,7 @@ class HttpServer
         $ip = empty($opt['ip']) ? '0.0.0.0' : $opt['ip'];
         $port = empty($opt['port']) ? '9501' : $opt['port'];
 
-        $http = new swoole_http_server($ip, $port);
-        self::$wsfarme = new swoole_websocket_frame();
+        $http = new swoole_websocket_server($ip, $port);
         if (isset($opt['d'])) {
             $daemonize = 1;
         } else {
@@ -65,7 +64,7 @@ class HttpServer
             $parse->open($this->zphp, $response->fd);
         });
 
-        $http->on('message', function ($frame) {
+        $http->on('message', function ($server, $frame) {
             HttpServer::$wsfarme = $frame;
             $parse = ZFactory::getInstance(ZConfig::getField('websocket', 'parse_class', 'WebSocketChatParse'));
             $parse->message($this->zphp, $frame);
