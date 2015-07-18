@@ -17,14 +17,18 @@ class Redis
      */
     public static function getInstance($config)
     {
-        $name = $config['name'];
+        $name = $config['host'].PATH_SEPARATOR.$config['port'];
+        $timeOut = 0;
+        if(isset($config['timeout'])) {
+            $config['timeout'] = $config['timeout'];
+        }
         $pconnect = $config['pconnect'];
         if (empty(self::$instances[$name])) {
             $redis = new \Redis();
             if ($pconnect) {
-                $redis->pconnect($config['host'], $config['port'], $config['timeout'], $name);
+                $redis->pconnect($config['host'], $config['port'], $timeOut);
             } else {
-                $redis->connect($config['host'], $config['port'], $config['timeout']);
+                $redis->connect($config['host'], $config['port'], $timeOut);
             }
             $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
             self::$instances[$name] = $redis;
