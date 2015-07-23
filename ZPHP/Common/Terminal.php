@@ -70,7 +70,7 @@ class Terminal
     public static function setStyle($c)
     {
         if (self::$enable_color) {
-            echo "\033[" . $c . 'm';
+            echo "\033[" , $c , 'm';
         }
     }
 

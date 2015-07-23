@@ -19,7 +19,7 @@ class Json extends Base
             $data = \json_encode($this->model);
             if(isset($_GET['jsoncallback'])) {
                 Utils::header("Content-Type", 'application/x-javascript; charset=utf-8');
-                echo $_GET['jsoncallback'].'('.$data.')';
+                echo $_GET['jsoncallback'],'(',$data,')';
             } else {
                 Utils::header("Content-Type", "application/json; charset=utf-8");
                 echo $data;

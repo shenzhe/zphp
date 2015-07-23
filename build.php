@@ -1,10 +1,10 @@
 <?php
     require 'ZPHP/Common/Dir.php';
-    echo "pls enter app path:".PHP_EOL;
+    echo "pls enter app path:",PHP_EOL;
     $app_path = trim(fgets(STDIN));
 
     if(is_dir($app_path)) {
-        echo 'dir is exist'.PHP_EOL;
+        echo 'dir is exist',PHP_EOL;
         return;
     }
 
@@ -23,7 +23,7 @@
         );
         foreach($dirList as $realPath) {
             if(ZPHP\Common\Dir::make($app_path.DIRECTORY_SEPARATOR.$realPath)) {
-                echo $realPath."  done...".PHP_EOL;
+                echo $realPath,"  done...",PHP_EOL;
             }
         }
         $mainTxt = '<?php
@@ -32,7 +32,7 @@ $rootPath = dirname(__DIR__);
 require \''.__DIR__.'\'. DIRECTORY_SEPARATOR . \'ZPHP\' . DIRECTORY_SEPARATOR . \'ZPHP.php\';
 ZPHP::run($rootPath);';
         file_put_contents($app_path.DIRECTORY_SEPARATOR.'webroot'.DIRECTORY_SEPARATOR.'main.php', $mainTxt);
-        echo "main.php done...".PHP_EOL;
+        echo "main.php done...",PHP_EOL;
 
         $ctrlTxt = '<?php
 namespace ctrl\main;
@@ -74,9 +74,9 @@ class main implements IController
 
 ';
 		file_put_contents($app_path.DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.'ctrl'.DIRECTORY_SEPARATOR.'main'.DIRECTORY_SEPARATOR.'main.php', $ctrlTxt);
-        echo "ctrl done...".PHP_EOL;
+        echo "ctrl done...",PHP_EOL;
 
-        echo "pls enter project_name:".PHP_EOL;
+        echo "pls enter project_name:",PHP_EOL;
     	$project_name = trim(fgets(STDIN));
 
        	$configTxt = '<?php
@@ -94,8 +94,8 @@ class main implements IController
     );
 ';
 		file_put_contents($app_path.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'default'.DIRECTORY_SEPARATOR.'config.php', $configTxt);
-        echo "config done...".PHP_EOL;
-        echo "finish...".PHP_EOL;
+        echo "config done...",PHP_EOL;
+        echo "finish...",PHP_EOL;
     }
 
 
