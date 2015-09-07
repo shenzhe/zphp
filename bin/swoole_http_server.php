@@ -191,5 +191,8 @@ if (empty($opt['path'])) {
     echo "path is required" . PHP_EOL;
     return;
 }
-
+if(!extension_loaded('swoole')) {
+    echo 'pls install swoole extension, url: https://github.com/swoole/swoole-src or pecl install swoole'.PHP_EOL;
+    return;
+}
 HttpServer::getInstance($opt);
