@@ -25,7 +25,7 @@ class Log
         Dir::make($dir);
         $str = \date('Y-m-d H:i:s', Config::get('now_time', time())) . self::SEPARATOR . \implode(self::SEPARATOR, array_map('ZPHP\Common\Log::myJson', $params));
         $logFile = $dir . \DS . $type . '.log';
-        \error_log($str . "\n", 3, $logFile);
+        \file_put_contents($logFile, $str . "\n", FILE_APPEND|LOCK_EX);
     }
     
     public static function myJson($data)
