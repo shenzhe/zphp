@@ -5,10 +5,10 @@
  * 初始化框架相关信息
  */
 namespace ZPHP;
+use ZPHP\Protocol\Response;
 use ZPHP\View,
     ZPHP\Core\Config,
     ZPHP\Common\Debug,
-    ZPHP\Common\Utils,
     ZPHP\Common\Formater;
 
 class ZPHP
@@ -111,7 +111,7 @@ class ZPHP
         if(!in_array($error['type'], array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR))) {
             return;
         }
-        Utils::status('200');
+        Response::status('200');
         $exceptionView = View\Factory::getInstance();
         $exceptionView->setModel(Formater::fatal($error));
         $exceptionView->display();

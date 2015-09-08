@@ -9,17 +9,19 @@ use ZPHP\Controller\IController,
     ZPHP\Core\Factory,
     ZPHP\Core\Config,
     ZPHP\ZPHP;
+use ZPHP\Protocol\Request;
+use ZPHP\Protocol\Response;
 
 class Route
 {
     public static function route($server)
     {
-        $action = Config::get('ctrl_path', 'ctrl') . '\\' . $server->getCtrl();
+        $action = Config::get('ctrl_path', 'ctrl') . '\\' . Request::getCtrl();
         $class = Factory::getInstance($action);
         if (!($class instanceof IController)) {
             throw new \Exception("ctrl error");
         }
-        $class->setServer($server);
+        Response::init($server);
         $view = $exception = null;
         
         try {
@@ -31,7 +33,7 @@ class Route
 
         if ($before) {
             try {
-                $method = $server->getMethod();
+                $method = Request::getMethod();
                 $view = $class->$method();
             } catch (\Exception $e) {
                 $exception = $e;
@@ -48,6 +50,6 @@ class Route
         if (null === $view) {
             return;
         }
-        return $server->display($view);
+        return Response::display($view);
     }
 }

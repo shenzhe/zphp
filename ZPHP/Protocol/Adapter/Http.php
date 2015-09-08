@@ -11,20 +11,10 @@ use ZPHP\View;
 use ZPHP\Core\Config;
 use ZPHP\Protocol\IProtocol;
 use ZPHP\Common\Route as ZRoute;
-use ZPHP\Common\Utils as ZUtils;
+use ZPHP\Protocol\Request;
 
 class Http implements IProtocol
 {
-    private $_ctrl = 'main\\main';
-
-    private $_method = 'main';
-
-    private $_params = array();
-
-    private $_view_mode  = null;
-
-    private $_tpl_file = '';
-
     /**
      * 直接 parse $_REQUEST
      * @param $_data
@@ -32,102 +22,28 @@ class Http implements IProtocol
      */
     public function parse($data)
     {
-        $this->_ctrl = Config::getField('project', 'default_ctrl_name', 'main\\main');
-        $this->_method = Config::getField('project', 'default_method_name', 'main');
+        $ctrlName = Config::getField('project', 'default_ctrl_name', 'main\\main');
+        $methodName = Config::getField('project', 'default_method_name', 'main');
         $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {
-            $this->_ctrl = \str_replace('/', '\\', $data[$apn]);
+            $ctrlName = \str_replace('/', '\\', $data[$apn]);
         }
         if (isset($data[$mpn])) {
-            $this->_method = $data[$mpn];
+            $methodName = $data[$mpn];
         }
         if(!empty($_SERVER['PATH_INFO'])) {
             $routeMap = ZRoute::match(Config::get('route', false), $_SERVER['PATH_INFO']);
             if(is_array($routeMap)) {
-                $this->_ctrl = $routeMap[0];
-                $this->_method = $routeMap[1];
+                $ctrlName = $routeMap[0];
+                $methodName = $routeMap[1];
                 if(!empty($routeMap[2]) && is_array($routeMap[2])) {
                     //参数优先
                     $data = $data + $routeMap[2];
                 }
             }
         }
-        $this->_params = $data;
-        $this->_tpl_file = str_replace('\\', DS, $this->_ctrl) . DS . $this->_method . '.php';
+        Request::init($ctrlName, $methodName, $data, Config::getField('project', 'view_mode', 'Php'));
         return true;
-    }
-
-    public function getCtrl()
-    {
-        return $this->_ctrl;
-    }
-
-    public function getMethod()
-    {
-        return $this->_method;
-    }
-
-    public function getParams()
-    {
-        return $this->_params;
-    }
-
-    public function setFd($fd)
-    {
-        $this->_fd = $fd;
-    }
-
-    public function getFd()
-    {
-        return $this->_fd;
-    }
-
-    public function setViewMode($mode)
-    {
-        $this->_view_mode = $mode;
-    }
-
-    public function setTplFile($tpl)
-    {
-        $this->_tpl_file = $tpl;
-    }
-
-    public function display($model)
-    {
-//        ($viewMode = $this->_view_mode) || ($viewMode = Config::getField('project', 'view_mode', ''));
-        if($this->_view_mode) {
-            $viewMode = $this->_view_mode;
-        } else {
-            $viewMode = Config::getField('project', 'view_mode');
-        }
-        if(is_array($model) && !empty($model['_view_mode'])) {
-            $viewMode = $model['_view_mode'];
-            unset($model['_view_mode']);
-        }
-        $this->_view_mode = null;
-        if(empty($viewMode)) {
-            if (ZUtils::isAjax()) {
-                $viewMode = 'Json';
-            } else {
-                $viewMode = 'Php';
-            }
-        }
-
-        $view = View\Factory::getInstance($viewMode);
-        if ('Php' === $viewMode) {
-            if(is_array($model) && !empty($model['_tpl_file'])) {
-                $view->setTpl($model['_tpl_file']);
-                unset($model['_tpl_file']);
-            } else if(!empty($this->_tpl_file)){
-                $view->setTpl($this->_tpl_file);
-                $this->_tpl_file = null;
-            } else {
-                throw new \Exception("tpl file empty");
-            }
-        }
-        $view->setModel($model);
-        return $view->display();
-
     }
 }

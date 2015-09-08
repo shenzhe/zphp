@@ -7,10 +7,6 @@
 namespace ZPHP\Controller;
 interface IController
 {
-	/**
-	 *  设置服务
-	 */
-    function setServer($server);
 
     /**
 	 * 业务逻辑开始前执行

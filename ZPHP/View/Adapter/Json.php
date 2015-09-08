@@ -7,8 +7,9 @@
 
 
 namespace ZPHP\View\Adapter;
+use ZPHP\Protocol\Request;
+use ZPHP\Protocol\Response;
 use ZPHP\View\Base,
-    ZPHP\Common\Utils,
     ZPHP\Core\Config;
 
 class Json extends Base
@@ -17,14 +18,14 @@ class Json extends Base
     {
         if (Config::get('server_mode') == 'Http') {
             $data = \json_encode($this->model);
-            if(isset($_GET['jsoncallback'])) {
-                Utils::header("Content-Type", 'application/x-javascript; charset=utf-8');
-                echo $_GET['jsoncallback'].'('.$data.')';
+            $params = Request::getParams();
+            if(isset($params['jsoncallback'])) {
+                Response::header("Content-Type", 'application/x-javascript; charset=utf-8');
+                echo $params['jsoncallback'].'('.$data.')';
             } else {
-                Utils::header("Content-Type", "application/json; charset=utf-8");
+                Response::header("Content-Type", "application/json; charset=utf-8");
                 echo $data;
             }
-            
         } else {
         	return \json_encode($this->model);
         }

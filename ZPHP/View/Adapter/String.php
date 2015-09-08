@@ -7,8 +7,8 @@
 
 
 namespace ZPHP\View\Adapter;
+use ZPHP\Protocol\Response;
 use ZPHP\View\Base,
-    ZPHP\Common\Utils,
     ZPHP\Core\Config;
 
 class String extends Base
@@ -16,7 +16,7 @@ class String extends Base
     public function display()
     {
         if (Config::get('server_mode') == 'Http') {
-            Utils::header("Content-Type", "text/plain; charset=utf-8");
+            Response::header("Content-Type", "text/plain; charset=utf-8");
             if (\is_string($this->model)) {
                 echo $this->model;
             } else {

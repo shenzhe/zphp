@@ -8,7 +8,7 @@
 
 namespace ZPHP\Socket\Adapter;
 use ZPHP\Socket\IServer,
-    ZPHP\Socket\ICallback;
+    ZPHP\Socket\Callback;
 
 class Swoole implements IServer
 {
@@ -18,7 +18,7 @@ class Swoole implements IServer
     const TYPE_TCP = 'tcp';
     const TYPE_UDP = 'udp';
     const TYPE_HTTP = 'http';
-    const TYPE_WEBSOCKET = 'websocket';
+    const TYPE_WEBSOCKET = 'ws';
 
     public function __construct(array $config)
     {
@@ -53,7 +53,26 @@ class Swoole implements IServer
 
     public function setClient($client)
     {
-
+        if(!is_object($client)) {
+            throw new \Exception('client must object');
+        }
+        switch($this->config['server_type']) {
+            case self::TYPE_WEBSOCKET:
+                if (!($client instanceof Callback\SwooleWebSocket)) {
+                    throw new \Exception('client must instanceof ZPHP\Socket\Callback\SwooleWebSocket');
+                }
+                break;
+            case self::TYPE_HTTP:
+                if (!($client instanceof Callback\SwooleHttp)) {
+                    throw new \Exception('client must instanceof ZPHP\Socket\Callback\SwooleHttp');
+                }
+                break;
+            default:
+                if (!($client instanceof Callback\Swoole)) {
+                    throw new \Exception('client must instanceof ZPHP\Socket\Callback\Swoole');
+                }
+                break;
+        }
         $this->client = $client;
         return true;
     }
@@ -61,21 +80,26 @@ class Swoole implements IServer
     public function run()
     {
         $this->serv->on('Start', array($this->client, 'onStart'));
+        $this->serv->on('Shutdown', array($this->client, 'onShutdown'));
         $this->serv->on('Connect', array($this->client, 'onConnect'));
+        $this->serv->on('Close', array($this->client, 'onClose'));
         switch($this->config['server_type']) {
             case self::TYPE_HTTP:
                 $this->serv->on('Request', array($this->client, 'onRequest'));
                 break;
             case self::TYPE_WEBSOCKET:
-                $this->serv->on('Open', array($this->client, 'onOpen'));
-                $this->serv->on('Message', array($this->client, 'Message'));
+                if(method_exists($this->client, 'onHandShake')) {
+                    $this->serv->on('HandShake', array($this->client, 'onHandShake'));
+                }
+                if(method_exists($this->client, 'onOpen')) {
+                    $this->serv->on('Open', array($this->client, 'onOpen'));
+                }
+                $this->serv->on('Message', array($this->client, 'onMessage'));
                 break;
             default:
                 $this->serv->on('Receive', array($this->client, 'onReceive'));
                 break;
         }
-        $this->serv->on('Close', array($this->client, 'onClose'));
-        $this->serv->on('Shutdown', array($this->client, 'onShutdown'));
         $handlerArray = array(
             'onTimer', 
             'onWorkerStart', 
