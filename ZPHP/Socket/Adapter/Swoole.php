@@ -94,6 +94,9 @@ class Swoole implements IServer
                 if(method_exists($this->client, 'onOpen')) {
                     $this->serv->on('Open', array($this->client, 'onOpen'));
                 }
+                if(method_exists($this->client, 'onRequest')) {
+                    $this->serv->on('Request', array($this->client, 'onRequest'));
+                }
                 $this->serv->on('Message', array($this->client, 'onMessage'));
                 break;
             default:

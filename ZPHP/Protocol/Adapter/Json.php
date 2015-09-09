@@ -6,6 +6,7 @@
 
 
 namespace ZPHP\Protocol\Adapter;
+
 use ZPHP\Core\Config,
     ZPHP\Socket\Client as ZSClient,
     ZPHP\Protocol\IProtocol,
@@ -18,7 +19,14 @@ class Json implements IProtocol
     {
         $ctrlName = Config::getField('project', 'default_ctrl_name', 'main\\main');
         $methodName = Config::getField('project', 'default_method_name', 'main');
-        $data = \json_decode($_data, true);
+        $data = [];
+        if (!empty($data)) {
+            if (is_array($_data)) {
+                $data = $_data;
+            } else {
+                $data = \json_decode($_data, true);
+            }
+        }
         $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {

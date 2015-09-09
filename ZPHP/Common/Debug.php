@@ -1,6 +1,7 @@
 <?php
 
 namespace ZPHP\Common;
+use ZPHP\Protocol\Request;
 use ZPHP\ZPHP,
     ZPHP\Core\Config,
     ZPHP\Common\Log,
@@ -47,7 +48,7 @@ class Debug
         if(empty($_SERVER['HTTP_HOST'])) {
             $_SERVER['HTTP_HOST'] = '';
         }
-        Log::info($logName, array($times, self::convert($mem_use), $run_id, $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'], \json_encode($_REQUEST)));
+        Log::info($logName, array($times, self::convert($mem_use), $run_id, $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'], Request::getParams()));
     }
 
 

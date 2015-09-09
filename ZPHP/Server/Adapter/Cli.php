@@ -12,20 +12,12 @@ use ZPHP\Core,
 
 class Cli implements IServer
 {
-    private $protocol;
-
     public function run()
     {
-        if(!$this->protocol) {
-            $this->protocol = Protocol\Factory::getInstance('Cli');
-        }
-        $this->protocol->parse($_SERVER['argv']);
-        return Core\Route::route($this->protocol);
-    }
-
-    public function getProtocol()
-    {
-        return $this->protocol;
+        $server = Protocol\Factory::getInstance('Cli');
+        Protocol\Request::setServer($server);
+        Protocol\Request::parse($_SERVER['argv']);
+        return Core\Route::route();
     }
 
 }

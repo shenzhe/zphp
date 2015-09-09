@@ -30,15 +30,15 @@ class Php extends Base
         if (!empty($this->model)) {
             \extract($this->model);
         }
-        if (Config::get('server_mode') == 'Http') {
-            include "{$fileName}";
-        } else {
+        if (ZPHP\Protocol\Request::isLongServer()) {
             \ob_start();
             include "{$fileName}";
             $content = ob_get_contents();
             \ob_end_clean();
             return $content;
         }
+        include "{$fileName}";
+        return null;
     }
 
 

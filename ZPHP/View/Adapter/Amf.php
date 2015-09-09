@@ -7,6 +7,7 @@
 
 
 namespace ZPHP\View\Adapter;
+use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
 use ZPHP\View\Base,
     ZPHP\Core\Config;
@@ -15,12 +16,15 @@ class Amf extends Base
 {
     public function display()
     {
-        if (Config::get('server_mode') == 'Http') {
+        if (Request::isHttp()) {
             Response::header('Content-Type', 'application/amf; charset=utf-8');
-            echo \amf3_encode($this->model);
-        } else {
-        	return \amf3_encode($this->model);
         }
+        $data =  \amf3_encode($this->model);
+        if(Request::isLongServer()) {
+        	return $data;
+        }
+        echo $data;
+        return null;
         
     }
 }

@@ -14,42 +14,33 @@ use ZPHP\Protocol\Response;
 
 class Route
 {
-    public static function route($server)
+    public static function route()
     {
         $action = Config::get('ctrl_path', 'ctrl') . '\\' . Request::getCtrl();
-        $class = Factory::getInstance($action);
-        if (!($class instanceof IController)) {
-            throw new \Exception("ctrl error");
-        }
-        Response::init($server);
-        $view = $exception = null;
-        
-        try {
-            $before = $class->_before();
-        } catch (\Exception $e) {
-            $exception = $e;
-            $before = false;
-        }        
+        $view = null;
 
-        if ($before) {
-            try {
+        try {
+            $class = Factory::getInstance($action);
+            if (!($class instanceof IController)) {
+                throw new \Exception("ctrl error");
+            } else {
+                $class->_before();
                 $method = Request::getMethod();
+                if(!method_exists($class, $method)) {
+                    throw new \Exception("method error");
+                }
                 $view = $class->$method();
-            } catch (\Exception $e) {
-                $exception = $e;
+                $class->_after();
+                if (null === $view) {
+                    return null;
+                }
+                return Response::display($view);
             }
-        }
-        $class->_after();
-        if ($exception !== null) {
-            if(Config::get('is_long_service', 0)) {
-                return call_user_func(Config::getField('project', 'exception_handler', 'ZPHP\ZPHP::exceptionHandler'), $exception);
+        }catch (\Exception $e) {
+            if(Request::isLongServer()) {
+                return \call_user_func(Config::getField('project', 'exception_handler', 'ZPHP\ZPHP::exceptionHandler'), $e);
             }
-            throw $exception;
-            return;
+            throw $e;
         }
-        if (null === $view) {
-            return;
-        }
-        return Response::display($view);
     }
 }

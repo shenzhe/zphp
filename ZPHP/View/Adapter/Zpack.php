@@ -7,6 +7,7 @@
 
 
 namespace ZPHP\View\Adapter;
+use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
 use ZPHP\View\Base,
     ZPHP\Core\Config,
@@ -18,12 +19,17 @@ class Zpack extends Base
     {
         $pack = new MessagePacker();
         $pack->writeString(json_encode($this->model));
-        if (Config::get('server_mode') == 'Http') {
+
+        if(Request::isHttp()) {
             Response::header("Content-Type", "application/zpack; charset=utf-8");
-            echo $pack->getData();
-        } else {
+        }
+
+        if (Request::isLongServer()) {
             return array($this->model, $pack->getData);
         }
+        echo $pack->getData();
+        return null;
+
         
 
     }

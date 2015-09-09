@@ -21,13 +21,31 @@ class Request
 
     private static $_fd = null;
 
-    public static function init($ctrl, $method, $params, $viewMode)
+    private static $_long_server = 0;
+    private static $_is_http = 1;
+
+    /**
+     * @var IProtocol
+     */
+    private static $_server;
+
+    public static function init($ctrl, $method, $params, $viewMode=null)
     {
-        self::$_ctrl = $ctrl;
-        self::$_method = $method;
+        if($ctrl) {
+            self::$_ctrl = $ctrl;
+        } else {
+            self::$_ctrl = ZConfig::getField('project', 'default_ctrl_name', self::$_ctrl);
+        }
+        if($method) {
+            self::$_method = $method;
+        }else {
+            self::$_method = ZConfig::getField('project', 'default_method_name', self::$_method);
+        }
         self::$_params = $params;
-        self::$_view_mode = $viewMode;
-        self::$_tpl_file = \str_replace('\\', DS, $ctrl) . DS . $method . '.php';
+        if($viewMode) {
+            self::$_view_mode = $viewMode;
+        }
+        self::$_tpl_file = \str_replace('\\', DS, self::$_ctrl) . DS . self::$_method . '.php';
     }
 
 	public static function setParams($params)
@@ -101,6 +119,41 @@ class Request
             return true;
         }
         return false;
+    }
+
+    public static function setServer($server)
+    {
+        self::$_server = $server;
+    }
+
+    public static function getServer()
+    {
+        return self::$_server;
+    }
+
+    public static function parse($data)
+    {
+        return self::$_server->parse($data);
+    }
+
+    public static function setLongServer($tag=1)
+    {
+        self::$_long_server = $tag;
+    }
+
+    public static function isLongServer()
+    {
+        return self::$_long_server;
+    }
+
+    public static function setHttpServer($tag=1)
+    {
+        self::$_is_http = $tag;
+    }
+
+    public static function isHttp()
+    {
+        return self::$_is_http;
     }
 
 }

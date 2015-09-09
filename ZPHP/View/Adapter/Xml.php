@@ -7,6 +7,7 @@
 
 
 namespace ZPHP\View\Adapter;
+use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
 use ZPHP\View\Base,
     ZPHP\Core\Config;
@@ -38,13 +39,17 @@ class Xml extends Base
 
     public function display()
     {
-        if (Config::get('server_mode') == 'Http') {
+        if(Request::isHttp()) {
             Response::header("Content-Type", "text/xml; charset=utf-8");
-            echo $this->xmlEncode();
-            return null;
+        }
+        $data = $this->xmlEncode();
+
+        if(Request::isLongServer()) {
+            return $data;
         }
 
-        return $this->xmlEncode();
+        echo $data;
+        return null;
 
         
     }

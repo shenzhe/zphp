@@ -10,17 +10,16 @@ use ZPHP\View\Factory as ZView;
 
 class Response
 {
-    private static $_server;
     private static $_response = null;
 
-    public static function init($server)
+    public static function setResponse($response)
     {
-        self::$_server = $server;
+        self::$_response = $response;
     }
 
-    public static function getServer()
+    public static function getResponse()
     {
-        return self::$_server;
+        return self::$_response;
     }
 
     public static function display($model)
@@ -59,7 +58,7 @@ class Response
     public static function header($key, $val)
     {
         if(self::$_response) {
-            self::$response->header($key, $val);
+            self::$_response->header($key, $val);
             return;
         }
 
@@ -69,7 +68,7 @@ class Response
     public static function status($code)
     {
         if(self::$_response) {
-            self::$response->status($code);
+            self::$_response->status($code);
             return;
         }
 
@@ -79,8 +78,8 @@ class Response
 
     public static function setcookie($key,  $value = '', $expire = 0 , $path = '/', $domain  = '', $secure = false , $httponly = false)
     {
-        if(self::$response) {
-            self::$response->cookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
+        if(self::$_response) {
+            self::$_response->cookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
             return;
         }
         \setcookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
@@ -89,8 +88,8 @@ class Response
 
     public static function setrawcookie($key,  $value = '', $expire = 0 , $path = '/', $domain  = '', $secure = false , $httponly = false)
     {
-        if(self::$response) {
-            self::$response->rawcookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
+        if(self::$_response) {
+            self::$_response->rawcookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
         }
         \setrawcookie($key,  $value, $expire, $path, $domain, $secure, $httponly);
     }

@@ -97,9 +97,7 @@ class ZPHP
 
     final public static function exceptionHandler($exception)
     {
-        $exceptionView = View\Factory::getInstance();
-        $exceptionView->setModel(Formater::exception($exception));
-        return $exceptionView->display();
+        return Response::display(Formater::exception($exception));
     }
 
     final public static function fatalHandler()
@@ -112,9 +110,7 @@ class ZPHP
             return;
         }
         Response::status('200');
-        $exceptionView = View\Factory::getInstance();
-        $exceptionView->setModel(Formater::fatal($error));
-        $exceptionView->display();
+        return Response::display(Formater::fatal($error));
     }
 
     /**

@@ -7,6 +7,7 @@
 
 
 namespace ZPHP\View\Adapter;
+use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
 use ZPHP\View\Base,
     ZPHP\Core\Config;
@@ -15,18 +16,20 @@ class String extends Base
 {
     public function display()
     {
-        if (Config::get('server_mode') == 'Http') {
+        if(Request::isHttp()) {
             Response::header("Content-Type", "text/plain; charset=utf-8");
-            if (\is_string($this->model)) {
-                echo $this->model;
-            } else {
-                echo json_encode($this->model);
-            }
-
-            return null;
         }
 
-        return $this->model;
-        
+        if (\is_string($this->model)) {
+            $data =  $this->model;
+        } else {
+            $data =  json_encode($this->model);
+        }
+        if(Request::isLongServer()) {
+            return $data;
+        }
+
+        echo $data;
+        return null;
     }
 }

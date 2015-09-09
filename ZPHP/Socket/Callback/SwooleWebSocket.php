@@ -13,7 +13,7 @@ use ZPHP\View\Factory as ZView;
 abstract class SwooleWebSocket extends SwooleHttp
 {
 
-    public function onOpen($request, $response)
+    public function onOpen($server, $request)
     {
 
     }

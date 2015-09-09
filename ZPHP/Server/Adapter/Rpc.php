@@ -12,7 +12,6 @@ use ZPHP\Core,
 
 class Rpc implements IServer
 {
-    private $protocol;
     public function run()
     {
         $rpc = new \Yar_Server(new self());
@@ -21,15 +20,9 @@ class Rpc implements IServer
 
     public function api($params)
     {
-        if(!$this->protocol) {
-            $this->protocol = Protocol\Factory::getInstance('Rpc');
-        }
-        $this->protocol->parse($params);
-        return Core\Route::route($this->protocol);
+        Protocol\Request::setServer(Protocol\Factory::getInstance('Rpc'));
+        Protocol\Request::parse($params);
+        return Core\Route::route();
     }
 
-    public function getProtocol()
-    {
-        return $this->protocol;
-    }
 }

@@ -12,20 +12,12 @@ use ZPHP\Core,
 
 class Http implements IServer
 {
-    private $protocol;
 
     public function run()
     {
-        if(!$this->protocol) {
-            $this->protocol = Protocol\Factory::getInstance('Http');
-        }
-        $this->protocol->parse($_REQUEST);
-        return Core\Route::route($this->protocol);
-    }
-
-    public function getProtocol()
-    {
-        return $this->protocol;
+        Protocol\Request::setServer(Protocol\Factory::getInstance('Http'));
+        Protocol\Request::parse($_REQUEST);
+        return Core\Route::route();
     }
 
 }

@@ -6,6 +6,8 @@
 
 
 namespace ZPHP\Server\Adapter;
+use ZPHP\Protocol\Request;
+use ZPHP\Protocol\Factory as ZProtocol;
 use ZPHP\Socket\Factory as SFactory;
 use ZPHP\Core\Config;
 use ZPHP\Core\Factory as CFactory;
@@ -24,11 +26,9 @@ class Socket implements IServer
             $client = CFactory::getInstance($config['client_class']);
             $socket->setClient($client);
         }
+        Request::setServer(ZProtocol::getInstance(Config::getField('socket', 'protocol')));
+        Request::setLongServer();
+        Request::setHttpServer(0);
         $socket->run();
-    }
-
-    public function getProtocol()
-    {
-        return null;
     }
 }
