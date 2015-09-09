@@ -45,6 +45,9 @@ class Request
         if($viewMode) {
             self::$_view_mode = $viewMode;
         }
+        if(!is_string(self::$_ctrl) || !is_string(self::$_method)) {
+            throw new \Exception('ctrl or method no string');
+        }
         self::$_tpl_file = \str_replace('\\', DS, self::$_ctrl) . DS . self::$_method . '.php';
     }
 
