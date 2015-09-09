@@ -34,7 +34,7 @@ class Cli implements IProtocol
         if (isset($data[$mpn])) {
             $methodName = $data[$mpn];
         }
-        Request::init($data, $ctrlName, $methodName, Config::getField('project', 'view_mode', 'String'));
+        Request::init($ctrlName, $methodName, $data, Config::getField('project', 'view_mode', 'String'));
         return true;
     }
 }
