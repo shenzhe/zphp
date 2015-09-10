@@ -23,6 +23,7 @@ class Request
 
     private static $_long_server = 0;
     private static $_is_http = 1;
+    private static $_request = 1;
 
     /**
      * @var IProtocol
@@ -157,6 +158,16 @@ class Request
     public static function isHttp()
     {
         return self::$_is_http;
+    }
+
+    public static function setRequest($request)
+    {
+        self::$_request = $request;
+    }
+
+    public static function getRequest()
+    {
+        return self::$_request;
     }
 
 }
