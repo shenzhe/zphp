@@ -7,11 +7,15 @@
 
 namespace ZPHP\Core;
 use ZPHP\Common\Dir;
+use ZPHP\Protocol\Request;
 
 class Config
 {
 
     private static $config;
+    private static $nextCheckTime = 0;
+    private static $lastModifyTime = 0;
+    private static $configPath;
 
     public static function load($configPath)
     {
@@ -23,6 +27,11 @@ class Config
             }
         }
         self::$config = $config;
+        if(Request::isLongServer()) {
+            self::$configPath = $configPath;
+            self::$nextCheckTime = time() + empty($config['project']['config_check_time']) ? 5 : $config['project']['config_check_time'];
+            self::$lastModifyTime = \filectime($configPath);
+        }
         return $config;
     }
 
@@ -38,6 +47,7 @@ class Config
 
     public static function get($key, $default = null, $throw = false)
     {
+        self::checkTime();
         $result = isset(self::$config[$key]) ? self::$config[$key] : $default;
         if ($throw && is_null($result)) {
             throw new \Exception("{key} config empty");
@@ -60,6 +70,7 @@ class Config
 
     public static function getField($key, $filed, $default = null, $throw = false)
     {
+        self::checkTime();
         $result = isset(self::$config[$key][$filed]) ? self::$config[$key][$filed] : $default;
         if ($throw && is_null($result)) {
             throw new \Exception("{key} config empty");
@@ -70,5 +81,17 @@ class Config
     public static function all()
     {
         return self::$config;
+    }
+
+    private static function checkTime()
+    {
+        if(Request::isLongServer()) {
+            if(self::$nextCheckTime < time()) {
+                if(self::$lastModifyTime < \filectime(self::$configPath)) {
+                    self::load(self::$configPath);
+                }
+            }
+        }
+        return;
     }
 }

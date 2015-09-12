@@ -24,6 +24,7 @@ class Request
     private static $_long_server = 0;
     private static $_is_http = 1;
     private static $_request = 1;
+    private static $_socket = null;
 
     /**
      * @var IProtocol
@@ -168,6 +169,16 @@ class Request
     public static function getRequest()
     {
         return self::$_request;
+    }
+
+    public static function setSocket($socket)
+    {
+        self::$_socket = $socket;
+    }
+
+    public static function getSocket()
+    {
+        return self::$_socket;
     }
 
 }
