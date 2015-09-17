@@ -8,6 +8,9 @@
 namespace ZPHP\Db;
 class Pdo
 {
+    /**
+     * @var \PDO
+     */
     private $pdo;
     private $dbName;
     private $tableName;
@@ -164,7 +167,8 @@ class Pdo
 
         $query = "INSERT INTO {$this->getLibName()} (`" . implode('`,`', $fields) . "`) VALUES " . implode(',', $items);
         $statement = $this->pdo->prepare($query);
-        return $statement->execute($params);
+        $statement->execute($params);
+        return $statement->rowCount();
     }
 
     public function replace($entity, $fields)
@@ -194,7 +198,8 @@ class Pdo
         $strUpdateFields = implode(',', $updateFields);
         $query = "UPDATE {$this->getLibName()} SET {$strUpdateFields} WHERE {$where}";
         $statement = $this->pdo->prepare($query);
-        return $statement->execute($params);
+        $statement->execute($params);
+        return $statement->rowCount();
     }
 
     public function fetchValue($where = '1', $params = null, $fields = '*')
@@ -282,7 +287,8 @@ class Pdo
 
         $query = "DELETE FROM {$this->getLibName()} WHERE {$where}";
         $statement = $this->pdo->prepare($query);
-        return $statement->execute($params);
+        $statement->execute($params);
+        return $statement->rowCount();
     }
 
     public function flush()

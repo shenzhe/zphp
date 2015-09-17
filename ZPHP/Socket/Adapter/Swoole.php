@@ -67,6 +67,11 @@ class Swoole implements IServer
                     throw new \Exception('client must instanceof ZPHP\Socket\Callback\SwooleHttp');
                 }
                 break;
+            case self::TYPE_UDP:
+                if (!($client instanceof Callback\SwooleUdp)) {
+                    throw new \Exception('client must instanceof ZPHP\Socket\Callback\SwooleUdp');
+                }
+                break;
             default:
                 if (!($client instanceof Callback\Swoole)) {
                     throw new \Exception('client must instanceof ZPHP\Socket\Callback\Swoole');
@@ -79,11 +84,27 @@ class Swoole implements IServer
 
     public function run()
     {
+        $handlerArray = array(
+            'onTimer',
+            'onWorkerStart',
+            'onWorkerStop',
+            'onWorkerError',
+            'onTask',
+            'onFinish',
+            'onWorkerError',
+            'onManagerStart',
+            'onManagerStop',
+            'onPipeMessage',
+            'onPacket',
+        );
         $this->serv->on('Start', array($this->client, 'onStart'));
         $this->serv->on('Shutdown', array($this->client, 'onShutdown'));
         $this->serv->on('Connect', array($this->client, 'onConnect'));
         $this->serv->on('Close', array($this->client, 'onClose'));
         switch($this->config['server_type']) {
+            case self::TYPE_TCP:
+                $this->serv->on('Receive', array($this->client, 'onReceive'));
+                break;
             case self::TYPE_HTTP:
                 $this->serv->on('Request', array($this->client, 'onRequest'));
                 break;
@@ -99,23 +120,12 @@ class Swoole implements IServer
                 }
                 $this->serv->on('Message', array($this->client, 'onMessage'));
                 break;
-            default:
-                $this->serv->on('Receive', array($this->client, 'onReceive'));
+            case self::TYPE_UDP:
+                array_pop($handlerArray);
+                $this->serv->on('Packet', array($this->client, 'onPacket'));
                 break;
         }
-        $handlerArray = array(
-            'onTimer', 
-            'onWorkerStart', 
-            'onWorkerStop', 
-            'onWorkerError',
-            'onTask',
-            'onFinish',
-            'onWorkerError',
-            'onManagerStart',
-            'onManagerStop',
-            'onPipeMessage',
-            'onPacket',
-        );
+
         foreach($handlerArray as $handler) {
             if(method_exists($this->client, $handler)) {
                 $this->serv->on(\str_replace('on', '', $handler), array($this->client, $handler));
