@@ -6,6 +6,7 @@
  */
 
 namespace ZPHP\Core;
+
 use ZPHP\Common\Dir;
 use ZPHP\Protocol\Request;
 
@@ -27,7 +28,7 @@ class Config
             }
         }
         self::$config = $config;
-        if(Request::isLongServer()) {
+        if (Request::isLongServer()) {
             self::$configPath = $configPath;
             self::$nextCheckTime = time() + empty($config['project']['config_check_time']) ? 5 : $config['project']['config_check_time'];
             self::$lastModifyTime = \filectime($configPath);
@@ -38,7 +39,7 @@ class Config
     public static function loadFiles(array $files)
     {
         $config = array();
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $config += include "{$file}";
         }
         self::$config = $config;
@@ -55,12 +56,12 @@ class Config
         return $result;
     }
 
-    public static function set($key, $value, $set=true)
+    public static function set($key, $value, $set = true)
     {
-        if($set) {
+        if ($set) {
             self::$config[$key] = $value;
-        }else{
-            if(empty(self::$config[$key])) {
+        } else {
+            if (empty(self::$config[$key])) {
                 self::$config[$key] = $value;
             }
         }
@@ -70,7 +71,6 @@ class Config
 
     public static function getField($key, $filed, $default = null, $throw = false)
     {
-        self::checkTime();
         $result = isset(self::$config[$key][$filed]) ? self::$config[$key][$filed] : $default;
         if ($throw && is_null($result)) {
             throw new \Exception("{key} config empty");
@@ -83,11 +83,11 @@ class Config
         return self::$config;
     }
 
-    private static function checkTime()
+    public static function checkTime()
     {
-        if(Request::isLongServer()) {
-            if(self::$nextCheckTime < time()) {
-                if(self::$lastModifyTime < \filectime(self::$configPath)) {
+        if (Request::isLongServer()) {
+            if (self::$nextCheckTime < time()) {
+                if (self::$lastModifyTime < \filectime(self::$configPath)) {
                     self::load(self::$configPath);
                 }
             }
