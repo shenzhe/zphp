@@ -3,8 +3,6 @@
 
 namespace ZPHP\Socket\Callback;
 
-use ZPHP\Conn\Adapter\Swoole;
-use ZPHP\Core;
 
 
 abstract class SwooleUdp extends Swoole
@@ -14,5 +12,5 @@ abstract class SwooleUdp extends Swoole
         throw new \Exception('udp server must use onPacker');
     }
 
-    abstract public function onPacket($request, $reponse);
+    abstract public function onPacket($serv, $data, $clientInfo);
 }

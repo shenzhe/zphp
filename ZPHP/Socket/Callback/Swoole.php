@@ -79,8 +79,9 @@ abstract class Swoole implements ICallback
 
     public function onWorkerStart($server, $workerId)
     {
-        if ($workerId >= ZConfig::getField('socket', 'worker_num')) {
-            swoole_set_process_name(ZConfig::get('project_name') . " server task  num: {$server->worker_id} pid " . $server->worker_pid);
+        $workNum = ZConfig::getField('socket', 'worker_num');
+        if ($workerId >= $workNum) {
+            swoole_set_process_name(ZConfig::get('project_name') . " server tasker  num: ".($server->worker_id - $workNum)." pid " . $server->worker_pid);
         } else {
             swoole_set_process_name(ZConfig::get('project_name') . " server worker  num: {$server->worker_id} pid " . $server->worker_pid);
         }

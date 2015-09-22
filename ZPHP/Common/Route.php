@@ -85,7 +85,7 @@ class Route
                         unset($matches[$index]);
                     }
                 }
-                if (!empty($rule[2])) {
+                if (!empty($rule[2]) && !empty($matches)) {
                     $rule[2] = array_combine($rule[2], $matches);
                 }
                 if (isset($cache)) {
