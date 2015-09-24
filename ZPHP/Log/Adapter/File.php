@@ -78,7 +78,7 @@ class File
     {
         $logLevel = ZConfig::getField('project', 'log_level', Level::ALL);
         if (Level::$levels[$level] & $logLevel) {
-            $str = $level . self::SEPARATOR . \implode(self::SEPARATOR, array_map('\ZPHP\Common\Log::myJson', $params));
+            $str = $level . self::SEPARATOR . $message. self::SEPARATOR. \implode(self::SEPARATOR, array_map('\ZPHP\Common\Log::myJson', $context));
             if ($this->_config['type_file']) {
                 $logFile = $this->_config['dir'] . \DS . $level . '.' . $this->_config['suffix'];
             } else {

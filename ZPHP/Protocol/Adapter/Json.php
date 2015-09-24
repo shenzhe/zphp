@@ -20,7 +20,7 @@ class Json implements IProtocol
         $ctrlName = Config::getField('project', 'default_ctrl_name', 'main\\main');
         $methodName = Config::getField('project', 'default_method_name', 'main');
         $data = [];
-        if (!empty($data)) {
+        if (!empty($_data)) {
             if (is_array($_data)) {
                 $data = $_data;
             } else {
