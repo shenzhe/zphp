@@ -17,7 +17,6 @@ abstract class Swoole implements ICallback
     protected $serv;
 
     /**
-     * @param $server
      * @throws \Exception
      * @desc 服务启动，设置进程名及写主进程id
      */
@@ -27,21 +26,23 @@ abstract class Swoole implements ICallback
         swoole_set_process_name(ZConfig::get('project_name') .
             ' server running ' .
             ZConfig::getField('socket', 'server_type', 'tcp') . '://' . ZConfig::getField('socket', 'host') . ':' . ZConfig::getField('socket', 'port')
-            . "  master:" . $server->master_pid);
+            . " time:".date('Y-m-d H:i:s')."  master:" . $server->master_pid);
         if (!empty(ZConfig::getField('project', 'pid_path'))) {
             file_put_contents(ZConfig::getField('project', 'pid_path') . DS . ZConfig::get('project_name') . '_master.pid', $server->master_pid);
         }
     }
 
     /**
-     * @param $server
      * @throws \Exception
      */
     public function onShutDown()
     {
-        $server = func_get_args()[0];
         if (!empty(ZConfig::getField('project', 'pid_path'))) {
             $filename = ZConfig::getField('project', 'pid_path') . DS . ZConfig::get('project_name') . '_master.pid';
+            if (is_file($filename)) {
+                unlink($filename);
+            }
+            $filename = ZConfig::getField('project', 'pid_path') . DS . ZConfig::get('project_name') . '_manager.pid';
             if (is_file($filename)) {
                 unlink($filename);
             }
@@ -65,7 +66,7 @@ abstract class Swoole implements ICallback
     /**
      * @param $server
      * @throws \Exception
-     * @desc 服务启动，设置进程名
+     * @desc 服务关闭，删除进程id文件
      */
     public function onManagerStop($server)
     {
