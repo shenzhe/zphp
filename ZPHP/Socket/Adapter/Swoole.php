@@ -128,7 +128,7 @@ class Swoole implements IServer
 
         foreach($handlerArray as $handler) {
             if(method_exists($this->client, $handler)) {
-                $this->serv->on(\str_replace('on', '', $handler), array($this->client, $handler));
+                $this->serv->on(\substr($handler, 2), array($this->client, $handler));
             }
         } 
         $this->serv->start();
