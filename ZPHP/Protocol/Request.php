@@ -58,6 +58,13 @@ class Request
         self::$_params = $params;
     }
 
+    public static function addParams($key, $val, $set=true)
+    {
+        if($set || !isset(self::$_params[$key])) {
+            self::$_params[$key] = $val;
+        }
+    }
+
     public static function getParams()
     {
         return self::$_params;
