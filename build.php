@@ -42,11 +42,6 @@ use ZPHP\Controller\IController,
 
 class main implements IController
 {
-    private $_server;
-    public function setServer($server)
-    {
-        $this->_server = $server;
-    }
 
     public function _before()
     {
