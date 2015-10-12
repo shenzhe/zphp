@@ -9,7 +9,7 @@
 
 namespace ZPHP\Socket\Route;
 use ZPHP\Core\Config as ZConfig;
-use ZPHP\Fcgi;
+use ZPHP\Fcgi as ZFCGI;
 
 class FCGI
 {
@@ -17,7 +17,7 @@ class FCGI
     public function run($data, $fd=null)
     {
         if ($this->_client === null) {
-            $this->_client = new Fcgi\Client(ZConfig::getField('socket', 'fcgi_host', '127.0.0.1'), ZConfig::getField('socket', 'fcgi_port', 9000));
+            $this->_client = new ZFCGI\Client(ZConfig::getField('socket', 'fcgi_host', '127.0.0.1'), ZConfig::getField('socket', 'fcgi_port', 9000));
         }
         return $this->_client->request($data);
     }

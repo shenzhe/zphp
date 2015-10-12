@@ -253,7 +253,7 @@ class Client
                 throw new \Exception('Role value not known [UNKNOWN_ROLE]');
                 break;
             case self::REQUEST_COMPLETE:
-                list($header, $content) = explode("\r\n\r\n", $response);
+                list($header, $content) = explode("\r\n\r\n", $response, 2);
                 return array(
                     'header' => $header,
                     'content' => $content
