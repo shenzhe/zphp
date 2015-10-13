@@ -51,6 +51,8 @@ class Factory
 
             if(!empty($_GET[$sessionName])) {
                 \session_id($_GET[$sessionName]);
+            }elseif($_SERVER[$sessionName]) {
+                \session_id($_SERVER[$sessionName]);
             }
 
             if (!empty($sessionType)) {
