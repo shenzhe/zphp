@@ -17,10 +17,10 @@ class Route
     public static function route()
     {
         $action = Config::get('ctrl_path', 'ctrl') . '\\' . Request::getCtrl();
-        $view = null;
+        $class = Factory::getInstance($action);
 
         try {
-            $class = Factory::getInstance($action);
+
             if (!($class instanceof IController)) {
                 throw new \Exception("ctrl error");
             } else {
@@ -38,7 +38,14 @@ class Route
             }
         }catch (\Exception $e) {
             if(Request::isLongServer()) {
-                return \call_user_func(Config::getField('project', 'exception_handler', 'ZPHP\ZPHP::exceptionHandler'), $e);
+                $result =  \call_user_func(Config::getField('project', 'exception_handler', 'ZPHP\ZPHP::exceptionHandler'), $e);
+                if($class instanceof IController) {
+                    $class->_after();
+                }
+                return $result;
+            }
+            if($class instanceof IController) {
+                $class->_after();
             }
             throw $e;
         }

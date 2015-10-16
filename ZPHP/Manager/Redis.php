@@ -20,9 +20,9 @@ class Redis
         $name = $config['host'].PATH_SEPARATOR.$config['port'];
         $timeOut = 0;
         if(isset($config['timeout'])) {
-            $config['timeout'] = $config['timeout'];
+            $timeOut = $config['timeout'];
         }
-        $pconnect = $config['pconnect'];
+        $pconnect = !empty($config['pconnect']);
         if (empty(self::$instances[$name])) {
             $redis = new \Redis();
             if ($pconnect) {

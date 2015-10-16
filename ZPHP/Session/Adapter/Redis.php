@@ -12,6 +12,7 @@ class Redis
 {
     private $redis;
     private $gcTime = 1800;
+    private $config;
 
     public function __construct($config)
     {
@@ -19,6 +20,7 @@ class Redis
             $this->redis = Manager\Redis::getInstance($config);
             $this->gcTime = \session_cache_expire();
             $this->gcTime *= 60;
+            $this->config = $config;
         }
     }
 
@@ -39,6 +41,9 @@ class Redis
 
     public function read($sid)
     {
+        if(!empty($this->config['sid_prefix'])) {
+            $sid = str_replace($this->config['sid_prefix'], '', $sid);
+        }
         $data = $this->redis->get($sid);
         if (!empty($data)) {
             $this->redis->setTimeout($sid, $this->gcTime);
@@ -51,11 +56,17 @@ class Redis
         if(empty($data)) {
             return true;
         }
+        if(!empty($this->config['sid_prefix'])) {
+            $sid = str_replace($this->config['sid_prefix'], '', $sid);
+        }
         return $this->redis->setex($sid, $this->gcTime, $data);
     }
 
     public function destroy($sid)
     {
+        if(!empty($this->config['sid_prefix'])) {
+            $sid = str_replace($this->config['sid_prefix'], '', $sid);
+        }
         return $this->redis->delete($sid);
     }
 }

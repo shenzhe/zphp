@@ -35,7 +35,7 @@ class Http implements IProtocol
         if(!empty($_SERVER['PATH_INFO'])) {
             $routeMap = ZRoute::match(Config::get('route', false), $_SERVER['PATH_INFO']);
             if(is_array($routeMap)) {
-                $ctrlName = $routeMap[0];
+                $ctrlName = \str_replace('/', '\\', $routeMap[0]);
                 $methodName = $routeMap[1];
                 if(!empty($routeMap[2]) && is_array($routeMap[2])) {
                     //参数优先

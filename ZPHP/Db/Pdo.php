@@ -65,7 +65,7 @@ class Pdo
         return new \PDO($this->config['dsn'], $this->config['user'], $this->config['pass'], array(
                 \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '{$this->config['charset']}';",
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                \PDO::ATTR_PERSISTENT => empty($this->config['pconnect']) ? false : true
+                \PDO::ATTR_PERSISTENT => empty($this->config['pconnect']) ? 0 : uniqid()
             ));
 
     }
