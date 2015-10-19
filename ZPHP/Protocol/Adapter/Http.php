@@ -33,6 +33,7 @@ class Http implements IProtocol
             $methodName = $data[$mpn];
         }
         if(!empty($_SERVER['PATH_INFO'])) {
+        //swoole_http模式 需要在onRequest里，设置一下 $_SERVER['PATH_INFO'] = $request->server['path_info']
             $routeMap = ZRoute::match(Config::get('route', false), $_SERVER['PATH_INFO']);
             if(is_array($routeMap)) {
                 $ctrlName = \str_replace('/', '\\', $routeMap[0]);

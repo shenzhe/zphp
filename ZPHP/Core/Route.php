@@ -24,12 +24,13 @@ class Route
             if (!($class instanceof IController)) {
                 throw new \Exception("ctrl error");
             } else {
-                $class->_before();
-                $method = Request::getMethod();
-                if(!method_exists($class, $method)) {
-                    throw new \Exception("method error");
+                if($class->_before()) {
+                    $method = Request::getMethod();
+                    if (!method_exists($class, $method)) {
+                        throw new \Exception("method error");
+                    }
+                    $view = $class->$method();
                 }
-                $view = $class->$method();
                 $class->_after();
                 if (null === $view) {
                     return null;
