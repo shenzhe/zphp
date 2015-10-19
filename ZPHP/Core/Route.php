@@ -24,6 +24,7 @@ class Route
             if (!($class instanceof IController)) {
                 throw new \Exception("ctrl error");
             } else {
+                $view = null;
                 if($class->_before()) {
                     $method = Request::getMethod();
                     if (!method_exists($class, $method)) {
