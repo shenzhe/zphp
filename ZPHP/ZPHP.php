@@ -82,9 +82,13 @@ class ZPHP
         $baseClasspath = \str_replace('\\', DS, $class) . '.php';
         $libs = array(
             self::$rootPath . DS . self::$appPath,
-            self::$zPath,
-            self::$libPath
+            self::$zPath
         );
+        if(is_array(self::$libPath)) {
+            $libs = array_merge($libs, self::$libPath);
+        } else {
+            $libs[] = self::$libPath;
+        }
         foreach ($libs as $lib) {
             $classpath = $lib . DS . $baseClasspath;
             if (\is_file($classpath)) {
