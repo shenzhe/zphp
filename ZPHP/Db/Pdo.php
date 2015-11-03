@@ -17,6 +17,7 @@ class Pdo
     private $className;
     private $config;
     private $lastTime;
+    private $lastSql;
 
     /**
      * @param $config
@@ -95,8 +96,12 @@ class Pdo
     public function getTableName()
     {
         if (empty($this->tableName)) {
-            $entityRef = new \ReflectionClass($this->className);
-            $this->tableName = $entityRef->getConstant('TABLE_NAME');
+            if(method_exists($this->className, 'getTableName')) {
+                $this->tableName = call_user_func(array($this->className, 'getTableName'));
+            } else {
+                $entityRef = new \ReflectionClass($this->className);
+                $this->tableName = $entityRef->getConstant('TABLE_NAME');
+            }
         }
 
         return $this->tableName;
@@ -142,6 +147,7 @@ class Pdo
         }
 
         $statement = $this->pdo->prepare($query);
+        $this->lastSql = $query;
         $params = array();
 
         foreach ($fields as $field) {
@@ -167,6 +173,7 @@ class Pdo
 
         $query = "INSERT INTO {$this->getLibName()} (`" . implode('`,`', $fields) . "`) VALUES " . implode(',', $items);
         $statement = $this->pdo->prepare($query);
+        $this->lastSql = $query;
         $statement->execute($params);
         return $statement->rowCount();
     }
@@ -178,6 +185,7 @@ class Pdo
 
         $query = "REPLACE INTO {$this->getLibName()} ({$strFields}) VALUES ({$strValues})";
         $statement = $this->pdo->prepare($query);
+        $this->lastSql = $query;
         $params = array();
 
         foreach ($fields as $field) {
@@ -198,6 +206,7 @@ class Pdo
         $strUpdateFields = implode(',', $updateFields);
         $query = "UPDATE {$this->getLibName()} SET {$strUpdateFields} WHERE {$where}";
         $statement = $this->pdo->prepare($query);
+        $this->lastSql = $query;
         $statement->execute($params);
         return $statement->rowCount();
     }
@@ -206,6 +215,7 @@ class Pdo
     {
         $query = "SELECT {$fields} FROM {$this->getLibName()} WHERE {$where} limit 1";
         $statement = $this->pdo->prepare($query);
+        $this->lastSql = $query;
         $statement->execute($params);
         return $statement->fetchColumn();
     }
@@ -223,6 +233,7 @@ class Pdo
         }
 
         $statement = $this->pdo->prepare($query);
+        $this->lastSql = $query;
         $statement->execute($params);
         $statement->setFetchMode(\PDO::FETCH_ASSOC);
         return $statement->fetchAll();
@@ -246,6 +257,7 @@ class Pdo
             $query .= " limit {$limit}";
         }
         $statement = $this->pdo->prepare($query);
+        $this->lastSql = $query;
 
         if (!$statement->execute($params)) {
             throw new \Exception('data base error');
@@ -265,6 +277,7 @@ class Pdo
 
         $query .= " limit 1";
         $statement = $this->pdo->prepare($query);
+        $this->lastSql = $query;
         $statement->execute($params);
         $statement->setFetchMode(\PDO::FETCH_CLASS, $this->className);
         return $statement->fetch();
@@ -274,6 +287,7 @@ class Pdo
     {
         $query = "SELECT count({$pk}) as count FROM {$this->getLibName()} WHERE {$where}";
         $statement = $this->pdo->prepare($query);
+        $this->lastSql = $query;
         $statement->execute();
         $result = $statement->fetch();
         return $result["count"];
@@ -288,6 +302,7 @@ class Pdo
         $query = "DELETE FROM {$this->getLibName()} WHERE {$where}";
         $statement = $this->pdo->prepare($query);
         $statement->execute($params);
+        $this->lastSql = $query;
         return $statement->rowCount();
     }
 
@@ -295,6 +310,7 @@ class Pdo
     {
         $query = "TRUNCATE {$this->getLibName()}";
         $statement = $this->pdo->prepare($query);
+        $this->lastSql = $query;
         return $statement->execute();
     }
 
@@ -311,6 +327,7 @@ class Pdo
     public function fetchBySql($sql)
     {
         $statement = $this->pdo->prepare($sql);
+        $this->lastSql = $sql;
         $statement->execute();
         $statement->setFetchMode(\PDO::FETCH_ASSOC);
         return $statement->fetchAll();
@@ -344,5 +361,10 @@ class Pdo
         if(empty($this->config['pconnect'])) {
             $this->pdo = null;
         }
+    }
+
+    public function getLastSql()
+    {
+        return $this->lastSql;
     }
 }
