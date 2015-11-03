@@ -31,6 +31,8 @@ class Route
                         throw new \Exception("method error");
                     }
                     $view = $class->$method();
+                } else {
+                    \trigger_error('_before() no return true');
                 }
                 $class->_after();
                 if (null === $view) {
