@@ -152,6 +152,9 @@ class ZPHP
         $eh = Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler');
         \set_exception_handler($eh);
         \register_shutdown_function( Config::getField('project', 'fatal_handler', __CLASS__ . '::fatalHandler') );
+        if(Config::getField('project', 'error_handler')) {
+            \set_error_handler(Config::getField('project', 'error_handler'));
+        }
         $timeZone = Config::get('time_zone', 'Asia/Shanghai');
         \date_default_timezone_set($timeZone);
         $serverMode = Config::get('server_mode', 'Http');
