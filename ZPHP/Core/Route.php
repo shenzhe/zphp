@@ -32,12 +32,9 @@ class Route
                     }
                     $view = $class->$method();
                 } else {
-                    \trigger_error('_before() no return true');
+                    throw new \Exception($action.':'.Request::getMethod().' _before() no return true');
                 }
                 $class->_after();
-                if (null === $view) {
-                    return null;
-                }
                 return Response::display($view);
             }
         }catch (\Exception $e) {

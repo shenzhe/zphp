@@ -24,6 +24,9 @@ class Response
 
     public static function display($model)
     {
+        if(null === $model || false === $model) {
+            return null;
+        }
         if(is_array($model) && !empty($model['_view_mode'])) {
             $viewMode = $model['_view_mode'];
             unset($model['_view_mode']);
