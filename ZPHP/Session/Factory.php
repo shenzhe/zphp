@@ -41,7 +41,7 @@ class Factory
             $path = empty($config['path']) ? '/' : $config['path'];
             $domain = empty($config['domain']) ? '' : $config['domain'];
             $secure = empty($config['secure']) ? false : $config['secure'];
-            $httponly = empty($config['httponly']) ? true : $config['httponly'];
+            $httponly = !isset($config['httponly']) ? true : $config['httponly'];
             \session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
 
 

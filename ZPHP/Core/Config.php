@@ -69,13 +69,26 @@ class Config
         return true;
     }
 
-    public static function getField($key, $filed, $default = null, $throw = false)
+    public static function getField($key, $field, $default = null, $throw = false)
     {
-        $result = isset(self::$config[$key][$filed]) ? self::$config[$key][$filed] : $default;
+        $result = isset(self::$config[$key][$field]) ? self::$config[$key][$field] : $default;
         if ($throw && is_null($result)) {
             throw new \Exception("{key} config empty");
         }
         return $result;
+    }
+
+    public static function setField($key, $field, $value, $set = true)
+    {
+        if ($set) {
+            self::$config[$key][$field] = $value;
+        } else {
+            if (empty(self::$config[$key][$field])) {
+                self::$config[$key][$field] = $value;
+            }
+        }
+
+        return true;
     }
 
     public static function all()
