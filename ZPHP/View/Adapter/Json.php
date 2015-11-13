@@ -19,9 +19,10 @@ class Json extends Base
         $data = \json_encode($this->model);
         if (Request::isHttp()) {
             $params = Request::getParams();
-            if(isset($params['jsoncallback'])) {
+            $key = Config::getField('project', 'jsonp', 'jsoncallback');
+            if(isset($params[$key])) {
                 Response::header("Content-Type", 'application/x-javascript; charset=utf-8');
-                $data = $params['jsoncallback'].'('.$data.')';
+                $data = $params[$key].'('.$data.')';
             } else {
                 Response::header("Content-Type", "application/json; charset=utf-8");
             }
