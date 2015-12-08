@@ -11,12 +11,14 @@ namespace ZPHP\Log\Adapter;
 use ZPHP\Log\Level;
 use ZPHP\Log\Base;
 use ZPHP\Core\Config as ZConfig;
+use ZPHP\Common\WebSocketClient;
 
 
-class File extends Base
+class WebScoket extends Base
 {
 
     private $_config;
+    private $_client;
 
     const SEPARATOR = ' | ';
 
@@ -26,7 +28,7 @@ class File extends Base
             $this->_config = $config;
         }
     }
-
+    
     /**
      * @param $level
      * @param $message
@@ -40,12 +42,11 @@ class File extends Base
         $logLevel = ZConfig::getField('project', 'log_level', Level::ALL);
         if (Level::$levels[$level] & $logLevel) {
             $str = $level . self::SEPARATOR . $message. self::SEPARATOR. \implode(self::SEPARATOR, array_map('\ZPHP\Common\Log::myJson', $context));
-            if ($this->_config['type_file']) {
-                $logFile = $this->_config['dir'] . \DS . $level . '.' . $this->_config['suffix'];
-            } else {
-                $logFile = $this->_config['dir'] . \DS . ZConfig::getField('project', 'project_name', 'log') . '.' . $this->_config['suffix'];
+            if(!$this->_client) {
+                $this->_client = new WebSocketClient($this->_config['host'], $this->_config['port']);
+                $this->_client->connect();
             }
-            \file_put_contents($logFile, $str . "\n", FILE_APPEND|LOCK_EX);
+            $this->_client->send($str);
         }
         return false;
     }

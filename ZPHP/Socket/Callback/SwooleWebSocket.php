@@ -8,19 +8,9 @@ use ZPHP\Core;
 
 abstract class SwooleWebSocket extends SwooleHttp
 {
-    public function onHandShake($request, $response)
+    public function onRequest($request, $response)
     {
-
-    }
-
-    public function onOpen($server, $request)
-    {
-
-    }
-
-    public function onRequest($request, $reponse)
-    {
-
+        $response->end('hello zphp');
     }
 
     abstract public function onMessage($server, $frame);
