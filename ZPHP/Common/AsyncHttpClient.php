@@ -47,7 +47,7 @@ class AsyncHttpClient
                     $sendData.="{$key}: {$val}\r\n";
                 }
 
-                if('POST' == $method) {
+                if('POST' === $method) {
                     $sendData.="Content-Length: ".strlen($query)."\r\n";
                     $sendData.="\r\n".$query;
                 } else {
@@ -56,7 +56,10 @@ class AsyncHttpClient
                 $cli->send($sendData);
             });
             $client->on("receive", function($cli, $data) use ($callback) {
-                call_user_func_array($callback, array($cli, $data));
+                $ret = self::parseBody($cli, $data);
+                if(is_array($ret)) {
+                    call_user_func_array($callback, array($cli, $ret));
+                }
             });
             $client->on("error", function($cli){
                 \ZPHP\Common\AsyncHttpClient::clear($cli);
