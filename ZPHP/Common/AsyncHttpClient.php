@@ -80,7 +80,7 @@ class AsyncHttpClient
             list($header, $body) = explode("\r\n\r\n", $content, 2);
             $headers = explode("\r\n", $header);
             $status = array_shift($headers);
-            $statusArr = explode(" ", $status);
+            $statusArr = explode(" ", $status, 3);
             $headerArr = [];
             foreach($headers as $item) {
                 $tmp = explode(':', $item, 2);
