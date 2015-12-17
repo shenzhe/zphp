@@ -31,7 +31,7 @@ class Request
      */
     private static $_server;
 
-    public static function init($ctrl, $method, $params, $viewMode=null)
+    public static function init($ctrl, $method, array $params, $viewMode=null)
     {
         if($ctrl) {
             self::$_ctrl = $ctrl;

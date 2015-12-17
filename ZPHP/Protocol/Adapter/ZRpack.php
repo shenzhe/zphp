@@ -68,7 +68,7 @@ class ZRpack implements IProtocol
                 $data = $data + $routeMap[2];
             }
         }
-        Request::init($ctrlName, $methodName, $data);
+        Request::init($ctrlName, $methodName, $data, Config::getField('project', 'view_mode', 'Zpack'));
         return true;
     }
 }

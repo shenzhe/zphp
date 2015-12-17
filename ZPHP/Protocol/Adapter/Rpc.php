@@ -9,20 +9,20 @@ namespace ZPHP\Protocol\Adapter;
 use ZPHP\Core;
 use ZPHP\Core\Config;
 use ZPHP\Protocol\IProtocol;
+use ZPHP\Protocol\Request;
 
 class Rpc implements IProtocol
 {
 
     /**
      * 直接 parse $_REQUEST
-     * @param $_data
+     * @param $data
      * @return bool
      */
-    public function parse($_data)
+    public function parse($data)
     {
         $ctrlName = Config::getField('project', 'default_ctrl_name', 'main\\main');
         $methodName = Config::getField('project', 'default_method_name', 'main');
-        $data = $_data;
         $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {

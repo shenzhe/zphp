@@ -12,10 +12,8 @@ namespace ZPHP\Common;
 class AsyncHttpClient
 {
     private static $buffer = [];
-    private static $callback = null;
     public static function request(callable $callback, $url, $method='GET', array $headers=[], array $params=[])
     {
-        self::$callback = $callback;
         $parsed_url = parse_url($url);
         \swoole_async_dns_lookup($parsed_url['host'], function($host, $ip) use ($parsed_url, $callback, $url, $method, $headers, $params) {
             $port = isset($parsed_url['port']) ? $parsed_url['port'] : 'https' == $parsed_url['scheme'] ? 443 : 80;
@@ -56,7 +54,7 @@ class AsyncHttpClient
                 $cli->send($sendData);
             });
             $client->on("receive", function($cli, $data) use ($callback) {
-                $ret = self::parseBody($cli, $data);
+                $ret = self::parseBody($cli, $data, $callback);
                 if(is_array($ret)) {
                     call_user_func_array($callback, array($cli, $ret));
                 }
@@ -77,7 +75,7 @@ class AsyncHttpClient
         self::$buffer[$cli->sock] = null;
     }
 
-    public static function parseBody($cli, $content)
+    public static function parseBody($cli, $content, $callback)
     {
         if(empty(self::$buffer[$cli->sock])) {
             list($header, $body) = explode("\r\n\r\n", $content, 2);
@@ -92,7 +90,7 @@ class AsyncHttpClient
             self::$buffer[$cli->sock]['result']['status'] = $statusArr;
             self::$buffer[$cli->sock]['result']['header'] = $headerArr;
             if(in_array($statusArr[1], [301, 302])) {
-                return \ZPHP\Common\AsyncHttpClient::request(self::$callback, $headerArr['Location']);
+                return \ZPHP\Common\AsyncHttpClient::request($callback, $headerArr['Location']);
             }
             self::outPut($cli, $body);
         } else {

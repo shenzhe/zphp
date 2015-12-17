@@ -25,7 +25,7 @@ class Zpack extends Base
         }
 
         if (Request::isLongServer()) {
-            return array($this->model, $pack->getData);
+            return array($this->model, $pack->getData());
         }
         echo $pack->getData();
         return null;
