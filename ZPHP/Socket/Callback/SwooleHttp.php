@@ -22,12 +22,12 @@ abstract class SwooleHttp extends Swoole
         Protocol\Request::setSocket($server);
     }
 
-    public function doRequest($request, $reponse)
+    public function doRequest($request, $response)
     {
         Protocol\Request::setRequest($request);
-        Protocol\Response::setResponse($reponse);
-        $this->onRequest($request, $reponse);
+        Protocol\Response::setResponse($response);
+        $this->onRequest($request, $response);
     }
 
-    abstract public function onRequest($request, $reponse);
+    abstract public function onRequest($request, $response);
 }

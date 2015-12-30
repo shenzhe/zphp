@@ -106,7 +106,7 @@ class Swoole implements IServer
                 $this->serv->on('Receive', array($this->client, 'doReceive'));
                 break;
             case self::TYPE_HTTP:
-                $this->serv->on('Request', array($this->client, 'onRequest'));
+                $this->serv->on('Request', array($this->client, 'doRequest'));
                 break;
             case self::TYPE_WEBSOCKET:
                 if(method_exists($this->client, 'onHandShake')) {
@@ -115,7 +115,7 @@ class Swoole implements IServer
                 if(method_exists($this->client, 'onOpen')) {
                     $this->serv->on('Open', array($this->client, 'onOpen'));
                 }
-                if(method_exists($this->client, 'onRequest')) {
+                if(method_exists($this->client, 'doRequest')) {
                     $this->serv->on('Request', array($this->client, 'doRequest'));
                 }
                 $this->serv->on('Message', array($this->client, 'onMessage'));
