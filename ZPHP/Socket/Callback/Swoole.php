@@ -90,6 +90,8 @@ abstract class Swoole implements ICallback
         if(function_exists('opcache_reset')) {
             opcache_reset();
         }
+
+        Protocol\Request::setSocket($server);
     }
 
     public function onWorkerStop($server, $workerId)

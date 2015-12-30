@@ -19,7 +19,6 @@ abstract class SwooleHttp extends Swoole
     {
         parent::onWorkerStart($server, $workerId);
         Protocol\Request::setHttpServer(1);
-        Protocol\Request::setSocket($server);
     }
 
     public function doRequest($request, $response)

@@ -40,18 +40,23 @@ class Swoole
         if(!empty($request->cookie[$sessionName])) {
             $sid = $request->cookie[$sessionName];
         }
-        if(!empty($request->get[$sessionName])) {
+        if(!$sid && !empty($request->get[$sessionName])) {
             $sid = $request->get[$sessionName];
         }
-        if(!empty($request->post[$sessionName])) {
+        if(!$sid && !empty($request->post[$sessionName])) {
             $sid = $request->post[$sessionName];
         }
         if($sid) {
             $handler = Factory::getInstance($sessionType, $config);
-            $_SESSION = unserialize($handler->read($sid));
+            $data = $handler->read($sid);
+            if(!empty($data)) {
+                $_SESSION = unserialize($data);
+            } else {
+                $_SESSION = array();
+            }
         } else {
             //种cookie
-            $sid = sha1(microtime().$request->header['User-Agent'].$request->server['remote_addr'].rand(100000, 999999));
+            $sid = sha1($request->header['user-agent'].$request->server['remote_addr'].uniqid(Request::getSocket()->worker_id));
             //string $key, string $value = '', int $expire = 0 , string $path = '/', string $domain  = '', bool $secure = false , bool $httponly = false
             $path = empty($config['path']) ? '/' : $config['path'];
             $domain = empty($config['domain']) ? '' : $config['domain'];
@@ -62,7 +67,7 @@ class Swoole
                 $lifetime = time() + $config['cache_expire'] * 60;
             }
             Response::getResponse()->cookie($sessionName, $sid, $lifetime, $path, $domain, $secure, $httponly);
-            $_SESSION = [];
+            $_SESSION = array();
         }
         self::$_sid = $sid;
     }
@@ -71,7 +76,7 @@ class Swoole
     {
         if(self::$_sid) {
             $handler = Factory::getInstance(self::$_sessionType, self::$_config);
-            if(!isset($_SESSION)) {  //session清空
+            if(!isset($_SESSION) || empty($_SESSION)) {  //session清空
                 $handler->destroy(self::$_sid);
             } else {
                 $handler->write(self::$_sid, serialize($_SESSION));
