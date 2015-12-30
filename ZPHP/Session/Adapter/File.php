@@ -58,7 +58,7 @@ class File
                 return false;
             }
             $time = floatval(substr($content, 0, 10));
-            if ($time < time() + $this->gcTime) {
+            if ($time < (time() - $this->gcTime)) {
                 unlink($this->filename);
                 return false;
             }
