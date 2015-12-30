@@ -10,7 +10,7 @@ use ZPHP\Protocol\Request;
 
 class Factory
 {
-    private static $isStart=false;
+    protected static $isStart=false;
     public static function getInstance($adapter = 'Redis', $config=null)
     {
         if(empty($config)) {
@@ -25,10 +25,11 @@ class Factory
 
     public static function start($sessionType = '', $config = '')
     {
+        if(Request::isLongServer()) {
+            return Swoole::start($sessionType, $config);
+        }
+
         if(false === self::$isStart) {
-            if(Request::isLongServer()) {
-                return Swoole::start($sessionType, $config);
-            }
             if(empty($config)) {
                 $config = ZConfig::get('session');
             }

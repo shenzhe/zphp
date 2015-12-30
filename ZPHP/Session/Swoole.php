@@ -21,6 +21,9 @@ class Swoole
 
     public static function start($sessionType, $config)
     {
+        if(null !== self::$_sid) {
+            return;
+        }
         //判断参数里是否有sessid
         if(empty($config)) {
             $config = ZConfig::get('session');
@@ -54,9 +57,7 @@ class Swoole
                 $_SESSION = array();
             }
         } else {
-            //种cookie
-            $sid = sha1($request->header['user-agent'].$request->server['remote_addr'].uniqid(Request::getSocket()->worker_id));
-            //string $key, string $value = '', int $expire = 0 , string $path = '/', string $domain  = '', bool $secure = false , bool $httponly = false
+            $sid = sha1($request->header['user-agent'].$request->server['remote_addr'].uniqid(Request::getSocket()->worker_pid.'_'));
             $path = empty($config['path']) ? '/' : $config['path'];
             $domain = empty($config['domain']) ? '' : $config['domain'];
             $secure = empty($config['secure']) ? false : $config['secure'];
@@ -75,7 +76,7 @@ class Swoole
     {
         if(self::$_sid) {
             $handler = Factory::getInstance(self::$_sessionType, self::$_config);
-            if(!isset($_SESSION) || empty($_SESSION)) {  //session清空
+            if (!isset($_SESSION) || empty($_SESSION)) {  //session清空
                 $handler->destroy(self::$_sid);
             } else {
                 $handler->write(self::$_sid, serialize($_SESSION));
@@ -85,5 +86,10 @@ class Swoole
             self::$_config = null;
             self::$_sessionType = null;
         }
+    }
+
+    public static function getSid()
+    {
+        return self::$_sid;
     }
 }
