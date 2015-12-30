@@ -62,7 +62,7 @@ class File
                 unlink($this->filename);
                 return false;
             }
-            return unserialize(substr($content, 10));
+            return substr($content, 10);
         }
     }
 
