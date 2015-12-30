@@ -59,7 +59,7 @@ class Swoole
             $httponly = !isset($config['httponly']) ? true : $config['httponly'];
             $lifetime = 0;
             if(!empty($config['cache_expire'])) {
-                $lifetime = $config['cache_expire'] * 60;
+                $lifetime = time() + $config['cache_expire'] * 60;
             }
             Response::getResponse()->cookie($sessionName, $sid, $lifetime, $path, $domain, $secure, $httponly);
             $_SESSION = [];
