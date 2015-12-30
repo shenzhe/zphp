@@ -35,7 +35,6 @@ class Swoole
         $request = Request::getRequest();
 
         $sessionName = empty($config['session_name']) ? 'ZPHPSESSID' : $config['session_name'];
-
         $sid = null;
         if(!empty($request->cookie[$sessionName])) {
             $sid = $request->cookie[$sessionName];
