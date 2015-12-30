@@ -48,7 +48,7 @@ class Swoole
         }
         if($sid) {
             $handler = Factory::getInstance($sessionType, $config);
-            $_SESSION = unserialize($handler->open($sid));
+            $_SESSION = unserialize($handler->read($sid));
         } else {
             //种cookie
             $sid = sha1(microtime().$request->header['User-Agent'].$request->server['remote_addr'].rand(100000, 999999));
