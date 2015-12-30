@@ -53,11 +53,11 @@ class File
         $this->filename = $this->getFileName($sid);
         if (is_file($this->filename)) {
             $content = file_get_contents($this->filename);
-            if (strlen($content < 10)) {
+            if (strlen($content) < 10) {
                 unlink($this->filename);
                 return false;
             }
-            $time = substr($content, 0, 10);
+            $time = floatval(substr($content, 0, 10));
             if ($time < time() + $this->gcTime) {
                 unlink($this->filename);
                 return false;
