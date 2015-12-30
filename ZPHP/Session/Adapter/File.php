@@ -69,7 +69,7 @@ class File
     public function write($sid, $data)
     {
         $this->filename = $this->getFileName($sid);
-        $content = time() + $this->gcTime . serialize($data);
+        $content = time() + $this->gcTime . $data;
         file_put_contents($this->filename, $content);
         return true;
     }
@@ -85,7 +85,7 @@ class File
 
     private function getFileName($sid)
     {
-        $path = isset($this->config['path']) ? $this->config['path'] : ZPHP::getRootPath() . DS . 'session_tmp';
+        $path = isset($this->config['save_path']) ? $this->config['save_path'] : ZPHP::getRootPath() . DS . 'session_tmp';
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
         }
