@@ -64,12 +64,12 @@ class Swoole
             Response::getResponse()->cookie($sessionName, $sid, $lifetime, $path, $domain, $secure, $httponly);
             $_SESSION = [];
         }
+        self::$_sid = $sid;
     }
 
     public static function save()
     {
         if(self::$_sid) {
-
             $handler = Factory::getInstance(self::$_sessionType, self::$_config);
             if(!isset($_SESSION)) {  //session清空
                 $handler->destroy(self::$_sid);
