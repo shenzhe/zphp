@@ -11,6 +11,7 @@ use ZPHP\Controller\IController,
     ZPHP\ZPHP;
 use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
+use ZPHP\Session\Swoole as SSESSION;
 
 class Route
 {
@@ -35,6 +36,9 @@ class Route
                     throw new \Exception($action.':'.Request::getMethod().' _before() no return true');
                 }
                 $class->_after();
+                if(Request::isLongServer()) {
+                    SSESSION::save();
+                }
                 return Response::display($view);
             }
         }catch (\Exception $e) {

@@ -6,6 +6,7 @@
 namespace ZPHP\Session;
 use ZPHP\Core\Factory as CFactory,
     ZPHP\Core\Config as ZConfig;
+use ZPHP\Protocol\Request;
 
 class Factory
 {
@@ -25,6 +26,9 @@ class Factory
     public static function start($sessionType = '', $config = '')
     {
         if(false === self::$isStart) {
+            if(Request::isLongServer()) {
+                return Swoole::start($sessionType, $config);
+            }
             if(empty($config)) {
                 $config = ZConfig::get('session');
             }

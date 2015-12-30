@@ -106,6 +106,12 @@ abstract class Swoole implements ICallback
     {
     }
 
+    public function doReceive($server, $fd, $from_id, $data)
+    {
+        Protocol\Request::setFd($fd);
+        $this->onReceive($server, $fd, $from_id, $data);
+    }
+
     abstract public function onReceive();
 
     public function onPacket($server, $data, $clientInfo)

@@ -23,7 +23,7 @@ class Request
 
     private static $_long_server = 0;
     private static $_is_http = 1;
-    private static $_request = 1;
+    private static $_request = null;
     private static $_socket = null;
 
     /**
