@@ -41,7 +41,7 @@ class File
         foreach($files as $file) {
             if(false !==strpos($file, 'sess_')) {
                 if(fileatime($file) < (time() - $this->gcTime)) {
-                    unset($file);
+                    unlink($file);
                 }
             }
         }
