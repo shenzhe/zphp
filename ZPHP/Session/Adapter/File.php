@@ -36,12 +36,12 @@ class File
 
     public function gc($time)
     {
-        $path = isset($this->config['path']) ? $this->config['path'] : ZPHP::getRootPath() . DS . 'session_tmp';
+        $path = $this->getPath();
         $files = \ZPHP\Common\Dir::tree($path);
         foreach($files as $file) {
             if(false !==strpos($file, 'sess_')) {
                 if(fileatime($file) < (time() - $this->gcTime)) {
-                    unset($file);
+                    unlink($file);
                 }
             }
         }
@@ -83,9 +83,14 @@ class File
         }
     }
 
+    private function getPath()
+    {
+        return isset($this->config['save_path']) ? $this->config['save_path'] : ZPHP::getRootPath() . DS . 'session_tmp';
+    }
+
     private function getFileName($sid)
     {
-        $path = isset($this->config['save_path']) ? $this->config['save_path'] : ZPHP::getRootPath() . DS . 'session_tmp';
+        $path = $this->getPath();
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
         }
