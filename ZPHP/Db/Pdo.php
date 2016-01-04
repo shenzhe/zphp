@@ -6,6 +6,9 @@
 
 
 namespace ZPHP\Db;
+use ZPHP\Protocol\Request;
+use ZPHP\Core\Config as ZConfig;
+
 class Pdo
 {
     /**
@@ -18,6 +21,31 @@ class Pdo
     private $config;
     private $lastTime;
     private $lastSql;
+    /**
+     * @var Pdo
+     */
+    private static $instance = null;
+
+    public static function getInstance($config=null, $className=null, $dbName=null)
+    {
+        if(!self::$instance) {
+            self::$instance = new Pdo($config);
+        } else {
+            self::$instance->ping();
+        }
+
+        if($className) {
+            self::$instance->setClassName($className);
+        }
+
+        if($dbName) {
+            self::$instance->setDBName($dbName);
+        }
+
+
+        return self::$instance;
+    }
+
 
     /**
      * @param $config
@@ -34,8 +62,14 @@ class Pdo
      *    }
      * @param null $dbName
      */
-    public function __construct($config, $className = null, $dbName = null)
+    public function __construct($config=null, $className = null, $dbName = null)
     {
+        if(empty($config)) {
+            $config = ZConfig::get('pdo');
+        }
+        if(empty($config)) {
+            throw new \Exception('config empty', -1);
+        }
         $this->config = $config;
         if(empty($this->config['pingtime'])) {
             $this->config['pingtime'] = 3600;
@@ -63,10 +97,15 @@ class Pdo
 
     private function connect()
     {
+        if(Request::isLongServer()) {
+            $persistent = 0;
+        } else {
+            $persistent = empty($this->config['pconnect']) ? 0 : 1;
+        }
         return new \PDO($this->config['dsn'], $this->config['user'], $this->config['pass'], array(
                 \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '{$this->config['charset']}';",
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                \PDO::ATTR_PERSISTENT => empty($this->config['pconnect']) ? 0 : 1
+                \PDO::ATTR_PERSISTENT => $persistent
             ));
 
     }
