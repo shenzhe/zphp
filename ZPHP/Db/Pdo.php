@@ -30,7 +30,7 @@ class Pdo
     {
         if(!self::$instance) {
             self::$instance = new Pdo($config);
-        } else {
+        } else if(Request::isLongServer()){
             self::$instance->ping();
         }
 
