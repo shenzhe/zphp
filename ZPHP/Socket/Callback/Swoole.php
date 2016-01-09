@@ -106,6 +106,7 @@ abstract class Swoole implements ICallback
 
     public function onConnect()
     {
+
     }
 
     public function doReceive($server, $fd, $from_id, $data)
@@ -123,6 +124,7 @@ abstract class Swoole implements ICallback
 
     public function onClose()
     {
+
     }
 
 

@@ -57,7 +57,7 @@ class Swoole
                 $_SESSION = array();
             }
         } else {
-            $sid = sha1($request->header['user-agent'].$request->server['remote_addr'].uniqid(Request::getSocket()->worker_pid.'_'));
+            $sid = sha1($request->header['user-agent'].$request->server['remote_addr'].uniqid(Request::getSocket()->worker_pid.'_', true));
             $path = empty($config['path']) ? '/' : $config['path'];
             $domain = empty($config['domain']) ? '' : $config['domain'];
             $secure = empty($config['secure']) ? false : $config['secure'];
