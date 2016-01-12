@@ -177,7 +177,8 @@ class Pdo
     public function add($entity, $fields, $onDuplicate = null)
     {
         $strFields = '`' . implode('`,`', $fields) . '`';
-        $strValues = ':' . implode(', :', $fields);
+        $_fields = array_map('base64_encode', $fields);
+        $strValues = ':' . implode(', :', $_fields);
 
         $query = "INSERT INTO {$this->getLibName()} ({$strFields}) VALUES ({$strValues})";
 
@@ -189,8 +190,8 @@ class Pdo
         $this->lastSql = $query;
         $params = array();
 
-        foreach ($fields as $field) {
-            $params[$field] = $entity->$field;
+        foreach ($_fields as $_i=>$field) {
+            $params[$field] = $entity->{$fields[$_i]};
         }
 
         $statement->execute($params);
@@ -202,11 +203,13 @@ class Pdo
         $items = array();
         $params = array();
 
-        foreach ($entitys as $index => $entity) {
-            $items[] = '(:' . implode($index . ', :', $fields) . $index . ')';
+        $_fileds = array_map('base64_encode', $fields);
 
-            foreach ($fields as $field) {
-                $params[$field . $index] = $entity->$field;
+        foreach ($entitys as $index => $entity) {
+            $items[] = '(:' . implode($index . ', :', $_fileds) . $index . ')';
+
+            foreach ($_fileds as $_i=>$field) {
+                $params[$field . $index] = $entity->{$fields[$_i]};
             }
         }
 

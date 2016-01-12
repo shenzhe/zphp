@@ -16,7 +16,7 @@ class Json extends Base
 {
     public function display()
     {
-        $data = \json_encode($this->model);
+        $data = \json_encode($this->model, JSON_UNESCAPED_UNICODE);
         if (Request::isHttp()) {
             $params = Request::getParams();
             $key = Config::getField('project', 'jsonp', 'jsoncallback');
