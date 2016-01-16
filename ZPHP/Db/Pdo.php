@@ -177,7 +177,7 @@ class Pdo
     public function add($entity, $fields, $onDuplicate = null)
     {
         $strFields = '`' . implode('`,`', $fields) . '`';
-        $_fields = array_map('base64_encode', $fields);
+        $_fields = array_map('md5', $fields);
         $strValues = ':' . implode(', :', $_fields);
 
         $query = "INSERT INTO {$this->getLibName()} ({$strFields}) VALUES ({$strValues})";
@@ -203,7 +203,7 @@ class Pdo
         $items = array();
         $params = array();
 
-        $_fileds = array_map('base64_encode', $fields);
+        $_fileds = array_map('md5', $fields);
 
         foreach ($entitys as $index => $entity) {
             $items[] = '(:' . implode($index . ', :', $_fileds) . $index . ')';

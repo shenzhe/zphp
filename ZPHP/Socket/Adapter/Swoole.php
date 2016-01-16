@@ -130,7 +130,11 @@ class Swoole implements IServer
             if(method_exists($this->client, $handler)) {
                 $this->serv->on(\substr($handler, 2), array($this->client, $handler));
             }
-        } 
+        }
+
+        if(!empty($this->config['start_hook']) && is_callable($this->config['start_hook'])) {
+            call_user_func($this->config['start_hook']);
+        }
         $this->serv->start();
     }
 }
