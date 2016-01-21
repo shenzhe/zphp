@@ -44,8 +44,6 @@ class Factory
             $httponly = !isset($config['httponly']) ? true : $config['httponly'];
             \session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
 
-
-
             $sessionName = empty($config['session_name']) ? 'ZPHPSESSID' : $config['session_name'];
             \session_name($sessionName);
 
