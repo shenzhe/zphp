@@ -25,7 +25,7 @@ class Response
     public static function display($model)
     {
         if(null === $model || false === $model) {
-            return null;
+            return $model;
         }
         if(is_array($model) && !empty($model['_view_mode'])) {
             $viewMode = $model['_view_mode'];

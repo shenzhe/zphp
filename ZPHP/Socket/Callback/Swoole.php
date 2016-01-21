@@ -90,6 +90,8 @@ abstract class Swoole implements ICallback
         if(function_exists('opcache_reset')) {
             opcache_reset();
         }
+
+        Protocol\Request::setSocket($server);
     }
 
     public function onWorkerStop($server, $workerId)
@@ -104,6 +106,13 @@ abstract class Swoole implements ICallback
 
     public function onConnect()
     {
+
+    }
+
+    public function doReceive($server, $fd, $from_id, $data)
+    {
+        Protocol\Request::setFd($fd);
+        $this->onReceive($server, $fd, $from_id, $data);
     }
 
     abstract public function onReceive();
@@ -115,6 +124,7 @@ abstract class Swoole implements ICallback
 
     public function onClose()
     {
+
     }
 
 

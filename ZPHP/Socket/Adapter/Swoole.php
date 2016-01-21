@@ -103,10 +103,10 @@ class Swoole implements IServer
         $this->serv->on('Close', array($this->client, 'onClose'));
         switch($this->config['server_type']) {
             case self::TYPE_TCP:
-                $this->serv->on('Receive', array($this->client, 'onReceive'));
+                $this->serv->on('Receive', array($this->client, 'doReceive'));
                 break;
             case self::TYPE_HTTP:
-                $this->serv->on('Request', array($this->client, 'onRequest'));
+                $this->serv->on('Request', array($this->client, 'doRequest'));
                 break;
             case self::TYPE_WEBSOCKET:
                 if(method_exists($this->client, 'onHandShake')) {
@@ -115,8 +115,8 @@ class Swoole implements IServer
                 if(method_exists($this->client, 'onOpen')) {
                     $this->serv->on('Open', array($this->client, 'onOpen'));
                 }
-                if(method_exists($this->client, 'onRequest')) {
-                    $this->serv->on('Request', array($this->client, 'onRequest'));
+                if(method_exists($this->client, 'doRequest')) {
+                    $this->serv->on('Request', array($this->client, 'doRequest'));
                 }
                 $this->serv->on('Message', array($this->client, 'onMessage'));
                 break;
@@ -130,7 +130,11 @@ class Swoole implements IServer
             if(method_exists($this->client, $handler)) {
                 $this->serv->on(\substr($handler, 2), array($this->client, $handler));
             }
-        } 
+        }
+
+        if(!empty($this->config['start_hook']) && is_callable($this->config['start_hook'])) {
+            call_user_func($this->config['start_hook']);
+        }
         $this->serv->start();
     }
 }

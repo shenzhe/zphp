@@ -14,7 +14,7 @@ use ZPHP\Core\Config as ZConfig;
 use ZPHP\Common\WebSocketClient;
 
 
-class WebScoket extends Base
+class WebSocket extends Base
 {
 
     private $_config;

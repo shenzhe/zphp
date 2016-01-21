@@ -112,7 +112,7 @@ class AsyncHttpClient
                         self::$buffer[$cli->sock]['result']['body'] =  gzinflate(self::$buffer[$cli->sock]['buffer']);
                         break;
                     case 'compress':
-                        self::$buffer[$cli->sock]['result']['body'] =  gzinflate(self::$buffer[$cli->sock]['buffer']);
+                        self::$buffer[$cli->sock]['result']['body'] =  gzinflate(substr(self::$buffer[$cli->sock]['buffer'], 2, -4));
                         break;
                     default:
                         self::$buffer[$cli->sock]['result']['body'] =  self::$buffer[$cli->sock]['buffer'];
