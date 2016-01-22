@@ -70,7 +70,7 @@ class Redis implements IRank
             $rank = $this->redis->zRank($rankType, $key);
         }
 
-        if(false == $rank) {
+        if(false === $rank) {
             return 0;
         }
         return ++$rank;
