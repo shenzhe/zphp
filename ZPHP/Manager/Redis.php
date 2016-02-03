@@ -31,6 +31,9 @@ class Redis
                 $redis->connect($config['host'], $config['port'], $timeOut);
             }
             $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
+            if(!empty($config['auth'])) {
+                $redis->auth($config['auth']);
+            }
             self::$instances[$name] = $redis;
             self::$configs[$name] = $config;
         }
