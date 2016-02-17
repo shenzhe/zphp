@@ -39,10 +39,11 @@ class Dir
     {
         $files = new \DirectoryIterator($dir);
         foreach ($files as $file) {
-            $filename = $file->getFilename();
-            if ($filename[0] === '.') {
+            if ($file->isDot()) {
                 continue;
             }
+
+            $filename = $file->getFilename();
             //过滤文件移动到下面  change by ahuo 2013-09-11 16:23
             //if (!empty($filter) && !\preg_match($filter, $filename)) {
               //  continue;
