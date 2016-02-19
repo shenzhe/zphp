@@ -6,7 +6,9 @@
 namespace ZPHP\Queue\Adapter;
 
 
-class Php
+use ZPHP\Queue\IQueue;
+
+class Php implements IQueue
 {
     private $key;
     private $queue;

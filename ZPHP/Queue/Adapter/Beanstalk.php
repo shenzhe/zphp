@@ -6,8 +6,9 @@
 namespace ZPHP\Queue\Adapter;
 
 use ZPHP\Manager;
+use ZPHP\Queue\IQueue;
 
-class Beanstalk
+class Beanstalk implements IQueue
 {
     private $beanstalk;
 

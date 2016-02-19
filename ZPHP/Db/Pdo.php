@@ -366,12 +366,12 @@ class Pdo
         return '`' . $field . '`=`' . $field . '`+:' . $field;
     }
 
-    public function fetchBySql($sql)
+    public function fetchBySql($sql, $mode=\PDO::FETCH_ASSOC)
     {
         $statement = $this->pdo->prepare($sql);
         $this->lastSql = $sql;
         $statement->execute();
-        $statement->setFetchMode(\PDO::FETCH_ASSOC);
+        $statement->setFetchMode($mode);
         return $statement->fetchAll();
     }
 

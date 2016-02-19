@@ -6,8 +6,9 @@
 namespace ZPHP\Queue\Adapter;
 
 use ZPHP\Manager;
+use ZPHP\Queue\IQueue;
 
-class Redis
+class Redis implements IQueue
 {
     private $redis;
 
