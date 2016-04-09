@@ -27,7 +27,7 @@ class Php extends Base
         if (!\is_file($fileName)) {
             throw new \Exception("no file {$fileName}");
         }
-        if (!empty($this->model)) {
+        if (!empty($this->model) && is_array($this->model)) {
             \extract($this->model);
         }
         if (ZPHP\Protocol\Request::isLongServer()) {

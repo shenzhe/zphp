@@ -4,8 +4,11 @@
     $app_path = trim(fgets(STDIN));
 
     if(is_dir($app_path)) {
-        echo 'dir is exist'.PHP_EOL;
-        return;
+        echo 'dir is exist, continue~~ pls input Y or N'.PHP_EOL;
+        $ret = trim(fgets(STDIN));
+        if('y' !== strtolower($ret)) {
+            return;
+        }
     }
 
 

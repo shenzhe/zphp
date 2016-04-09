@@ -20,10 +20,10 @@ class String extends Base
             Response::header("Content-Type", "text/plain; charset=utf-8");
         }
 
-        if (\is_string($this->model)) {
-            $data =  $this->model;
-        } else {
+        if (\is_array($this->model) || \is_object($this->model)) {
             $data =  json_encode($this->model);
+        } else {
+            $data =  $this->model;
         }
         if(Request::isLongServer()) {
             return $data;

@@ -26,6 +26,8 @@ class Request
     private static $_request = null;
     private static $_socket = null;
 
+    private static $_request_method;
+
     /**
      * @var IProtocol
      */
@@ -124,8 +126,16 @@ class Request
     public static function isAjax()
     {
 
-        if (!empty(self::$_params['ajax'])
-            || (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
+        if (!empty(self::$_params['ajax'])) {
+            return true;
+        }
+        if(self::isLongServer() && self::isHttp() && self::$_request
+            && isset(self::$_request->header['X-Requested-With'])
+            && 'xmlhttprequest' == strtolower(self::$_request->header['X-Requested-With'])
+        ) {
+            return true;
+        }
+        if((isset($_SERVER['HTTP_X_REQUESTED_WITH'])
                 && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
         ) {
             return true;
@@ -186,6 +196,52 @@ class Request
     public static function getSocket()
     {
         return self::$_socket;
+    }
+
+    public static function getRequestMethod()
+    {
+        if(self::isLongServer() && self::isHttp() && self::$_request) {
+            return self::$_request->header['request_method'];
+        }
+        return $_SERVER['REQUEST_METHOD'];
+    }
+
+    public static function getPathInfo()
+    {
+        if(self::isLongServer() && self::isHttp() && self::$_request) {
+            return isset(self::$_request->header['path_info']) ? self::$_request->header['path_info'] : '';
+        }
+        return isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
+    }
+
+    public static function getClientIp()
+    {
+        $realip = '';
+        if(self::isLongServer()) {
+            if(self::isHttp() && self::$_request) {
+                $key = ZConfig::getField('project', 'clientIpKey', 'X-Forwarded-For');
+                if (isset(self::$_request->header[$key])) {
+                    $realip = self::$_request->header[$key];
+                } else if (isset(self::$_request->header["remote_addr"])) {
+                    $realip = self::$_request->header["remote_addr"];
+                }
+            }else {
+                if (self::$_fd) {
+                    $connInfo = self::getSocket()->connection_info(self::$_fd);
+                    return $connInfo['remote_ip'];
+                }
+            }
+        } else {
+            $key = ZConfig::getField('project', 'clientIpKey', 'HTTP_X_FORWARDED_FOR');
+            if (isset($_SERVER[$key])) {
+                $realip = $_SERVER[$key];
+            } else if (isset($_SERVER["REMOTE_ADDR"])) {
+                $realip = $_SERVER["REMOTE_ADDR"];
+            }
+        }
+
+        return $realip;
+
     }
 
 }

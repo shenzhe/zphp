@@ -61,6 +61,7 @@ class Formater
             'line' => $exception->getLine(),
             'userAgent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'trace' => array(),
+            'server'=>$_SERVER,
         );
 
         if ($trace) {

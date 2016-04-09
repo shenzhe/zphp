@@ -375,6 +375,14 @@ class Pdo
         return $statement->fetchAll();
     }
 
+    public function queryBySql($query)
+    {
+        $statement = $this->pdo->prepare($query);
+        $this->lastSql = $query;
+        $statement->execute();
+        return $statement->rowCount();
+    }
+
 
     public function ping()
     {
