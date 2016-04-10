@@ -5,10 +5,16 @@ namespace ZPHP\Db;
 class Mongo
 {
 
+    /**
+     * @var \Mongo
+     */
     private $mongo; //mongo对象
+    /**
+     * @var \MongoDb
+     */
     private $db; //db mongodb对象数据库
     /**
-     * @var
+     * @var \MongoCollection
      */
     private $collection; //集合，相当于数据表 
 
@@ -23,7 +29,6 @@ class Mongo
      * ‘password’=> '' 数据库密码
      * )
      * Enter description here ...
-     * @param unknown_type $config
      */
     public function connect($config = array())
     {
@@ -123,7 +128,8 @@ class Mongo
     public function find($query, $sort = array(), $skip = 0, $limit = 0, $fields = array())
     {
         $cursor = $this->collection->find($query, $fields);
-        if(empty($cursor->count())) {
+        $count = $cursor->count();
+        if(empty($count)) {
             return array();
         }
         if ($sort) $cursor->sort($sort);
