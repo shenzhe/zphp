@@ -131,13 +131,22 @@ class Request
         }
         if(self::isLongServer() && self::isHttp() && self::$_request
             && isset(self::$_request->header['X-Requested-With'])
-            && 'xmlhttprequest' == strtolower(self::$_request->header['X-Requested-With'])
+            && 'xmlhttprequest' == strtolower(self::$_request->header['X-Requested-With']
+            )
         ) {
             return true;
         }
         if((isset($_SERVER['HTTP_X_REQUESTED_WITH'])
                 && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
         ) {
+            return true;
+        }
+        $field = ZConfig::getField('project', 'jsonp', 'jsoncallback');
+        if(self::isLongServer() && self::isHttp() && isset(self::$_request->header[$field])) {
+            return true;
+        }
+
+        if(!empty($_REQUEST[$field])) {
             return true;
         }
         return false;
