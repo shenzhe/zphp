@@ -11,6 +11,7 @@ use ZPHP\Core\Config as ZConfig;
 use ZPHP\Protocol\Request;
 
 
+
 class Lang
 {
     public static function get($key)
