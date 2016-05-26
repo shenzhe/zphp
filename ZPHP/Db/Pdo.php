@@ -24,26 +24,39 @@ class Pdo
     /**
      * @var Pdo
      */
-    private static $instance = null;
+    private static $instance = [];
 
+    /**
+     * @param null $config
+     * @param null $className
+     * @param null $dbName
+     * @return Pdo
+     * @throws \Exception
+     */
     public static function getInstance($config=null, $className=null, $dbName=null)
     {
-        if(!self::$instance) {
-            self::$instance = new Pdo($config);
+        if(empty($config)) {
+            $config = ZConfig::get('pdo');
+        }
+        if(empty($config['dsn'])) {
+            throw new \Exception('dsn empty');
+        }
+        if(empty(self::$instance[$config['dsn']])) {
+            self::$instance[$config['dsn']] = new Pdo($config);
         } else if(Request::isLongServer()){
-            self::$instance->ping();
+            self::$instance[$config['dsn']]->ping();
         }
 
         if($className) {
-            self::$instance->setClassName($className);
+            self::$instance[$config['dsn']]->setClassName($className);
         }
 
         if($dbName) {
-            self::$instance->setDBName($dbName);
+            self::$instance[$config['dsn']]->setDBName($dbName);
         }
 
 
-        return self::$instance;
+        return self::$instance[$config['dsn']];
     }
 
 

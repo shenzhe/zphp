@@ -10,6 +10,12 @@ use ZPHP\Core\Factory as CFactory,
 
 class Factory
 {
+	/**
+	 * @param string $adapter
+	 * @param null $config
+	 * @return IQueue
+	 * @throws \Exception
+	 */
     public static function getInstance($adapter = 'Redis', $config = null)
     {
     	if(empty($config)) {
