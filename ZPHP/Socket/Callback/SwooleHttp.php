@@ -26,6 +26,8 @@ abstract class SwooleHttp extends Swoole
         Protocol\Request::setRequest($request);
         Protocol\Response::setResponse($response);
         $this->onRequest($request, $response);
+        Protocol\Request::setRequest(null);
+        Protocol\Response::setResponse(null);
     }
 
     abstract public function onRequest($request, $response);
