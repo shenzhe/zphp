@@ -7,7 +7,7 @@ use ZPHP\Core;
 use ZPHP\Protocol;
 
 
-abstract class Hprose
+abstract class Hprose extends Swoole
 {
 
     protected $protocol;

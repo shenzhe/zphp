@@ -36,6 +36,24 @@ class Hprose implements IServer
 
     public function run()
     {
+        $handlerArray = array(
+            'onWorkerStart',
+            'onWorkerStop',
+            'onWorkerError',
+            'onTask',
+            'onFinish',
+            'onWorkerError',
+            'onManagerStart',
+            'onManagerStop',
+        );
+        $this->serv->on('Start', array($this->client, 'onStart'));
+        $this->serv->on('Shutdown', array($this->client, 'onShutdown'));
+
+        foreach($handlerArray as $handler) {
+            if(method_exists($this->client, $handler)) {
+                $this->serv->on(\substr($handler, 2), array($this->client, $handler));
+            }
+        }
         $this->client->onRegister();
         $this->serv->start();
     }
