@@ -18,6 +18,7 @@ class Swoole implements IServer
     const TYPE_TCP = 'tcp';
     const TYPE_UDP = 'udp';
     const TYPE_HTTP = 'http';
+    const TYPE_HTTPS = 'https';
     const TYPE_WEBSOCKET = 'ws';
 
     public function __construct(array $config)
@@ -37,6 +38,9 @@ class Swoole implements IServer
                 break;
             case self::TYPE_HTTP:
                 $this->serv = new \swoole_http_server($config['host'], $config['port'], $config['work_mode']);
+                break;
+            case self::TYPE_HTTPS:
+                $this->serv = new \swoole_http_server($config['host'], $config['port'], $config['work_mode'], \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
                 break;
             case self::TYPE_WEBSOCKET:
                 $this->serv = new \swoole_websocket_server($config['host'], $config['port'], $config['work_mode']);
@@ -63,6 +67,7 @@ class Swoole implements IServer
                 }
                 break;
             case self::TYPE_HTTP:
+            case self::TYPE_HTTPS:
                 if (!($client instanceof Callback\SwooleHttp)) {
                     throw new \Exception('client must instanceof ZPHP\Socket\Callback\SwooleHttp');
                 }
@@ -106,6 +111,7 @@ class Swoole implements IServer
                 $this->serv->on('Receive', array($this->client, 'doReceive'));
                 break;
             case self::TYPE_HTTP:
+            case self::TYPE_HTTPS:
                 $this->serv->on('Request', array($this->client, 'doRequest'));
                 break;
             case self::TYPE_WEBSOCKET:
@@ -133,7 +139,12 @@ class Swoole implements IServer
         }
 
         if(!empty($this->config['start_hook']) && is_callable($this->config['start_hook'])) {
-            call_user_func($this->config['start_hook']);
+            if( $this->config['start_hook_args'] ) {
+                call_user_func($this->config['start_hook'], $this->serv);
+            } else {
+                call_user_func($this->config['start_hook']);
+            }
+
         }
         $this->serv->start();
     }

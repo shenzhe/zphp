@@ -16,7 +16,9 @@ class Hprose implements IServer
             throw new \Exception("no swoole extension. get: https://github.com/swoole/swoole-src");
         }
         $this->config = $config;
-        $this->serv = new \HproseSwooleServer("http://{$config['host']}:{$config['port']}");
+        if( !isset($config['server_type']) )
+            $config['server_type'] = 'http';
+        $this->serv = new \HproseSwooleServer("{$config['server_type']}://{$config['host']}:{$config['port']}");
 
         $this->serv->setErrorTypes(E_ALL);
         $this->serv->setDebugEnabled();

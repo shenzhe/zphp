@@ -17,5 +17,11 @@ abstract class Hprose extends Swoole
     {
         $this->serv = $serv;
     }
+
+    public function onReceive()
+    {
+
+    }
+    
     abstract public function onRegister();
 }
