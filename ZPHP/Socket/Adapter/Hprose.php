@@ -3,6 +3,7 @@
 namespace ZPHP\Socket\Adapter;
 use ZPHP\Socket\IServer,
     ZPHP\Socket\Callback;
+use Hprose\Swoole\Server;
 
 class Hprose implements IServer
 {
@@ -18,7 +19,7 @@ class Hprose implements IServer
         $this->config = $config;
         if( !isset($config['server_type']) )
             $config['server_type'] = 'http';
-        $this->serv = new \HproseSwooleServer("{$config['server_type']}://{$config['host']}:{$config['port']}");
+        $this->serv = new Server("{$config['server_type']}://{$config['host']}:{$config['port']}");
 
         $this->serv->setErrorTypes(E_ALL);
         $this->serv->setDebugEnabled();
