@@ -48,6 +48,7 @@ class Hprose implements IServer
             'onWorkerError',
             'onManagerStart',
             'onManagerStop',
+            'onPipeMessage',
         );
         $this->serv->on('Start', array($this->client, 'onStart'));
         $this->serv->on('Shutdown', array($this->client, 'onShutdown'));
