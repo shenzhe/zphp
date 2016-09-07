@@ -9,6 +9,10 @@ class Hprose implements IServer
 {
     private $client;
     private $config;
+
+    /**
+     * @var \Hprose\Swoole\Server
+     */
     private $serv;
 
     public function __construct(array $config)
