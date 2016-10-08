@@ -64,7 +64,7 @@ class AsyncHttpClient
             if('GET' == $urlInfo['method']) {
                 AsyncHttpClient::getByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $callback, $timeOut, $header, $host);
             } else if('POST' == $urlInfo['method']) {
-                AsyncHttpClient::postByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $urlInfo['data'], $callback, $timeOut, $header$host);
+                AsyncHttpClient::postByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $urlInfo['data'], $callback, $timeOut, $header, $host);
             } else {
                 throw new \Exception($urlInfo['method'].' method no support', -1);
             }
