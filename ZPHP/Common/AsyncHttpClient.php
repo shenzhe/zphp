@@ -7,157 +7,124 @@
  */
 
 namespace ZPHP\Common;
+use ZPHP\Protocol\Request;
 
 
 class AsyncHttpClient
 {
-    private static $buffer = [];
-    public static function request(callable $callback, $url, $method='GET', array $headers=[], array $params=[])
+
+    public static function check()
     {
-        $parsed_url = parse_url($url);
-        \swoole_async_dns_lookup($parsed_url['host'], function($host, $ip) use ($parsed_url, $callback, $url, $method, $headers, $params) {
-            $port = isset($parsed_url['port']) ? $parsed_url['port'] : 'https' == $parsed_url['scheme'] ? 443 : 80;
-            $client = new \swoole_client(SWOOLE_SOCK_TCP,  SWOOLE_SOCK_ASYNC);
-            $method = strtoupper($method);
-            $client->on("connect", function($cli) use($url, $method, $parsed_url, $headers, $params) {
-                \ZPHP\Common\AsyncHttpClient::clear($cli);
-                $path = isset($parsed_url['path']) ? $parsed_url['path'] : '/';
-                if(!empty($params)) {
-                    $query = http_build_query($params);
-                    if ('GET' == $method) {
-                        $path .= "?" . $query;
-                    }
-                }
-                $sendData = $method." {$path} HTTP/1.1\r\n";
-                $headers = array(
-                        'Host'=>$parsed_url['host'],
-                        'Connection'=>'keep-alive',
-                        'Pragma'=>'no-cache',
-                        'Accept'=>'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                        'User-Agent'=>'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36',
-                        'Referer'=>$url,
-                        'Accept-Encoding'=>'gzip, deflate, sdch',
-                        'Accept-Language'=>'zh-CN,zh;q=0.8',
-                    ) + $headers;
+        if(!Request::isLongServer()) {
+            throw new \Exception('must long server', -1);
+        }
+    }
 
+    public static function parseUrl($url)
+    {
+        $urlInfo = parse_url($url);
+        $urlInfo['ssl'] = 0;
+        if(empty($urlInfo['port'])) {
+            if ('https' === strtolower($urlInfo['scheme'])) {
+                $urlInfo['port'] = 443;
+                $urlInfo['ssl'] = 1;
+            } else {
+                $urlInfo['port'] =  80;
+            }
+        } else {
+            if ('https' === strtolower($urlInfo['scheme'])) {
+                $urlInfo['ssl'] = 1;
+            }
+        }
 
-                foreach($headers as $key=>$val) {
-                    $sendData.="{$key}: {$val}\r\n";
-                }
+        if(empty($urlInfo['path'])) {
+            $urlInfo['path'] = '/';
+        }
 
-                if('POST' === $method) {
-                    $sendData.="Content-Length: ".strlen($query)."\r\n";
-                    $sendData.="\r\n".$query;
-                } else {
-                    $sendData.="\r\n";
-                }
-                $cli->send($sendData);
-            });
-            $client->on("receive", function($cli, $data) use ($callback) {
-                $ret = self::parseBody($cli, $data, $callback);
-                if(is_array($ret)) {
-                    call_user_func_array($callback, array($cli, $ret));
-                }
-            });
-            $client->on("error", function($cli){
-                \ZPHP\Common\AsyncHttpClient::clear($cli);
-            });
-            $client->on("close", function($cli){
-                \ZPHP\Common\AsyncHttpClient::clear($cli);
-            });
-            $client->connect($ip, $port);
+        return $urlInfo;
+    }
+
+    /**
+     * @param $url
+     * @param $callback
+     * @param string $method
+     * @param null $data //method==post时, 表示post的数据
+     * @throws Exception
+     */
+    public static function getByUrl($url, $callback, $method='GET', $data=null)
+    {
+        self::check();
+        $urlInfo = self::parseUrl($url);
+        $method = strtoupper($method);
+        $urlInfo['method'] = $method;
+        $urlInfo['data'] = $data;
+        \swoole_async_dns_lookup($urlInfo['host'], function($host, $ip) use ($urlInfo, $callback) {
+            if('GET' == $urlInfo['method']) {
+                AsyncHttpClient::getByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $callback, $host);
+            } else if('POST' == $urlInfo['method']) {
+                AsyncHttpClient::postByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $urlInfo['data'], $callback, $host);
+            } else {
+                throw new \Exception($urlInfo['method'].' method no support', -1);
+            }
         });
-
     }
 
-    public static function clear($cli)
+    /**
+     * @param $ip           //目标地址ip
+     * @param $port         //目标地址端口
+     * @param $ssl          //是否ssl
+     * @param $path         //请求路径
+     * @param $callback     //请求完成之后的回调函数
+     * @param null $host    //host地址
+     */
+    public static function getByIp($ip, $port, $ssl, $path, $callback, $host=null)
     {
-        self::$buffer[$cli->sock] = null;
+        self::check();
+        $cli = new \swoole_http_client($ip, $port, $ssl);
+        $cli->setHeaders([
+            'Host' => $host ? $host : $ip,
+            "User-Agent" => 'Chrome/49.0.2587.3',
+            'Accept' => 'text/html,application/xhtml+xml,application/xml',
+            'Accept-Encoding' => 'gzip',
+        ]);
+        $timeId = \swoole_timer_after(15000, function () use ($cli, $callback) {
+            $cli->close();
+            $callback(null, 1);
+        });
+        $cli->get($path, function ($cli) use ($timeId, $callback) {
+            \swoole_timer_clear($timeId);
+            $cli->close();
+            $callback($cli);
+        });
     }
 
-    public static function parseBody($cli, $content, $callback)
+    /**
+     * @param $ip           //目标地址ip
+     * @param $port         //目标地址端口
+     * @param $ssl          //是否ssl
+     * @param $path         //请求路径
+     * @param $data         //请求的post数据
+     * @param $callback     //请求完成之后的回调函数
+     * @param null $host    //host地址
+     */
+    public static function postByIp($ip, $port, $ssl, $path, $data, $callback, $host=null)
     {
-        if(empty(self::$buffer[$cli->sock])) {
-            list($header, $body) = explode("\r\n\r\n", $content, 2);
-            $headers = explode("\r\n", $header);
-            $status = array_shift($headers);
-            $statusArr = explode(" ", $status, 3);
-            $headerArr = [];
-            foreach($headers as $item) {
-                $tmp = explode(':', $item, 2);
-                $headerArr[$tmp[0]] = trim($tmp[1]);
-            }
-            self::$buffer[$cli->sock]['result']['status'] = $statusArr;
-            self::$buffer[$cli->sock]['result']['header'] = $headerArr;
-            if(in_array($statusArr[1], [301, 302])) {
-                return \ZPHP\Common\AsyncHttpClient::request($callback, $headerArr['Location']);
-            }
-            self::outPut($cli, $body);
-        } else {
-            self::outPut($cli, $content);
-        }
-
-        if(!empty(self::$buffer[$cli->sock]['err'])) {
-            self::clear($cli);
-            return false;
-        }
-
-        if(!empty(self::$buffer[$cli->sock]['finish'])) {
-            if(!empty(self::$buffer[$cli->sock]['result']['header']['Content-Encoding'])) {
-                switch (self::$buffer[$cli->sock]['result']['header']['Content-Encoding']) {
-                    case 'gzip':
-                        self::$buffer[$cli->sock]['result']['body'] =  gzdecode(self::$buffer[$cli->sock]['buffer']);
-                        break;
-                    case 'deflate':
-                        self::$buffer[$cli->sock]['result']['body'] =  gzinflate(self::$buffer[$cli->sock]['buffer']);
-                        break;
-                    case 'compress':
-                        self::$buffer[$cli->sock]['result']['body'] =  gzinflate(substr(self::$buffer[$cli->sock]['buffer'], 2, -4));
-                        break;
-                    default:
-                        self::$buffer[$cli->sock]['result']['body'] =  self::$buffer[$cli->sock]['buffer'];
-                        break;
-                }
-            } else {
-                self::$buffer[$cli->sock]['result']['body'] =  self::$buffer[$cli->sock]['buffer'];
-            }
-
-            $result =  self::$buffer[$cli->sock]['result'];
-            self::clear($cli);
-            return $result;
-        }
+        self::check();
+        $cli = new \swoole_http_client($ip, $port, $ssl);
+        $cli->setHeaders([
+            'Host' => $host ? $host : $ip,
+            "User-Agent" => 'Chrome/49.0.2587.3',
+            'Accept' => 'text/html,application/xhtml+xml,application/xml',
+            'Accept-Encoding' => 'gzip',
+        ]);
+        $timeId = \swoole_timer_after(15000, function () use ($cli, $callback) {
+            $cli->close();
+            $callback(null, 1);
+        });
+        $cli->post($path, $data, function ($cli) use ($timeId, $callback) {
+            \swoole_timer_clear($timeId);
+            $cli->close();
+            $callback($cli);
+        });
     }
-
-    public static function outPut($cli, $content)
-    {
-        if(isset(self::$buffer[$cli->sock]['result']['header']['Transfer-Encoding'])
-            && 'chunked' == self::$buffer[$cli->sock]['result']['header']['Transfer-Encoding']
-        ) {
-            if(empty(self::$buffer[$cli->sock]['chunkLen'])) {
-                $len = strstr($content, "\r\n", true);
-                $length = hexdec($len);
-                if ($length == 0) {
-                    self::$buffer[$cli->sock]['finish'] = 1;
-                    self::$buffer[$cli->sock]['buffer'] = substr(self::$buffer[$cli->sock]['buffer'], 0, strlen(self::$buffer[$cli->sock]['buffer']) - strlen($content));
-                    return;
-                }
-                self::$buffer[$cli->sock]['chunkLen'] = $length;
-                self::$buffer[$cli->sock]['buffer'].= substr($content, strlen($len)+2);
-            } else {
-                self::$buffer[$cli->sock]['buffer'].= $content;
-            }
-            if(strlen(self::$buffer[$cli->sock]['buffer']) >= self::$buffer[$cli->sock]['chunkLen']) {
-                $len = self::$buffer[$cli->sock]['chunkLen'];
-                self::$buffer[$cli->sock]['chunkLen'] = 0;
-                self::outPut($cli, substr(self::$buffer[$cli->sock]['buffer'], $len));
-            }
-        } else {
-            self::$buffer[$cli->sock]['buffer'] .= $content;
-            if(strlen(self::$buffer[$cli->sock]['buffer']) >= self::$buffer[$cli->sock]['result']['header']['Content-Length']) {
-                self::$buffer[$cli->sock]['finish'] = 1;
-                self::$buffer[$cli->sock]['buffer'] = substr(self::$buffer[$cli->sock]['buffer'], 0, self::$buffer[$cli->sock]['result']['header']['Content-Length']);
-                return;
-            }
-        }
-    }
-} 
+}
