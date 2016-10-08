@@ -49,20 +49,22 @@ class AsyncHttpClient
      * @param $callback
      * @param string $method
      * @param null $data //method==post时, 表示post的数据
+     * @param $timeOut      //超时时间,单位:ms
+     * @param $header       //请求头信息
      * @throws Exception
      */
-    public static function getByUrl($url, $callback, $method='GET', $data=null)
+    public static function getByUrl($url, $callback, $method='GET', $data=null, $timeOut=15000, $header=[])
     {
         self::check();
         $urlInfo = self::parseUrl($url);
         $method = strtoupper($method);
         $urlInfo['method'] = $method;
         $urlInfo['data'] = $data;
-        \swoole_async_dns_lookup($urlInfo['host'], function($host, $ip) use ($urlInfo, $callback) {
+        \swoole_async_dns_lookup($urlInfo['host'], function($host, $ip) use ($urlInfo, $callback, $timeOut, $header) {
             if('GET' == $urlInfo['method']) {
-                AsyncHttpClient::getByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $callback, $host);
+                AsyncHttpClient::getByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $callback, $timeOut, $header, $host);
             } else if('POST' == $urlInfo['method']) {
-                AsyncHttpClient::postByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $urlInfo['data'], $callback, $host);
+                AsyncHttpClient::postByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $urlInfo['data'], $callback, $timeOut, $header$host);
             } else {
                 throw new \Exception($urlInfo['method'].' method no support', -1);
             }
@@ -75,19 +77,21 @@ class AsyncHttpClient
      * @param $ssl          //是否ssl
      * @param $path         //请求路径
      * @param $callback     //请求完成之后的回调函数
+     * @param $timeOut      //超时时间,单位:ms
+     * @param $header       //请求头信息
      * @param null $host    //host地址
      */
-    public static function getByIp($ip, $port, $ssl, $path, $callback, $host=null)
+    public static function getByIp($ip, $port, $ssl, $path, $callback, $timeOut=15000, $header=[], $host=null)
     {
         self::check();
         $cli = new \swoole_http_client($ip, $port, $ssl);
-        $cli->setHeaders([
+        $cli->setHeaders($header + [
             'Host' => $host ? $host : $ip,
             "User-Agent" => 'Chrome/49.0.2587.3',
             'Accept' => 'text/html,application/xhtml+xml,application/xml',
             'Accept-Encoding' => 'gzip',
         ]);
-        $timeId = \swoole_timer_after(15000, function () use ($cli, $callback) {
+        $timeId = \swoole_timer_after($timeOut, function () use ($cli, $callback) {
             $cli->close();
             $callback(null, 1);
         });
@@ -105,19 +109,21 @@ class AsyncHttpClient
      * @param $path         //请求路径
      * @param $data         //请求的post数据
      * @param $callback     //请求完成之后的回调函数
+     * @param $timeOut      //超时时间,单位:ms
+     * @param $header       //头信息
      * @param null $host    //host地址
      */
-    public static function postByIp($ip, $port, $ssl, $path, $data, $callback, $host=null)
+    public static function postByIp($ip, $port, $ssl, $path, $data, $callback, $timeOut=15000, $header=[], $host=null)
     {
         self::check();
         $cli = new \swoole_http_client($ip, $port, $ssl);
-        $cli->setHeaders([
+        $cli->setHeaders($header + [
             'Host' => $host ? $host : $ip,
             "User-Agent" => 'Chrome/49.0.2587.3',
             'Accept' => 'text/html,application/xhtml+xml,application/xml',
             'Accept-Encoding' => 'gzip',
         ]);
-        $timeId = \swoole_timer_after(15000, function () use ($cli, $callback) {
+        $timeId = \swoole_timer_after($timeOut, function () use ($cli, $callback) {
             $cli->close();
             $callback(null, 1);
         });
