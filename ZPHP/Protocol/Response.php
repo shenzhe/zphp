@@ -33,7 +33,7 @@ class Response
         } else {
             $viewMode = Request::getViewMode();
             if(empty($viewMode)) {
-                if (Request::isAjax()) {
+                if (Request::isAjax() || Request::isLongServer()) {
                     $viewMode = 'Json';
                 } else {
                     $viewMode = 'Php';
