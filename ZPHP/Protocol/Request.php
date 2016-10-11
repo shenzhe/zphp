@@ -110,7 +110,6 @@ class Request
     public static function getViewMode()
     {
         return self::$_view_mode;
-
     }
 
     public static function setFd($fd)

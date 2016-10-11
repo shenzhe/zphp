@@ -6,6 +6,7 @@
 
 
 namespace ZPHP\Protocol;
+use ZPHP\Core\Config;
 use ZPHP\View\Factory as ZView;
 
 class Response
@@ -33,10 +34,13 @@ class Response
         } else {
             $viewMode = Request::getViewMode();
             if(empty($viewMode)) {
-                if (Request::isAjax() || Request::isLongServer()) {
-                    $viewMode = 'Json';
-                } else {
-                    $viewMode = 'Php';
+                $viewMode =  Config::getField('project', 'view_mode', '');
+                if(empty($viewMode)) {
+                    if (Request::isAjax() || Request::isLongServer()) {
+                        $viewMode = 'Json';
+                    } else {
+                        $viewMode = 'Php';
+                    }
                 }
             }
         }
