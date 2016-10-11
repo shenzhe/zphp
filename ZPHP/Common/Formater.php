@@ -9,10 +9,10 @@ use ZPHP\Core\Config as ZConfig;
 
 class Formater
 {
-    public static function fatal($error, $trace=true)
+    public static function fatal($error, $trace=true, $name='fatal')
     {
         $exceptionHash = array(
-            'className' => 'fatal',
+            'className' => $name,
             'message' => $error['message'],
             'code' => ZConfig::getField('project', 'default_exception_code', -1),
             'file' => $error['file'],
