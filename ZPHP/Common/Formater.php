@@ -5,6 +5,7 @@
  */
 
 namespace ZPHP\Common;
+use ZPHP\Core\Config as ZConfig;
 
 class Formater
 {
@@ -13,7 +14,7 @@ class Formater
         $exceptionHash = array(
             'className' => 'fatal',
             'message' => $error['message'],
-            'code' => -1,
+            'code' => ZConfig::getField('project', 'default_exception_code', -1),
             'file' => $error['file'],
             'line' =>$error['line'],
             'userAgent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
@@ -53,10 +54,14 @@ class Formater
 
     public static function exception(\Exception $exception, $trace = true)
     {
+        $code = $exception->getCode();
+        if(empty($code)) {
+            $code = ZConfig::getField('project', 'default_exception_code', -1);
+        }
         $exceptionHash = array(
             'className' => 'Exception',
             'message' => $exception->getMessage(),
-            'code' => $exception->getCode(),
+            'code' => $code,
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
             'userAgent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
