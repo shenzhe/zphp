@@ -55,12 +55,17 @@ class Formater
     public static function exception(\Exception $exception, $trace = true)
     {
         $code = $exception->getCode();
+        $message = $exception->getMessage();
         if(empty($code)) {
             $code = ZConfig::getField('project', 'default_exception_code', -1);
+        } elseif(!is_numeric($code)) {
+            $message.="#code:[{$code}]";
+            $code = ZConfig::getField('project', 'default_exception_code', -1);
         }
+
         $exceptionHash = array(
             'className' => 'Exception',
-            'message' => $exception->getMessage(),
+            'message' => $message,
             'code' => $code,
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
