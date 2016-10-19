@@ -5,8 +5,8 @@ namespace ZPHP\Socket\Callback;
 
 use ZPHP\Socket\ICallback;
 use ZPHP\Core\Config as ZConfig;
-use ZPHP\Core;
 use ZPHP\Protocol;
+use ZPHP\Async\HttpClient;
 
 
 abstract class Swoole implements ICallback
@@ -23,13 +23,25 @@ abstract class Swoole implements ICallback
     public function onStart()
     {
         $server = func_get_args()[0];
+        $ip = ZConfig::getField('socket', 'ip');
+        $port = ZConfig::getField('socket', 'port');
         swoole_set_process_name(ZConfig::get('project_name') .
             ' server running ' .
-            ZConfig::getField('socket', 'server_type', 'tcp') . '://' . ZConfig::getField('socket', 'host') . ':' . ZConfig::getField('socket', 'port')
+            ZConfig::getField('socket', 'server_type', 'tcp') . '://' . $ip . ':' . $port
             . " time:".date('Y-m-d H:i:s')."  master:" . $server->master_pid);
         $pidPath = ZConfig::getField('project', 'pid_path');
         if (!empty($pidPath)) {
             file_put_contents($pidPath . DS . ZConfig::get('project_name') . '_master.pid', $server->master_pid);
+        }
+
+        $soaConfig = ZConfig::get('soa');
+        if(!empty($soaConfig)) {
+            //服务注册
+            HttpClient::getByUrl($soaConfig['regUrl'], function(){}, 'GET', [
+                'ip'=>$ip,
+                'port'=>$port,
+                'serviceName'=>$soaConfig['serviceName']
+            ]);
         }
     }
 
@@ -48,6 +60,18 @@ abstract class Swoole implements ICallback
             if (is_file($filename)) {
                 unlink($filename);
             }
+        }
+
+        $ip = ZConfig::getField('socket', 'ip');
+        $port = ZConfig::getField('socket', 'port');
+        $soaConfig = ZConfig::get('soa');
+        if(!empty($soaConfig)) {
+            //服务注册
+            HttpClient::getByUrl($soaConfig['regUrl'], function(){}, 'GET', [
+                'ip'=>$ip,
+                'port'=>$port,
+                'serviceName'=>$soaConfig['serviceName']
+            ]);
         }
     }
 

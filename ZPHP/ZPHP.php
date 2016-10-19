@@ -13,6 +13,12 @@ use ZPHP\View,
 
 class ZPHP
 {
+
+    /**
+     * ZPHP版本
+     */
+    const VERSION = '1.1';
+
     /**
      * 项目目录
      * @var string

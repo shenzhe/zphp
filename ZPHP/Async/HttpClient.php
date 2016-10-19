@@ -6,11 +6,11 @@
  * Time: 下午12:18
  */
 
-namespace ZPHP\Common;
+namespace ZPHP\Async;
 use ZPHP\Protocol\Request;
 
 
-class AsyncHttpClient
+class HttpClient
 {
 
     public static function check()
@@ -51,7 +51,7 @@ class AsyncHttpClient
      * @param null $data //method==post时, 表示post的数据
      * @param $timeOut      //超时时间,单位:ms
      * @param $header       //请求头信息
-     * @throws Exception
+     * @throws \Exception
      */
     public static function getByUrl($url, $callback, $method='GET', $data=null, $timeOut=15000, $header=[])
     {
