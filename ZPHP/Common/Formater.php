@@ -52,7 +52,7 @@ class Formater
         return $exceptionHash;
     }
 
-    public static function exception(\Exception $exception, $trace = true)
+    public static function exception($exception, $trace = true)
     {
         $code = $exception->getCode();
         $message = $exception->getMessage();
