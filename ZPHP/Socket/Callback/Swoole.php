@@ -3,6 +3,7 @@
 
 namespace ZPHP\Socket\Callback;
 
+use ZPHP\Async\SwooleClient;
 use ZPHP\Socket\ICallback;
 use ZPHP\Core\Config as ZConfig;
 use ZPHP\Protocol;
@@ -37,11 +38,7 @@ abstract class Swoole implements ICallback
         $soaConfig = ZConfig::get('soa');
         if(!empty($soaConfig)) {
             //服务注册
-            HttpClient::getByUrl($soaConfig['regUrl'], function(){}, 'GET', [
-                'ip'=>$ip,
-                'port'=>$port,
-                'serviceName'=>$soaConfig['serviceName']
-            ]);
+
         }
     }
 

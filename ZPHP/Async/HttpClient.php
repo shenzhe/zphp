@@ -62,9 +62,9 @@ class HttpClient
         $urlInfo['data'] = $data;
         \swoole_async_dns_lookup($urlInfo['host'], function($host, $ip) use ($urlInfo, $callback, $timeOut, $header) {
             if('GET' == $urlInfo['method']) {
-                AsyncHttpClient::getByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $callback, $timeOut, $header, $host);
+                self::getByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $callback, $timeOut, $header, $host);
             } else if('POST' == $urlInfo['method']) {
-                AsyncHttpClient::postByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $urlInfo['data'], $callback, $timeOut, $header, $host);
+                self::postByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $urlInfo['data'], $callback, $timeOut, $header, $host);
             } else {
                 throw new \Exception($urlInfo['method'].' method no support', -1);
             }
@@ -134,6 +134,7 @@ class HttpClient
             }
         });
         $cli->post($path, $data, function ($cli) use ($timeId, $callback) {
+
             \swoole_timer_clear($timeId);
             $cli->close();
             if(is_callable($callback)) {

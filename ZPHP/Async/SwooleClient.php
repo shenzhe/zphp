@@ -9,6 +9,8 @@
 namespace ZPHP\Async;
 
 
+use ZPHP\Protocol\Request;
+
 class SwooleClient
 {
     private static $client;
