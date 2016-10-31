@@ -44,9 +44,9 @@ class Http
     public static function query($params)
     {
         self::init();
+
         curl_setopt(self::$ch, CURLOPT_HEADER, 0);
         curl_setopt(self::$ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt(self::$ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:13.0) Gecko/20100101 Firefox/13.0.1');
         curl_setopt(self::$ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt(self::$ch, CURLOPT_TIMEOUT, 30);
         curl_setopt(self::$ch, CURLOPT_RETURNTRANSFER, true);
@@ -76,12 +76,16 @@ class Http
             curl_setopt(self::$ch, CURLOPT_COOKIEFILE, $params['cookieFile']);
         }
 
+        if(empty($params['headers']['User-Agent'])) {
+            curl_setopt(self::$ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:13.0) Gecko/20100101 Firefox/13.0.1');
+        }
+
         $headers = [];
         if (!empty($params['headers'])) {
             $headers = array_merge($headers, $params['headers']);
         }
-        curl_setopt(self::$ch, CURLOPT_HTTPHEADER, $headers);
 
+        curl_setopt(self::$ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt(self::$ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         $response = curl_exec(self::$ch);
         if (empty($response)) {
@@ -92,25 +96,6 @@ class Http
         }
         return $response;
     }
-
-    public static function post($url, $dataStr)
-    {
-        self::init();
-        curl_setopt(self::$ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt(self::$ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:13.0) Gecko/20100101 Firefox/13.0.1');
-        curl_setopt(self::$ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt(self::$ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt(self::$ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt(self::$ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        curl_setopt(self::$ch, CURLOPT_REFERER, $url);
-        curl_setopt(self::$ch, CURLOPT_POST, true);
-        curl_setopt(self::$ch, CURLOPT_POSTFIELDS, $dataStr);
-        curl_setopt(self::$ch, CURLOPT_URL, $url);
-        curl_setopt(self::$ch, CURLOPT_NOBODY, true);
-        $response = curl_exec(self::$ch);
-        return $response;
-    }
-
 
     public static function close()
     {
