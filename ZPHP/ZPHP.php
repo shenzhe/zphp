@@ -5,6 +5,7 @@
  * 初始化框架相关信息
  */
 namespace ZPHP;
+
 use ZPHP\Protocol\Response;
 use ZPHP\View,
     ZPHP\Core\Config,
@@ -31,7 +32,7 @@ class ZPHP
     private static $configPath = 'default';
     private static $appPath = 'apps';
     private static $zPath;
-    private static $libPath='lib';
+    private static $libPath = 'lib';
     private static $classPath = array();
 
     public static function getRootPath()
@@ -80,7 +81,7 @@ class ZPHP
 
     final public static function autoLoader($class)
     {
-        if(isset(self::$classPath[$class])) {
+        if (isset(self::$classPath[$class])) {
             return;
         }
         $baseClasspath = \str_replace('\\', DS, $class) . '.php';
@@ -88,7 +89,7 @@ class ZPHP
             self::$rootPath . DS . self::$appPath,
             self::$zPath
         );
-        if(is_array(self::$libPath)) {
+        if (is_array(self::$libPath)) {
             $libs = array_merge($libs, self::$libPath);
         } else {
             $libs[] = self::$libPath;
@@ -111,10 +112,10 @@ class ZPHP
     final public static function fatalHandler()
     {
         $error = \error_get_last();
-        if(empty($error)) {
+        if (empty($error)) {
             return;
         }
-        if(!in_array($error['type'], array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR))) {
+        if (!in_array($error['type'], array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR))) {
             return;
         }
         Response::status('200');
@@ -128,14 +129,14 @@ class ZPHP
      * @return \ZPHP\Server\IServer
      * @throws \Exception
      */
-    public static function run($rootPath, $run=true, $configPath=null)
+    public static function run($rootPath, $run = true, $configPath = null)
     {
         if (!defined('DS')) {
             define('DS', DIRECTORY_SEPARATOR);
         }
         self::$zPath = \dirname(__DIR__);
         self::setRootPath($rootPath);
-        if(empty($configPath)) {
+        if (empty($configPath)) {
             if (!empty($_SERVER['HTTP_HOST'])) {
                 $configPath = \str_replace(':', '_', $_SERVER['HTTP_HOST']);
             } elseif (!empty($_SERVER['argv'][1])) {
@@ -147,7 +148,7 @@ class ZPHP
         }
         \spl_autoload_register(__CLASS__ . '::autoLoader');
         Config::load(self::getConfigPath());
-        self::$libPath = Config::get('lib_path', self::$zPath . DS .'lib');
+        self::$libPath = Config::get('lib_path', self::$zPath . DS . 'lib');
         if ($run && Config::getField('project', 'debug_mode', 0)) {
             Debug::start();
         }
@@ -155,17 +156,17 @@ class ZPHP
         self::setAppPath($appPath);
         $eh = Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler');
         \set_exception_handler($eh);
-        \register_shutdown_function( Config::getField('project', 'fatal_handler', __CLASS__ . '::fatalHandler') );
-        if(Config::getField('project', 'error_handler')) {
+        \register_shutdown_function(Config::getField('project', 'fatal_handler', __CLASS__ . '::fatalHandler'));
+        if (Config::getField('project', 'error_handler')) {
             \set_error_handler(Config::getField('project', 'error_handler'));
         }
         $timeZone = Config::get('time_zone', 'Asia/Shanghai');
         \date_default_timezone_set($timeZone);
         $serverMode = Config::get('server_mode', 'Http');
         $service = Server\Factory::getInstance($serverMode);
-        if($run) {
+        if ($run) {
             $service->run();
-        }else{
+        } else {
             return $service;
         }
         if ($run && Config::getField('project', 'debug_mode', 0)) {

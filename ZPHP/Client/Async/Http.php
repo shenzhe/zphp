@@ -6,11 +6,11 @@
  * Time: 下午12:18
  */
 
-namespace ZPHP\Async;
+namespace ZPHP\Client\Async;
 use ZPHP\Protocol\Request;
 
 
-class HttpClient
+class Http
 {
 
     public static function check()
@@ -130,7 +130,7 @@ class HttpClient
         $timeId = \swoole_timer_after($timeOut, function () use ($cli, $callback) {
             $cli->close();
             if(is_callable($callback)) {
-                $callback(null, 1);
+                $callback($cli, 1);
             }
         });
         $cli->post($path, $data, function ($cli) use ($timeId, $callback) {
