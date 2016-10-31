@@ -42,7 +42,7 @@ class WebSocketClient
      * @param int $port
      * @param string $path
      */
-    function __construct($host = '127.0.0.1', $port = 8080, $path = '/', $origin=null)
+    function __construct($host = '127.0.0.1', $port = 8080, $path = '/', $origin = null)
     {
         $this->host = $host;
         $this->port = $port;
@@ -65,9 +65,9 @@ class WebSocketClient
      * @throws ConnectionException
      * @return $this
      */
-    public function connect($pconnect=false)
+    public function connect($pconnect = false)
     {
-        if(!$this->socket) {
+        if (!$this->socket) {
             if ($pconnect) {
                 $this->socket = new \swoole_client(SWOOLE_TCP | SWOOLE_KEEP);
             } else {

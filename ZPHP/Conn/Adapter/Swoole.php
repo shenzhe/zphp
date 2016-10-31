@@ -1,8 +1,9 @@
 <?php
 
 namespace ZPHP\Conn\Adapter;
-use ZPHP\Core\Config as ZConfig,
-    ZPHP\Conn\IConn;
+
+use ZPHP\Core\Config as ZConfig;
+use ZPHP\Conn\IConn;
 
 /**
  *  swoole table 容器
@@ -14,7 +15,7 @@ class Swoole implements IConn
 
     public function __construct($config)
     {
-        if(empty($this->table)) {
+        if (empty($this->table)) {
             $table = new swoole_table(1024);
             $table->column('data', swoole_table::TYPE_STRING, 64);
             $table->create();
@@ -25,7 +26,7 @@ class Swoole implements IConn
 
     public function addFd($fd, $uid = 0)
     {
-        return $this->table->set($this->getKey($fd, 'fu'), ['data'=>$uid]);
+        return $this->table->set($this->getKey($fd, 'fu'), ['data' => $uid]);
     }
 
 
@@ -61,9 +62,9 @@ class Swoole implements IConn
 
     public function delChannel($uid, $channel)
     {
-        if($this->table->hDel($this->getKey($channel), $uid)){
+        if ($this->table->hDel($this->getKey($channel), $uid)) {
             $uinfo = $this->get($uid);
-            if(isset($uinfo['types'][$channel])) {
+            if (isset($uinfo['types'][$channel])) {
                 unset($uinfo['types'][$channel]);
                 $this->table->set($this->getKey($uid), json_encode($uinfo));
             }
@@ -131,17 +132,17 @@ class Swoole implements IConn
         }
     }
 
-    public function getBuff($fd, $prev='buff')
+    public function getBuff($fd, $prev = 'buff')
     {
         return $this->table->get($this->getKey($fd, $prev));
     }
 
-    public function setBuff($fd, $data, $prev='buff')
+    public function setBuff($fd, $data, $prev = 'buff')
     {
         return $this->table->set($this->getKey($fd, $prev), $data);
     }
 
-    public function delBuff($fd, $prev='buff')
+    public function delBuff($fd, $prev = 'buff')
     {
         return $this->table->delete($this->getKey($fd, $prev));
     }

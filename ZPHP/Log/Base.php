@@ -8,9 +8,6 @@
 
 namespace ZPHP\Log;
 
-use ZPHP\Log\Level;
-use ZPHP\Core\Config as ZConfig;
-
 
 abstract class Base
 {

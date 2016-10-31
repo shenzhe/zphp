@@ -6,8 +6,9 @@
 
 
 namespace ZPHP\Cache\Adapter;
-use ZPHP\Cache\ICache,
-    ZPHP\Manager;
+
+use ZPHP\Cache\ICache;
+use ZPHP\Manager;
 
 class Memcached implements ICache
 {

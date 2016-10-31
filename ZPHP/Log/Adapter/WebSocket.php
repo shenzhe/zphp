@@ -28,7 +28,7 @@ class WebSocket extends Base
             $this->_config = $config;
         }
     }
-    
+
     /**
      * @param $level
      * @param $message
@@ -41,8 +41,8 @@ class WebSocket extends Base
     {
         $logLevel = ZConfig::getField('project', 'log_level', Level::ALL);
         if (Level::$levels[$level] & $logLevel) {
-            $str = $level . self::SEPARATOR . $message. self::SEPARATOR. \implode(self::SEPARATOR, array_map('\ZPHP\Common\Log::myJson', $context));
-            if(!$this->_client) {
+            $str = $level . self::SEPARATOR . $message . self::SEPARATOR . \implode(self::SEPARATOR, array_map('\ZPHP\Common\Log::myJson', $context));
+            if (!$this->_client) {
                 $this->_client = new WebSocketClient($this->_config['host'], $this->_config['port']);
                 $this->_client->connect();
             }

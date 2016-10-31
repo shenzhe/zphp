@@ -6,6 +6,7 @@
 
 
 namespace ZPHP\Cache\Adapter;
+
 use ZPHP\Cache\ICache;
 
 class Apc implements ICache

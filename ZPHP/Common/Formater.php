@@ -5,18 +5,19 @@
  */
 
 namespace ZPHP\Common;
+
 use ZPHP\Core\Config as ZConfig;
 
 class Formater
 {
-    public static function fatal($error, $trace=true, $name='fatal')
+    public static function fatal($error, $trace = true, $name = 'fatal')
     {
         $exceptionHash = array(
             'className' => $name,
             'message' => $error['message'],
             'code' => ZConfig::getField('project', 'default_exception_code', -1),
             'file' => $error['file'],
-            'line' =>$error['line'],
+            'line' => $error['line'],
             'userAgent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'trace' => array(),
         );
@@ -56,10 +57,10 @@ class Formater
     {
         $code = $exception->getCode();
         $message = $exception->getMessage();
-        if(empty($code)) {
+        if (empty($code)) {
             $code = ZConfig::getField('project', 'default_exception_code', -1);
-        } elseif(!is_numeric($code)) {
-            $message.="#code:[{$code}]";
+        } elseif (!is_numeric($code)) {
+            $message .= "#code:[{$code}]";
             $code = ZConfig::getField('project', 'default_exception_code', -1);
         }
 
@@ -71,7 +72,7 @@ class Formater
             'line' => $exception->getLine(),
             'userAgent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'trace' => array(),
-            'server'=>$_SERVER,
+            'server' => $_SERVER,
         );
 
         if ($trace) {

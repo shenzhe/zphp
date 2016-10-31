@@ -6,6 +6,7 @@
 
 
 namespace ZPHP\Protocol\Adapter;
+
 use ZPHP\Core\Config;
 use ZPHP\Common\MessagePacker;
 use ZPHP\Protocol\IProtocol;
@@ -14,6 +15,7 @@ use ZPHP\Protocol\Request;
 class Zpack implements IProtocol
 {
     private $_buffer = [];
+
     /**
      * client包格式： writeString(json_encode(array("a"='main/main',"m"=>'main', 'k1'=>'v1')));
      * server包格式：包总长+数据(json_encode)

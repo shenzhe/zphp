@@ -8,6 +8,7 @@
 
 
 namespace ZPHP\Socket\Route;
+
 use ZPHP\Protocol;
 use ZPHP\Core;
 
@@ -18,7 +19,7 @@ class ZRpack
         $server = Protocol\Factory::getInstance('ZRpack');
         $server->setFd($fd);
         $result = array();
-        if(false === $server->parse($data)) {
+        if (false === $server->parse($data)) {
             return $result;
         }
         $result[] = Core\Route::route($server);

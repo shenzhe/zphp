@@ -8,7 +8,6 @@
 
 namespace ZPHP\Client\Async;
 
-
 use ZPHP\Protocol\Request;
 
 class Tcp
@@ -24,7 +23,7 @@ class Tcp
     public static function singleton($ip, $port)
     {
         $key = "{$ip}:{$port}";
-        if(empty(self::$clients[$key])) {
+        if (empty(self::$clients[$key])) {
             self::$clients[$key] = new Tcp($ip, $port);
         }
 
@@ -33,11 +32,11 @@ class Tcp
 
     public function __construct($ip, $port)
     {
-        if(!Request::isLongServer()) {
+        if (!Request::isLongServer()) {
             throw new \Exception('must long server', -1);
         }
 
-        $client =  new \swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
+        $client = new \swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
         $client->connect($ip, $port);
         return $client;
     }

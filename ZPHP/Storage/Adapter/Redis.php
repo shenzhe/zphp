@@ -6,8 +6,9 @@
 
 
 namespace ZPHP\Storage\Adapter;
-use ZPHP\Manager,
-    ZPHP\Storage\IStorage;
+
+use ZPHP\Manager;
+use ZPHP\Storage\IStorage;
 
 class Redis implements IStorage
 {

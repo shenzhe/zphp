@@ -7,6 +7,7 @@
 
 
 namespace ZPHP\Socket\Adapter;
+
 use ZPHP\Socket\IServer;
 
 class Php implements IServer

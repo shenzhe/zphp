@@ -6,9 +6,10 @@
 
 
 namespace ZPHP\Server\Adapter;
-use ZPHP\Core,
-    ZPHP\Server\IServer,
-    ZPHP\Protocol;
+
+use ZPHP\Core;
+use ZPHP\Server\IServer;
+use ZPHP\Protocol;
 
 class Rpc implements IServer
 {

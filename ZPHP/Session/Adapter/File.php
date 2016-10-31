@@ -7,7 +7,6 @@
 
 namespace ZPHP\Session\Adapter;
 
-use ZPHP\Manager;
 use ZPHP\ZPHP;
 
 class File
@@ -38,9 +37,9 @@ class File
     {
         $path = $this->getPath();
         $files = \ZPHP\Common\Dir::tree($path);
-        foreach($files as $file) {
-            if(false !==strpos($file, 'sess_')) {
-                if(fileatime($file) < (time() - $this->gcTime)) {
+        foreach ($files as $file) {
+            if (false !== strpos($file, 'sess_')) {
+                if (fileatime($file) < (time() - $this->gcTime)) {
                     unlink($file);
                 }
             }
@@ -95,7 +94,7 @@ class File
             mkdir($path, 0777, true);
         }
 
-        if(!empty($this->config['callback']) && is_callable($this->config['callback'])) {
+        if (!empty($this->config['callback']) && is_callable($this->config['callback'])) {
             return call_user_func($this->config['callback'], $path, $sid);
         }
 

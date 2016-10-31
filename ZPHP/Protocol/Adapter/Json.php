@@ -7,10 +7,8 @@
 
 namespace ZPHP\Protocol\Adapter;
 
-use ZPHP\Core\Config,
-    ZPHP\Socket\Client as ZSClient,
-    ZPHP\Protocol\IProtocol,
-    ZPHP\View;
+use ZPHP\Core\Config;
+use ZPHP\Protocol\IProtocol;
 use ZPHP\Protocol\Request;
 
 class Json implements IProtocol

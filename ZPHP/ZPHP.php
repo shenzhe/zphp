@@ -4,13 +4,13 @@
  * Date: 13-6-17
  * 初始化框架相关信息
  */
+
 namespace ZPHP;
 
 use ZPHP\Protocol\Response;
-use ZPHP\View,
-    ZPHP\Core\Config,
-    ZPHP\Common\Debug,
-    ZPHP\Common\Formater;
+use ZPHP\Core\Config;
+use ZPHP\Common\Debug;
+use ZPHP\Common\Formater;
 
 class ZPHP
 {
@@ -35,16 +35,28 @@ class ZPHP
     private static $libPath = 'lib';
     private static $classPath = array();
 
+    /**
+     * @return string
+     * @desc 获取root目录
+     */
     public static function getRootPath()
     {
         return self::$rootPath;
     }
 
+    /**
+     * @param $rootPath
+     * @desc 设置root目录
+     */
     public static function setRootPath($rootPath)
     {
         self::$rootPath = $rootPath;
     }
 
+    /**
+     * @return string
+     * @desc 获取配置路径
+     */
     public static function getConfigPath()
     {
         $dir = self::getRootPath() . DS . 'config' . DS . self::$configPath;
@@ -54,31 +66,55 @@ class ZPHP
         return self::getRootPath() . DS . 'config' . DS . 'default';
     }
 
+    /**
+     * @param $path
+     * @desc 设置配置路径
+     */
     public static function setConfigPath($path)
     {
         self::$configPath = $path;
     }
 
+    /**
+     * @return string
+     * @desc 获取app目录
+     */
     public static function getAppPath()
     {
         return self::$appPath;
     }
 
+    /**
+     * @param $path
+     * @desc 设置app目录
+     */
     public static function setAppPath($path)
     {
         self::$appPath = $path;
     }
 
+    /**
+     * @return mixed
+     * @desc 获取zphp框架目录
+     */
     public static function getZPath()
     {
         return self::$zPath;
     }
 
+    /**
+     * @return string
+     * @desc 获取第三方lib包目录
+     */
     public static function getLibPath()
     {
         return self::$libPath;
     }
 
+    /**
+     * @param $class
+     * @desc 自动加载类, ps当高并发情况下，is_file可能会导致cpu打满，可以取消掉is_file判断
+     */
     final public static function autoLoader($class)
     {
         if (isset(self::$classPath[$class])) {
@@ -104,11 +140,19 @@ class ZPHP
         }
     }
 
+    /**
+     * @param $exception
+     * @return mixed
+     * @desc 默认的异常处理
+     */
     final public static function exceptionHandler($exception)
     {
         return Response::display(Formater::exception($exception));
     }
 
+    /**
+     * @desc 默认的fatal处理
+     */
     final public static function fatalHandler()
     {
         $error = \error_get_last();
@@ -128,6 +172,7 @@ class ZPHP
      * @param null $configPath
      * @return \ZPHP\Server\IServer
      * @throws \Exception
+     * @desc 运行框架
      */
     public static function run($rootPath, $run = true, $configPath = null)
     {

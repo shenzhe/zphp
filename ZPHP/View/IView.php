@@ -4,10 +4,12 @@
  * Date: 13-6-17
  *  view接口
  */
+
 namespace ZPHP\View;
+
 interface IView
 {
-	//存入数据
+    //存入数据
     public function setModel($model);
 
     //获取数据

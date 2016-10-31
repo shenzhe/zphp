@@ -6,10 +6,9 @@
 
 
 namespace ZPHP\Protocol\Adapter;
-use ZPHP\Core;
+
 use ZPHP\Core\Config;
 use ZPHP\Protocol\Request;
-use ZPHP\View;
 use ZPHP\Protocol\IProtocol;
 
 class Cli implements IProtocol

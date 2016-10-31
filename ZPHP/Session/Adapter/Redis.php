@@ -6,6 +6,7 @@
 
 
 namespace ZPHP\Session\Adapter;
+
 use ZPHP\Manager;
 
 class Redis
@@ -42,7 +43,7 @@ class Redis
 
     public function read($sid)
     {
-        if(!empty($this->config['sid_prefix'])) {
+        if (!empty($this->config['sid_prefix'])) {
             $sid = str_replace($this->config['sid_prefix'], '', $sid);
         }
         $data = $this->redis->get($sid);
@@ -54,10 +55,10 @@ class Redis
 
     public function write($sid, $data)
     {
-        if(empty($data)) {
+        if (empty($data)) {
             return true;
         }
-        if(!empty($this->config['sid_prefix'])) {
+        if (!empty($this->config['sid_prefix'])) {
             $sid = str_replace($this->config['sid_prefix'], '', $sid);
         }
         return $this->redis->setex($sid, $this->gcTime, $data);
@@ -65,7 +66,7 @@ class Redis
 
     public function destroy($sid)
     {
-        if(!empty($this->config['sid_prefix'])) {
+        if (!empty($this->config['sid_prefix'])) {
             $sid = str_replace($this->config['sid_prefix'], '', $sid);
         }
         return $this->redis->delete($sid);

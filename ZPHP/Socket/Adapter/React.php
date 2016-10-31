@@ -7,9 +7,9 @@
 
 
 namespace ZPHP\Socket\Adapter;
-use ZPHP\Socket\IServer,
-    ZPHP\Core\Config as ZConfig,
-    ZPHP\Protocol;
+
+use ZPHP\Socket\IServer;
+
 use React\EventLoop\Factory as eventLoop,
     React\Socket\Server as server;
 
@@ -38,7 +38,7 @@ class React implements IServer
     {
         if (3 === $this->config['work_mode']) {
             for ($i = 0; $i < $this->config['worker_num']; $i++) {
-               $this->fork();
+                $this->fork();
             }
         }
 
@@ -80,11 +80,11 @@ class React implements IServer
 
     public function check()
     {
-        if(empty($this->config['max_request'])) {
-            return ;
+        if (empty($this->config['max_request'])) {
+            return;
         }
-        foreach($this->pids as $pid=>$num) {
-            if($num >= $this->config['max_request']) {
+        foreach ($this->pids as $pid => $num) {
+            if ($num >= $this->config['max_request']) {
                 unset($this->pids[$pid]);
                 posix_kill($pid, SIGTERM);
                 $this->fork();

@@ -32,13 +32,13 @@ class Mongo
      */
     public function connect($config = array())
     {
-        if(empty($this->mongo)) {
+        if (empty($this->mongo)) {
             $options = array();
-            if(!empty($config['options'])) {
+            if (!empty($config['options'])) {
                 $options = $config['options'];
             }
             $this->mongo = new \MongoClient($config['dsn'], $options);
-            
+
         }
     }
 
@@ -129,7 +129,7 @@ class Mongo
     {
         $cursor = $this->collection->find($query, $fields);
         $count = $cursor->count();
-        if(empty($count)) {
+        if (empty($count)) {
             return array();
         }
         if ($sort) $cursor->sort($sort);

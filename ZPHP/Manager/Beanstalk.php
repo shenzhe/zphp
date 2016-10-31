@@ -6,6 +6,7 @@
 
 
 namespace ZPHP\Manager;
+
 class Beanstalk
 {
     private static $instances;

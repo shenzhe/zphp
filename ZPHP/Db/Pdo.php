@@ -6,6 +6,7 @@
 
 
 namespace ZPHP\Db;
+
 use ZPHP\Protocol\Request;
 use ZPHP\Core\Config as ZConfig;
 
@@ -33,25 +34,25 @@ class Pdo
      * @return Pdo
      * @throws \Exception
      */
-    public static function getInstance($config=null, $className=null, $dbName=null)
+    public static function getInstance($config = null, $className = null, $dbName = null)
     {
-        if(empty($config)) {
+        if (empty($config)) {
             $config = ZConfig::get('pdo');
         }
-        if(empty($config['dsn'])) {
+        if (empty($config['dsn'])) {
             throw new \Exception('dsn empty');
         }
-        if(empty(self::$instance[$config['dsn']])) {
+        if (empty(self::$instance[$config['dsn']])) {
             self::$instance[$config['dsn']] = new Pdo($config);
-        } else if(Request::isLongServer()){
+        } else if (Request::isLongServer()) {
             self::$instance[$config['dsn']]->ping();
         }
 
-        if($className) {
+        if ($className) {
             self::$instance[$config['dsn']]->setClassName($className);
         }
 
-        if($dbName) {
+        if ($dbName) {
             self::$instance[$config['dsn']]->setDBName($dbName);
         }
 
@@ -75,16 +76,16 @@ class Pdo
      *    }
      * @param null $dbName
      */
-    public function __construct($config=null, $className = null, $dbName = null)
+    public function __construct($config = null, $className = null, $dbName = null)
     {
-        if(empty($config)) {
+        if (empty($config)) {
             $config = ZConfig::get('pdo');
         }
-        if(empty($config)) {
+        if (empty($config)) {
             throw new \Exception('config empty', -1);
         }
         $this->config = $config;
-        if(empty($this->config['pingtime'])) {
+        if (empty($this->config['pingtime'])) {
             $this->config['pingtime'] = 3600;
         }
         if (!empty($className)) {
@@ -110,16 +111,16 @@ class Pdo
 
     private function connect()
     {
-        if(Request::isLongServer()) {
+        if (Request::isLongServer()) {
             $persistent = 0;
         } else {
             $persistent = empty($this->config['pconnect']) ? 0 : 1;
         }
         return new \PDO($this->config['dsn'], $this->config['user'], $this->config['pass'], array(
-                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '{$this->config['charset']}';",
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                \PDO::ATTR_PERSISTENT => $persistent
-            ));
+            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '{$this->config['charset']}';",
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_PERSISTENT => $persistent
+        ));
 
     }
 
@@ -136,19 +137,20 @@ class Pdo
         }
         $this->dbName = $dbName;
     }
-	//add set TableName change by ahuo 2013-11-05 14:23
-	public function setTableName($tableName)
-	{
-		if(empty($tableName)){
-			return;
-		}
-		$this->tableName = $tableName;
-	}
+
+    //add set TableName change by ahuo 2013-11-05 14:23
+    public function setTableName($tableName)
+    {
+        if (empty($tableName)) {
+            return;
+        }
+        $this->tableName = $tableName;
+    }
 
     public function getTableName()
     {
         if (empty($this->tableName)) {
-            if(method_exists($this->className, 'getTableName')) {
+            if (method_exists($this->className, 'getTableName')) {
                 $this->tableName = call_user_func(array($this->className, 'getTableName'));
             } else {
                 $entityRef = new \ReflectionClass($this->className);
@@ -203,7 +205,7 @@ class Pdo
         $this->lastSql = $query;
         $params = array();
 
-        foreach ($_fields as $_i=>$field) {
+        foreach ($_fields as $_i => $field) {
             $params[$field] = $entity->{$fields[$_i]};
         }
 
@@ -221,7 +223,7 @@ class Pdo
         foreach ($entitys as $index => $entity) {
             $items[] = '(:' . implode($index . ', :', $_fileds) . $index . ')';
 
-            foreach ($_fileds as $_i=>$field) {
+            foreach ($_fileds as $_i => $field) {
                 $params[$field . $index] = $entity->{$fields[$_i]};
             }
         }
@@ -347,7 +349,8 @@ class Pdo
         $result = $statement->fetch();
         return $result["count"];
     }
-	//$params = [] php5.3.6 报语法错误 change by ahuo 2013-11-05 14:23
+
+    //$params = [] php5.3.6 报语法错误 change by ahuo 2013-11-05 14:23
     public function remove($where, $params = array())
     {
         if (empty($where)) {
@@ -379,7 +382,7 @@ class Pdo
         return '`' . $field . '`=`' . $field . '`+:' . $field;
     }
 
-    public function fetchBySql($sql, $mode=\PDO::FETCH_ASSOC)
+    public function fetchBySql($sql, $mode = \PDO::FETCH_ASSOC)
     {
         $statement = $this->pdo->prepare($sql);
         $this->lastSql = $sql;
@@ -400,7 +403,7 @@ class Pdo
     public function ping()
     {
         $now = time();
-        if($this->lastTime < $now) {
+        if ($this->lastTime < $now) {
             if (empty($this->pdo)) {
                 $this->pdo = $this->connect();
             } else {
@@ -421,7 +424,7 @@ class Pdo
 
     public function close()
     {
-        if(empty($this->config['pconnect'])) {
+        if (empty($this->config['pconnect'])) {
             $this->pdo = null;
         }
     }

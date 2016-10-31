@@ -1,9 +1,10 @@
 <?php
 
 namespace ZPHP\Conn\Adapter;
-use ZPHP\Core\Config as ZConfig,
-    ZPHP\Conn\IConn,
-    ZPHP\Cache\Factory as ZCache;
+
+use ZPHP\Core\Config as ZConfig;
+use ZPHP\Conn\IConn;
+use ZPHP\Cache\Factory as ZCache;
 
 /**
  *  yac共享内存
@@ -15,11 +16,11 @@ class Yac implements IConn
 
     public function __construct($config)
     {
-        if(empty($this->yac)) {
+        if (empty($this->yac)) {
             $this->yac = ZCache::getInstance($config['adapter'], $config);
-            if(!$this->yac->enable()) {
+            if (!$this->yac->enable()) {
                 throw new \Exception("Yac no enable");
-                
+
             }
         }
     }
@@ -61,14 +62,14 @@ class Yac implements IConn
         }
     }
 
-    public function delChannel($uid, $channel='ALL')
+    public function delChannel($uid, $channel = 'ALL')
     {
         $channelInfo = $this->getChannel($channel);
-        if(!empty($channelInfo[$uid])) {
+        if (!empty($channelInfo[$uid])) {
             unset($channelInfo[$uid]);
             $this->yac->set($this->getKey($channel), json_encode($channelInfo));
             $uinfo = $this->get($uid);
-            if(!empty($uinfo['types'][$channel])) {
+            if (!empty($uinfo['types'][$channel])) {
                 unset($uinfo['types'][$channel]);
                 $this->yac->set($this->getKey($uid), json_encode($uinfo));
             }
@@ -78,7 +79,7 @@ class Yac implements IConn
     }
 
     private function upChannel($uid, $fd, $channel = 'ALL')
-    {   
+    {
         $channelInfo = $this->getChannel($channel);
         $channelInfo[$uid] = $fd;
         $this->yac->set($this->getKey($channel), json_encode($channelInfo));
@@ -146,17 +147,17 @@ class Yac implements IConn
         return true;
     }
 
-    public function getBuff($fd, $prev='buff')
+    public function getBuff($fd, $prev = 'buff')
     {
         return $this->yac->get($this->getKey($fd, $prev));
     }
 
-    public function setBuff($fd, $data, $prev='buff')
+    public function setBuff($fd, $data, $prev = 'buff')
     {
         return $this->yac->set($this->getKey($fd, $prev), $data);
     }
 
-    public function delBuff($fd, $prev='buff')
+    public function delBuff($fd, $prev = 'buff')
     {
         return $this->yac->delete($this->getKey($fd, $prev));
     }

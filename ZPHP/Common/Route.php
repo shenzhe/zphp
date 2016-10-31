@@ -49,7 +49,6 @@ class Route
             return false;
         }
 
-        
 
         /*if(isset($route['ext'])) {
             $pathinfo = str_replace($route['ext'], '', $pathinfo);
@@ -159,7 +158,7 @@ class Route
                 unset($routes['cache']);
             }
             $ext = '';
-            if(!empty($routes['ext'])) {
+            if (!empty($routes['ext'])) {
                 $ext = $routes['ext'];
                 unset($routes['ext']);
             }
@@ -172,12 +171,12 @@ class Route
                         }
                         if ('static' == $type) {
                             if (empty($params)) {
-                                if('' == $path || '/'==$path) {
+                                if ('' == $path || '/' == $path) {
                                     $result = $appUrl . $path;
                                 } else {
-                                    $result = $appUrl . $path. $ext;
+                                    $result = $appUrl . $path . $ext;
                                 }
-                                
+
                             } else {
                                 $result = $appUrl . $path . $ext . '?' . http_build_query($params);
                             }
@@ -193,7 +192,7 @@ class Route
                                 }
                             }
                             if (empty($params)) {
-                                $result = $appUrl . $realPath. $ext;
+                                $result = $appUrl . $realPath . $ext;
                             } else {
                                 $result = $appUrl . $realPath . $ext . '?' . http_build_query($params);
                             }

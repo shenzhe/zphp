@@ -1,9 +1,9 @@
 <?php
 
 namespace ZPHP\Conn\Adapter;
-use ZPHP\Core\Config as ZConfig,
-    ZPHP\Conn\IConn,
-    ZPHP\Cache\Factory as ZCache;
+
+use ZPHP\Core\Config as ZConfig;
+use ZPHP\Conn\IConn;
 
 /**
  *  php内置数组
@@ -15,7 +15,7 @@ class Php implements IConn
 
     public function __construct($config)
     {
-        
+
     }
 
 
@@ -60,7 +60,7 @@ class Php implements IConn
     }
 
     private function upChannel($uid, $fd, $channel = 'ALL')
-    {   
+    {
         $channelInfo = $this->getChannel($channel);
         $channelInfo[$uid] = $fd;
         $key = $this->getKey($channel);
@@ -71,12 +71,12 @@ class Php implements IConn
     public function delChannel($uid, $channel)
     {
         $channelInfo = $this->getChannel($channel);
-        if(isset($channelInfo[$uid])) {
+        if (isset($channelInfo[$uid])) {
             unset($channelInfo[$uid]);
             $key = $this->getKey($channel);
             $this->_cache[$key] = $channelInfo;
             $uinfo = $this->get($uid);
-            if(isset($uinfo['types'][$channel])) {
+            if (isset($uinfo['types'][$channel])) {
                 unset($uinfo['types'][$channel]);
                 $key = $this->getKey($uid);
                 $this->_cache[$key] = $uinfo;
@@ -127,7 +127,7 @@ class Php implements IConn
     {
         if ($old) {
             $okey = $this->getKey($fd, 'fu');
-            if(isset($this->_cache[$okey])) {
+            if (isset($this->_cache[$okey])) {
                 unset($this->_cache[$okey]);
             }
         }
@@ -138,35 +138,35 @@ class Php implements IConn
         $uinfo = $this->get($uid);
         if (!empty($uinfo)) {
             $key = $this->getKey($uid);
-            if(isset($this->_cache[$key])) {
+            if (isset($this->_cache[$key])) {
                 unset($this->_cache[$key]);
             }
             foreach ($uinfo['types'] as $type => $val) {
                 $key = $this->getKey($type);
-                if(!empty($this->_cache[$key][$uid])) {
-                    unset($this->_cache[$key][$uid]);   
+                if (!empty($this->_cache[$key][$uid])) {
+                    unset($this->_cache[$key][$uid]);
                 }
             }
         }
     }
 
-    public function getBuff($fd, $prev='buff')
+    public function getBuff($fd, $prev = 'buff')
     {
         $key = $this->getKey($fd, $prev);
         return $this->getByKey($key);
     }
 
-    public function setBuff($fd, $data, $prev='buff')
+    public function setBuff($fd, $data, $prev = 'buff')
     {
         $key = $this->getKey($fd, $prev);
         $this->_cache[$key] = $data;
         return true;
     }
 
-    public function delBuff($fd, $prev='buff')
+    public function delBuff($fd, $prev = 'buff')
     {
         $key = $this->getKey($fd, $prev);
-        if(isset($this->_cache[$key])) {
+        if (isset($this->_cache[$key])) {
             unset($this->_cache[$key]);
         }
         return true;
@@ -184,7 +184,7 @@ class Php implements IConn
 
     private function getByKey($key)
     {
-        if(isset($this->_cache[$key])) {
+        if (isset($this->_cache[$key])) {
             return $this->_cache[$key];
         }
 

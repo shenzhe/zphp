@@ -6,6 +6,7 @@
 
 
 namespace ZPHP\Server\Adapter;
+
 use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Factory as ZProtocol;
 use ZPHP\Socket\Factory as SFactory;
@@ -22,7 +23,7 @@ class Socket implements IServer
             throw new \Exception("socket config empty");
         }
         $socket = SFactory::getInstance($config['adapter'], $config);
-        if(method_exists($socket, 'setClient')) {
+        if (method_exists($socket, 'setClient')) {
             $client = CFactory::getInstance($config['client_class']);
             $socket->setClient($client);
         }
