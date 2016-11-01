@@ -68,7 +68,7 @@ class Tcp
             }
 
             $client->set($config);
-            $ret = $client->connect($host, $port, $timeOut);
+            $ret = $client->connect($host, $port, $timeOut / 1000);
             if ($ret) {
                 self::$clients[$key] = $client;
                 self::$configs[$key] = $config;
