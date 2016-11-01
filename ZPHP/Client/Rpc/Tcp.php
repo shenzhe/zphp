@@ -86,11 +86,13 @@ class Tcp
     public function setApi($api)
     {
         $this->api = $api;
+        return $this;
     }
 
     public function noSync()
     {
         $this->sync = 0;
+        return $this;
     }
 
     public function getClient()
