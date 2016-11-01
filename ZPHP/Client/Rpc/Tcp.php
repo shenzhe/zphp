@@ -76,7 +76,7 @@ class Tcp
                 throw new \Exception('connect server error', -1);
             }
 
-            $this->api = Config::get('project', 'default_ctrl_name');
+            $this->api = Config::getField('project', 'default_ctrl_name');
         }
         $this->client = self::$clients[$key];
         $this->config = self::$configs[$key];
