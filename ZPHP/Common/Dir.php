@@ -50,7 +50,9 @@ class Dir
             //}
 
             if ($file->isDir()) {
-                self::tree($dir . DS . $filename, $filter, $result, $deep);
+                if ($deep) {
+                    self::tree($dir . DS . $filename, $filter, $result, $deep);
+                }
             } else {
                 if (!empty($filter) && !\preg_match($filter, $filename)) {
                     continue;
