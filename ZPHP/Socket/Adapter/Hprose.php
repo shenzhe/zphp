@@ -2,6 +2,7 @@
 
 namespace ZPHP\Socket\Adapter;
 
+use Hprose\Swoole\Server;
 use ZPHP\Socket\IServer;
 
 class Hprose implements IServer
