@@ -2,7 +2,7 @@
 /**
  * author: shenzhe
  * Date: 13-6-17
- * 
+ *
  */
 
 namespace ZPHP\Common;
@@ -33,7 +33,7 @@ class MessagePacker
         $this->offset = 0;
     }
 
-    public function resetOffset($len=0)
+    public function resetOffset($len = 0)
     {
         $this->offset = $len;
     }
@@ -43,10 +43,10 @@ class MessagePacker
         $this->data .= pack("C1", $d);
     }
 
-    public function writeString($s, $len=null)
+    public function writeString($s, $len = null)
     {
         //$s = rtrim($s, "\0") . "\0";
-        if(null === $len) {
+        if (null === $len) {
             $len = strlen($s);
         }
         $this->writeInt($len);
@@ -54,9 +54,9 @@ class MessagePacker
     }
 
     //写二进制数据
-    public function writeBinary($b, $len=null)
+    public function writeBinary($b, $len = null)
     {
-        if(null === $len) {
+        if (null === $len) {
             $len = strlen($b);
         }
         $this->writeInt($len);
@@ -145,14 +145,14 @@ class MessagePacker
     public function getBuffer()
     {
         $len = strlen($this->data);
-        if($this->offset < $len) {
+        if ($this->offset < $len) {
             return substr($this->data, $this->offset);
         }
 
         return null;
     }
 
-    public function isEnd() 
+    public function isEnd()
     {
         return $this->offset >= $this->dataLen;
     }

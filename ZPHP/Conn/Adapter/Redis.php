@@ -1,9 +1,10 @@
 <?php
 
 namespace ZPHP\Conn\Adapter;
-use ZPHP\Core\Config as ZConfig,
-    ZPHP\Conn\IConn,
-    ZPHP\Manager\Redis as ZRedis;
+
+use ZPHP\Core\Config as ZConfig;
+use ZPHP\Conn\IConn;
+use ZPHP\Manager\Redis as ZRedis;
 
 /**
  *  redis 容器
@@ -15,10 +16,10 @@ class Redis implements IConn
 
     public function __construct($config)
     {
-        if(empty($this->redis)) {
+        if (empty($this->redis)) {
             $this->redis = ZRedis::getInstance($config);
             $db = ZConfig::getField('connection', 'db', 0);
-            if(!empty($db)) {
+            if (!empty($db)) {
                 $this->redis->select($db);
             }
         }
@@ -42,7 +43,7 @@ class Redis implements IConn
         if (!empty($uinfo)) {
             $ofd = $uinfo['fd'];
             $oid = $this->getUid($fd);
-            if($ofd == $uid) {
+            if ($ofd == $uid) {
                 $this->delete($ofd, $uid);
             } else {
                 $uinfo = [];
@@ -62,7 +63,7 @@ class Redis implements IConn
     public function addChannel($uid, $channel)
     {
         $uinfo = $this->get($uid);
-        if(empty($uinfo)) return;
+        if (empty($uinfo)) return;
         $uinfo['types'][$channel] = 1;
         if ($this->redis->hSet($this->getKey($channel), $uid, $uinfo['fd'])) {
             $this->redis->set($this->getKey($uid), json_encode($uinfo));
@@ -71,9 +72,9 @@ class Redis implements IConn
 
     public function delChannel($uid, $channel)
     {
-        if($this->redis->hDel($this->getKey($channel), $uid)){
+        if ($this->redis->hDel($this->getKey($channel), $uid)) {
             $uinfo = $this->get($uid);
-            if(!empty($uinfo['types'][$channel])) {
+            if (!empty($uinfo['types'][$channel])) {
                 unset($uinfo['types'][$channel]);
                 $this->redis->set($this->getKey($uid), json_encode($uinfo));
             }
@@ -140,17 +141,17 @@ class Redis implements IConn
         }
     }
 
-    public function getBuff($fd, $prev='buff')
+    public function getBuff($fd, $prev = 'buff')
     {
         return $this->redis->get($this->getKey($fd, $prev));
     }
 
-    public function setBuff($fd, $data, $prev='buff')
+    public function setBuff($fd, $data, $prev = 'buff')
     {
         return $this->redis->set($this->getKey($fd, $prev), $data);
     }
 
-    public function delBuff($fd, $prev='buff')
+    public function delBuff($fd, $prev = 'buff')
     {
         return $this->redis->delete($this->getKey($fd, $prev));
     }

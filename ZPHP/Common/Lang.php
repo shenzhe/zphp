@@ -7,9 +7,8 @@
  */
 
 namespace ZPHP\Common;
-use ZPHP\Core\Config as ZConfig;
-use ZPHP\Protocol\Request;
 
+use ZPHP\Core\Config as ZConfig;
 
 
 class Lang
@@ -17,7 +16,7 @@ class Lang
     public static function get($key)
     {
         $local = ZConfig::getField('project', 'lang', 'zh_cn');
-        if(isset($config['lang'][$local][$key])) {
+        if (isset($config['lang'][$local][$key])) {
             return $config['lang'][$local][$key];
         }
 

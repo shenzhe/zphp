@@ -5,10 +5,10 @@
  * 所需扩展地址：https://github.com/matyhtf/swoole
  */
 
-
 namespace ZPHP\Socket\Adapter;
-use ZPHP\Socket\IServer,
-    ZPHP\Socket\Callback;
+
+use ZPHP\Socket\IServer;
+use ZPHP\Socket\Callback;
 
 class Swoole implements IServer
 {
@@ -23,13 +23,13 @@ class Swoole implements IServer
 
     public function __construct(array $config)
     {
-        if(!\extension_loaded('swoole')) {
+        if (!\extension_loaded('swoole')) {
             throw new \Exception("no swoole extension. get: https://github.com/swoole/swoole-src");
         }
         $this->config = $config;
         $socketType = empty($config['server_type']) ? self::TYPE_TCP : strtolower($config['server_type']);
         $this->config['server_type'] = $socketType;
-        switch($socketType) {
+        switch ($socketType) {
             case self::TYPE_TCP:
                 $this->serv = new \swoole_server($config['host'], $config['port'], $config['work_mode'], SWOOLE_SOCK_TCP);
                 break;
@@ -48,7 +48,7 @@ class Swoole implements IServer
 
         }
 
-        if(!empty($config['addlisten']) && $socketType != self::TYPE_UDP && SWOOLE_PROCESS == $config['work_mode']) {
+        if (!empty($config['addlisten']) && $socketType != self::TYPE_UDP && SWOOLE_PROCESS == $config['work_mode']) {
             $this->serv->addlistener($config['addlisten']['ip'], $config['addlisten']['port'], SWOOLE_SOCK_UDP);
         }
 
@@ -57,10 +57,10 @@ class Swoole implements IServer
 
     public function setClient($client)
     {
-        if(!is_object($client)) {
+        if (!is_object($client)) {
             throw new \Exception('client must object');
         }
-        switch($this->config['server_type']) {
+        switch ($this->config['server_type']) {
             case self::TYPE_WEBSOCKET:
                 if (!($client instanceof Callback\SwooleWebSocket)) {
                     throw new \Exception('client must instanceof ZPHP\Socket\Callback\SwooleWebSocket');
@@ -106,7 +106,7 @@ class Swoole implements IServer
         $this->serv->on('Shutdown', array($this->client, 'onShutdown'));
         $this->serv->on('Connect', array($this->client, 'onConnect'));
         $this->serv->on('Close', array($this->client, 'onClose'));
-        switch($this->config['server_type']) {
+        switch ($this->config['server_type']) {
             case self::TYPE_TCP:
                 $this->serv->on('Receive', array($this->client, 'doReceive'));
                 break;
@@ -115,13 +115,13 @@ class Swoole implements IServer
                 $this->serv->on('Request', array($this->client, 'doRequest'));
                 break;
             case self::TYPE_WEBSOCKET:
-                if(method_exists($this->client, 'onHandShake')) {
+                if (method_exists($this->client, 'onHandShake')) {
                     $this->serv->on('HandShake', array($this->client, 'onHandShake'));
                 }
-                if(method_exists($this->client, 'onOpen')) {
+                if (method_exists($this->client, 'onOpen')) {
                     $this->serv->on('Open', array($this->client, 'onOpen'));
                 }
-                if(method_exists($this->client, 'doRequest')) {
+                if (method_exists($this->client, 'doRequest')) {
                     $this->serv->on('Request', array($this->client, 'doRequest'));
                 }
                 $this->serv->on('Message', array($this->client, 'onMessage'));
@@ -132,14 +132,14 @@ class Swoole implements IServer
                 break;
         }
 
-        foreach($handlerArray as $handler) {
-            if(method_exists($this->client, $handler)) {
+        foreach ($handlerArray as $handler) {
+            if (method_exists($this->client, $handler)) {
                 $this->serv->on(\substr($handler, 2), array($this->client, $handler));
             }
         }
 
-        if(!empty($this->config['start_hook']) && is_callable($this->config['start_hook'])) {
-            if( $this->config['start_hook_args'] ) {
+        if (!empty($this->config['start_hook']) && is_callable($this->config['start_hook'])) {
+            if ($this->config['start_hook_args']) {
                 call_user_func($this->config['start_hook'], $this->serv);
             } else {
                 call_user_func($this->config['start_hook']);

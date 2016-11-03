@@ -3,7 +3,6 @@
 
 namespace ZPHP\Socket\Callback;
 
-use ZPHP\Core;
 use ZPHP\Protocol;
 
 

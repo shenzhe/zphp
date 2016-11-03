@@ -2,15 +2,15 @@
 /**
  * User: shenzhe
  * Date: 13-6-17
- * 
+ *
  */
 
 
 namespace ZPHP\View\Adapter;
+
 use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
-use ZPHP\View\Base,
-    ZPHP\Core\Config;
+use ZPHP\View\Base;
 
 class Amf extends Base
 {
@@ -19,12 +19,12 @@ class Amf extends Base
         if (Request::isHttp()) {
             Response::header('Content-Type', 'application/amf; charset=utf-8');
         }
-        $data =  \amf3_encode($this->model);
-        if(Request::isLongServer()) {
-        	return $data;
+        $data = \amf3_encode($this->model);
+        if (Request::isLongServer()) {
+            return $data;
         }
         echo $data;
         return null;
-        
+
     }
 }

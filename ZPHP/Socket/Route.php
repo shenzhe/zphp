@@ -1,6 +1,7 @@
 <?php
 
 namespace ZPHP\Socket;
+
 use ZPHP\Core\Factory as CFactory;
 
 class Route

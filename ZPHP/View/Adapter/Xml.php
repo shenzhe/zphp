@@ -2,15 +2,15 @@
 /**
  * User: shenzhe
  * Date: 13-6-17
- * 
+ *
  */
 
 
 namespace ZPHP\View\Adapter;
+
 use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
-use ZPHP\View\Base,
-    ZPHP\Core\Config;
+use ZPHP\View\Base;
 
 class Xml extends Base
 {
@@ -39,18 +39,18 @@ class Xml extends Base
 
     public function display()
     {
-        if(Request::isHttp()) {
+        if (Request::isHttp()) {
             Response::header("Content-Type", "text/xml; charset=utf-8");
         }
         $data = $this->xmlEncode();
 
-        if(Request::isLongServer()) {
+        if (Request::isLongServer()) {
             return $data;
         }
 
         echo $data;
         return null;
 
-        
+
     }
 }

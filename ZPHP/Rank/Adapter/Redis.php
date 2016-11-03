@@ -6,8 +6,9 @@
 
 
 namespace ZPHP\Rank\Adapter;
-use ZPHP\Manager,
-    ZPHP\Rank\IRank;
+
+use ZPHP\Manager;
+use ZPHP\Rank\IRank;
 
 class Redis implements IRank
 {
@@ -70,7 +71,7 @@ class Redis implements IRank
             $rank = $this->redis->zRank($rankType, $key);
         }
 
-        if(false === $rank) {
+        if (false === $rank) {
             return 0;
         }
         return ++$rank;

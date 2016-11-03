@@ -9,5 +9,5 @@ namespace ZPHP\Server;
 
 interface IServer
 {
-	public function run();
+    public function run();
 }

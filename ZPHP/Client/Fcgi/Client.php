@@ -5,7 +5,8 @@
  */
 
 
-namespace ZPHP\Fcgi;
+namespace ZPHP\Client\Fcgi;
+
 use ZPHP\ZPHP;
 
 class Client

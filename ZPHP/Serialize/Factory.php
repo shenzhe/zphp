@@ -3,7 +3,9 @@
  * User: shenzhe
  * Date: 13-6-17
  */
+
 namespace ZPHP\Serialize;
+
 use ZPHP\Core\Factory as CFactory;
 
 class Factory

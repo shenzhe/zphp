@@ -5,7 +5,6 @@ namespace ZPHP\Socket\Callback;
 
 use ZPHP\Socket\ICallback;
 use ZPHP\Core\Config as ZConfig;
-use ZPHP\Core;
 use ZPHP\Protocol;
 
 
@@ -22,14 +21,23 @@ abstract class Swoole implements ICallback
      */
     public function onStart()
     {
+        /**
+         * @var $server \swoole_server
+         */
         $server = func_get_args()[0];
+        $ip = ZConfig::getField('socket', 'ip');
+        $port = ZConfig::getField('socket', 'port');
         swoole_set_process_name(ZConfig::get('project_name') .
             ' server running ' .
-            ZConfig::getField('socket', 'server_type', 'tcp') . '://' . ZConfig::getField('socket', 'host') . ':' . ZConfig::getField('socket', 'port')
-            . " time:".date('Y-m-d H:i:s')."  master:" . $server->master_pid);
+            ZConfig::getField('socket', 'server_type', 'tcp') . '://' . $ip . ':' . $port
+            . " time:" . date('Y-m-d H:i:s') . "  master:" . $server->master_pid);
         $pidPath = ZConfig::getField('project', 'pid_path');
         if (!empty($pidPath)) {
             file_put_contents($pidPath . DS . ZConfig::get('project_name') . '_master.pid', $server->master_pid);
+        }
+
+        if (!empty(ZConfig::getField('soa', 'register_callback'))) {
+            call_user_func(ZConfig::getField('soa', 'register_callback'), $server);
         }
     }
 
@@ -38,6 +46,7 @@ abstract class Swoole implements ICallback
      */
     public function onShutDown()
     {
+        $server = func_get_args()[0];
         $pidPath = ZConfig::getField('project', 'pid_path');
         if (!empty($pidPath)) {
             $filename = $pidPath . DS . ZConfig::get('project_name') . '_master.pid';
@@ -48,6 +57,10 @@ abstract class Swoole implements ICallback
             if (is_file($filename)) {
                 unlink($filename);
             }
+        }
+
+        if (!empty(ZConfig::getField('soa', 'drop_callback'))) {
+            call_user_func(ZConfig::getField('soa', 'drop_callback'), $server);
         }
     }
 
@@ -86,15 +99,14 @@ abstract class Swoole implements ICallback
     {
         $workNum = ZConfig::getField('socket', 'worker_num');
         if ($workerId >= $workNum) {
-            swoole_set_process_name(ZConfig::get('project_name') . " server tasker  num: ".($server->worker_id - $workNum)." pid " . $server->worker_pid);
+            swoole_set_process_name(ZConfig::get('project_name') . " server tasker  num: " . ($server->worker_id - $workNum) . " pid " . $server->worker_pid);
         } else {
             swoole_set_process_name(ZConfig::get('project_name') . " server worker  num: {$server->worker_id} pid " . $server->worker_pid);
         }
 
-        if(function_exists('opcache_reset')) {
+        if (function_exists('opcache_reset')) {
             opcache_reset();
         }
-
         Protocol\Request::setSocket($server);
     }
 

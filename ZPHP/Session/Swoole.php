@@ -7,6 +7,7 @@
  */
 
 namespace ZPHP\Session;
+
 use ZPHP\Core\Config as ZConfig;
 use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
@@ -21,15 +22,15 @@ class Swoole
 
     public static function start($sessionType, $config)
     {
-        if(null !== self::$_sid) {
+        if (null !== self::$_sid) {
             return;
         }
         //判断参数里是否有sessid
-        if(empty($config)) {
+        if (empty($config)) {
             $config = ZConfig::get('session');
         }
 
-        if(!empty($config['adapter'])) {
+        if (!empty($config['adapter'])) {
             $sessionType = $config['adapter'];
         }
 
@@ -39,31 +40,31 @@ class Swoole
 
         $sessionName = empty($config['session_name']) ? 'ZPHPSESSID' : $config['session_name'];
         $sid = null;
-        if(!empty($request->cookie[$sessionName])) {
+        if (!empty($request->cookie[$sessionName])) {
             $sid = $request->cookie[$sessionName];
         }
-        if(!$sid && !empty($request->get[$sessionName])) {
+        if (!$sid && !empty($request->get[$sessionName])) {
             $sid = $request->get[$sessionName];
         }
-        if(!$sid && !empty($request->post[$sessionName])) {
+        if (!$sid && !empty($request->post[$sessionName])) {
             $sid = $request->post[$sessionName];
         }
-        if($sid) {
+        if ($sid) {
             $handler = Factory::getInstance($sessionType, $config);
             $data = $handler->read($sid);
-            if(!empty($data)) {
+            if (!empty($data)) {
                 $_SESSION = unserialize($data);
             } else {
                 $_SESSION = array();
             }
         } else {
-            $sid = sha1($request->header['user-agent'].$request->server['remote_addr'].uniqid(Request::getSocket()->worker_pid.'_', true));
+            $sid = sha1($request->header['user-agent'] . $request->server['remote_addr'] . uniqid(Request::getSocket()->worker_pid . '_', true));
             $path = empty($config['path']) ? '/' : $config['path'];
             $domain = empty($config['domain']) ? '' : $config['domain'];
             $secure = empty($config['secure']) ? false : $config['secure'];
             $httponly = !isset($config['httponly']) ? true : $config['httponly'];
             $lifetime = 0;
-            if(!empty($config['cache_expire'])) {
+            if (!empty($config['cache_expire'])) {
                 $lifetime = time() + $config['cache_expire'] * 60;
             }
             Response::getResponse()->cookie($sessionName, $sid, $lifetime, $path, $domain, $secure, $httponly);
@@ -74,7 +75,7 @@ class Swoole
 
     public static function save()
     {
-        if(self::$_sid) {
+        if (self::$_sid) {
             $handler = Factory::getInstance(self::$_sessionType, self::$_config);
             if (!isset($_SESSION) || empty($_SESSION)) {  //session清空
                 $handler->destroy(self::$_sid);

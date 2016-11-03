@@ -5,10 +5,8 @@
  * route处理类
  */
 namespace ZPHP\Core;
-use ZPHP\Controller\IController,
-    ZPHP\Core\Factory,
-    ZPHP\Core\Config,
-    ZPHP\ZPHP;
+
+use ZPHP\Controller\IController;
 use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
 use ZPHP\Session\Swoole as SSESSION;
@@ -26,30 +24,30 @@ class Route
                 throw new \Exception("ctrl error");
             } else {
                 $view = null;
-                if($class->_before()) {
+                if ($class->_before()) {
                     $method = Request::getMethod();
                     if (!method_exists($class, $method)) {
                         throw new \Exception("method error");
                     }
                     $view = $class->$method();
                 } else {
-                    throw new \Exception($action.':'.Request::getMethod().' _before() no return true');
+                    throw new \Exception($action . ':' . Request::getMethod() . ' _before() no return true');
                 }
                 $class->_after();
-                if(Request::isLongServer()) {
+                if (Request::isLongServer()) {
                     SSESSION::save();
                 }
                 return Response::display($view);
             }
-        }catch (\Exception $e) {
-            if(Request::isLongServer()) {
-                $result =  \call_user_func(Config::getField('project', 'exception_handler', 'ZPHP\ZPHP::exceptionHandler'), $e);
-                if($class instanceof IController) {
+        } catch (\Exception $e) {
+            if (Request::isLongServer()) {
+                $result = \call_user_func(Config::getField('project', 'exception_handler', 'ZPHP\ZPHP::exceptionHandler'), $e);
+                if ($class instanceof IController) {
                     $class->_after();
                 }
                 return $result;
             }
-            if($class instanceof IController) {
+            if ($class instanceof IController) {
                 $class->_after();
             }
             throw $e;

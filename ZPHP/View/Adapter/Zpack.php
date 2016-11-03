@@ -2,16 +2,16 @@
 /**
  * User: shenzhe
  * Date: 13-6-17
- * 
+ *
  */
 
 
 namespace ZPHP\View\Adapter;
+
 use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
-use ZPHP\View\Base,
-    ZPHP\Core\Config,
-    ZPHP\Common\MessagePacker;;
+use ZPHP\View\Base;
+use ZPHP\Common\MessagePacker;
 
 class Zpack extends Base
 {
@@ -20,7 +20,7 @@ class Zpack extends Base
         $pack = new MessagePacker();
         $pack->writeString(json_encode($this->model));
 
-        if(Request::isHttp()) {
+        if (Request::isHttp()) {
             Response::header("Content-Type", "application/zpack; charset=utf-8");
         }
 
@@ -30,7 +30,6 @@ class Zpack extends Base
         echo $pack->getData();
         return null;
 
-        
 
     }
 

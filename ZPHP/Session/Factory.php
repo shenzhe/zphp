@@ -4,18 +4,20 @@
  * Date: 13-6-17
  */
 namespace ZPHP\Session;
-use ZPHP\Core\Factory as CFactory,
-    ZPHP\Core\Config as ZConfig;
+
+use ZPHP\Core\Factory as CFactory;
+use ZPHP\Core\Config as ZConfig;
 use ZPHP\Protocol\Request;
 
 class Factory
 {
-    protected static $isStart=false;
-    public static function getInstance($adapter = 'Redis', $config=null)
+    protected static $isStart = false;
+
+    public static function getInstance($adapter = 'Redis', $config = null)
     {
-        if(empty($config)) {
+        if (empty($config)) {
             $config = ZConfig::get('session');
-            if(!empty($config['adapter'])) {
+            if (!empty($config['adapter'])) {
                 $adapter = $config['adapter'];
             }
         }
@@ -25,21 +27,21 @@ class Factory
 
     public static function start($sessionType = '', $config = '')
     {
-        if(Request::isLongServer()) {
+        if (Request::isLongServer()) {
             return Swoole::start($sessionType, $config);
         }
 
-        if(false === self::$isStart) {
-            if(empty($config)) {
+        if (false === self::$isStart) {
+            if (empty($config)) {
                 $config = ZConfig::get('session');
             }
 
-            if(!empty($config['adapter'])) {
+            if (!empty($config['adapter'])) {
                 $sessionType = $config['adapter'];
             }
 
             $lifetime = 0;
-            if(!empty($config['cache_expire'])) {
+            if (!empty($config['cache_expire'])) {
                 \session_cache_expire($config['cache_expire']);
                 $lifetime = $config['cache_expire'] * 60;
             }
@@ -52,9 +54,9 @@ class Factory
             $sessionName = empty($config['session_name']) ? 'ZPHPSESSID' : $config['session_name'];
             \session_name($sessionName);
 
-            if(!empty($_GET[$sessionName])) {
+            if (!empty($_GET[$sessionName])) {
                 \session_id($_GET[$sessionName]);
-            }elseif(!empty($_SERVER[$sessionName])) {
+            } elseif (!empty($_SERVER[$sessionName])) {
                 \session_id($_SERVER[$sessionName]);
             }
 
@@ -69,8 +71,8 @@ class Factory
                     array($handler, 'gc')
                 );
             }
-            
-            
+
+
             \session_start();
             self::$isStart = true;
         }

@@ -21,13 +21,13 @@ interface IRank
     /**
      * 获取一段排行
      * @param $rankType     排行类别
-     * @param int $start    起始名次
-     * @param int $limit    结束名次
-     * @param bool $score   是否返回分数
-     * @param int $desc     是否返回倒
+     * @param int $start 起始名次
+     * @param int $limit 结束名次
+     * @param bool $score 是否返回分数
+     * @param int $desc 是否返回倒
      * @return mixed
      */
-    public function getRank($rankType, $start = 0, $limit = 100, $score = true, $desc=0);
+    public function getRank($rankType, $start = 0, $limit = 100, $score = true, $desc = 0);
 
     /**
      * 返回某一区间分数排行
@@ -53,7 +53,7 @@ interface IRank
     /**
      *
      * 返回排行榜总人数
-     * @param type $rankType    排行类别
+     * @param type $rankType 排行类别
      */
     public function getRankCount($rankType);
 

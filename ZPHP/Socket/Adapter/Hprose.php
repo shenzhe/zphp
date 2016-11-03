@@ -1,9 +1,8 @@
 <?php
 
 namespace ZPHP\Socket\Adapter;
-use ZPHP\Socket\IServer,
-    ZPHP\Socket\Callback;
-use Hprose\Swoole\Server;
+
+use ZPHP\Socket\IServer;
 
 class Hprose implements IServer
 {
@@ -17,11 +16,11 @@ class Hprose implements IServer
 
     public function __construct(array $config)
     {
-        if(!\extension_loaded('swoole')) {
+        if (!\extension_loaded('swoole')) {
             throw new \Exception("no swoole extension. get: https://github.com/swoole/swoole-src");
         }
         $this->config = $config;
-        if( !isset($config['server_type']) )
+        if (!isset($config['server_type']))
             $config['server_type'] = 'http';
         $this->serv = new Server("{$config['server_type']}://{$config['host']}:{$config['port']}");
 
@@ -33,7 +32,7 @@ class Hprose implements IServer
 
     public function setClient($client)
     {
-        if(!is_object($client)) {
+        if (!is_object($client)) {
             throw new \Exception('client must object');
         }
         $this->client = $client;
@@ -57,8 +56,8 @@ class Hprose implements IServer
         $this->serv->on('Start', array($this->client, 'onStart'));
         $this->serv->on('Shutdown', array($this->client, 'onShutdown'));
 
-        foreach($handlerArray as $handler) {
-            if(method_exists($this->client, $handler)) {
+        foreach ($handlerArray as $handler) {
+            if (method_exists($this->client, $handler)) {
                 $this->serv->on(\substr($handler, 2), array($this->client, $handler));
             }
         }

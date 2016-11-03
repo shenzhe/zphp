@@ -6,12 +6,12 @@
  * Time: 下午12:18
  */
 
-namespace ZPHP\Common;
+namespace ZPHP\Client\Async;
 
 use ZPHP\Protocol\Request;
 
 
-class AsyncHttpClient
+class Http
 {
 
     public static function check()
@@ -52,7 +52,7 @@ class AsyncHttpClient
      * @param null $data //method==post时, 表示post的数据
      * @param $timeOut //超时时间,单位:ms
      * @param $header //请求头信息
-     * @throws Exception
+     * @throws \Exception
      */
     public static function getByUrl($url, $callback, $method = 'GET', $data = null, $timeOut = 15000, $header = [])
     {
@@ -63,9 +63,9 @@ class AsyncHttpClient
         $urlInfo['data'] = $data;
         \swoole_async_dns_lookup($urlInfo['host'], function ($host, $ip) use ($urlInfo, $callback, $timeOut, $header) {
             if ('GET' == $urlInfo['method']) {
-                AsyncHttpClient::getByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $callback, $timeOut, $header, $host);
+                self::getByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $callback, $timeOut, $header, $host);
             } else if ('POST' == $urlInfo['method']) {
-                AsyncHttpClient::postByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $urlInfo['data'], $callback, $timeOut, $header, $host);
+                self::postByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $urlInfo['data'], $callback, $timeOut, $header, $host);
             } else {
                 throw new \Exception($urlInfo['method'] . ' method no support', -1);
             }
@@ -131,10 +131,11 @@ class AsyncHttpClient
         $timeId = \swoole_timer_after($timeOut, function () use ($cli, $callback) {
             $cli->close();
             if (is_callable($callback)) {
-                $callback(null, 1);
+                $callback($cli, 1);
             }
         });
         $cli->post($path, $data, function ($cli) use ($timeId, $callback) {
+
             \swoole_timer_clear($timeId);
             $cli->close();
             if (is_callable($callback)) {

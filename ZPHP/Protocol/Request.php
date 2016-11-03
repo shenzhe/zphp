@@ -6,6 +6,7 @@
 
 
 namespace ZPHP\Protocol;
+
 use ZPHP\Core\Config as ZConfig;
 
 class Request
@@ -15,7 +16,7 @@ class Request
 
     private static $_method = 'main';
 
-    private static $_view_mode  = null;
+    private static $_view_mode = null;
 
     private static $_tpl_file = '';
 
@@ -33,36 +34,36 @@ class Request
      */
     private static $_server;
 
-    public static function init($ctrl, $method, array $params, $viewMode=null)
+    public static function init($ctrl, $method, array $params, $viewMode = null)
     {
-        if($ctrl) {
+        if ($ctrl) {
             self::$_ctrl = $ctrl;
         } else {
             self::$_ctrl = ZConfig::getField('project', 'default_ctrl_name', self::$_ctrl);
         }
-        if($method) {
+        if ($method) {
             self::$_method = $method;
-        }else {
+        } else {
             self::$_method = ZConfig::getField('project', 'default_method_name', self::$_method);
         }
         self::$_params = $params;
-        if($viewMode) {
+        if ($viewMode) {
             self::$_view_mode = $viewMode;
         }
-        if(!is_string(self::$_ctrl) || !is_string(self::$_method)) {
+        if (!is_string(self::$_ctrl) || !is_string(self::$_method)) {
             throw new \Exception('ctrl or method no string');
         }
         self::$_tpl_file = \str_replace('\\', DS, self::$_ctrl) . DS . self::$_method . '.php';
     }
 
-	public static function setParams($params)
+    public static function setParams($params)
     {
         self::$_params = $params;
     }
 
-    public static function addParams($key, $val, $set=true)
+    public static function addParams($key, $val, $set = true)
     {
-        if($set || !isset(self::$_params[$key])) {
+        if ($set || !isset(self::$_params[$key])) {
             self::$_params[$key] = $val;
         }
     }
@@ -110,7 +111,6 @@ class Request
     public static function getViewMode()
     {
         return self::$_view_mode;
-
     }
 
     public static function setFd($fd)
@@ -129,24 +129,24 @@ class Request
         if (!empty(self::$_params['ajax'])) {
             return true;
         }
-        if(self::isLongServer() && self::isHttp() && self::$_request
+        if (self::isLongServer() && self::isHttp() && self::$_request
             && isset(self::$_request->header['X-Requested-With'])
             && 'xmlhttprequest' == strtolower(self::$_request->header['X-Requested-With']
             )
         ) {
             return true;
         }
-        if((isset($_SERVER['HTTP_X_REQUESTED_WITH'])
-                && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+        if ((isset($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
         ) {
             return true;
         }
         $field = ZConfig::getField('project', 'jsonp', 'jsoncallback');
-        if(self::isLongServer() && self::isHttp() && isset(self::$_request->header[$field])) {
+        if (self::isLongServer() && self::isHttp() && isset(self::$_request->header[$field])) {
             return true;
         }
 
-        if(!empty($_REQUEST[$field])) {
+        if (!empty($_REQUEST[$field])) {
             return true;
         }
         return false;
@@ -167,7 +167,7 @@ class Request
         return self::$_server->parse($data);
     }
 
-    public static function setLongServer($tag=1)
+    public static function setLongServer($tag = 1)
     {
         self::$_long_server = $tag;
     }
@@ -177,7 +177,7 @@ class Request
         return self::$_long_server;
     }
 
-    public static function setHttpServer($tag=1)
+    public static function setHttpServer($tag = 1)
     {
         self::$_is_http = $tag;
     }
@@ -209,7 +209,7 @@ class Request
 
     public static function getRequestMethod()
     {
-        if(self::isLongServer() && self::isHttp() && self::$_request) {
+        if (self::isLongServer() && self::isHttp() && self::$_request) {
             return self::$_request->header['request_method'];
         }
         return $_SERVER['REQUEST_METHOD'];
@@ -217,7 +217,7 @@ class Request
 
     public static function getPathInfo()
     {
-        if(self::isLongServer() && self::isHttp() && self::$_request) {
+        if (self::isLongServer() && self::isHttp() && self::$_request) {
             return isset(self::$_request->header['path_info']) ? self::$_request->header['path_info'] : '';
         }
         return isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
@@ -226,15 +226,15 @@ class Request
     public static function getClientIp()
     {
         $realip = '';
-        if(self::isLongServer()) {
-            if(self::isHttp() && self::$_request) {
+        if (self::isLongServer()) {
+            if (self::isHttp() && self::$_request) {
                 $key = ZConfig::getField('project', 'clientIpKey', 'X-Forwarded-For');
                 if (isset(self::$_request->header[$key])) {
                     $realip = self::$_request->header[$key];
                 } else if (isset(self::$_request->header["remote_addr"])) {
                     $realip = self::$_request->header["remote_addr"];
                 }
-            }else {
+            } else {
                 if (self::$_fd) {
                     $connInfo = self::getSocket()->connection_info(self::$_fd);
                     return $connInfo['remote_ip'];

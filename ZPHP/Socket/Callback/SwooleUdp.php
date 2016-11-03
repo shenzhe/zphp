@@ -4,7 +4,6 @@
 namespace ZPHP\Socket\Callback;
 
 
-
 abstract class SwooleUdp extends Swoole
 {
     public function onReceive()

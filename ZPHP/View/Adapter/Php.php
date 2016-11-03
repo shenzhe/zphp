@@ -2,14 +2,15 @@
 /**
  * User: shenzhe
  * Date: 13-6-17
- * 
+ *
  */
 
 
 namespace ZPHP\View\Adapter;
-use ZPHP,
-    ZPHP\View\Base,
-    ZPHP\Core\Config;
+
+use ZPHP;
+use ZPHP\View\Base;
+use ZPHP\Core\Config;
 
 class Php extends Base
 {
@@ -22,7 +23,7 @@ class Php extends Base
 
     public function display()
     {
-        $tplPath = ZPHP\Core\Config::getField('project', 'tpl_path', ZPHP\ZPHP::getRootPath() . DS  . 'template' . DS . 'default'. DS);
+        $tplPath = ZPHP\Core\Config::getField('project', 'tpl_path', ZPHP\ZPHP::getRootPath() . DS . 'template' . DS . 'default' . DS);
         $fileName = $tplPath . $this->tplFile;
         if (!\is_file($fileName)) {
             throw new \Exception("no file {$fileName}");

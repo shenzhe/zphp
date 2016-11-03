@@ -3,8 +3,6 @@
 
 namespace ZPHP\Socket\Callback;
 
-use ZPHP\Core;
-
 
 abstract class SwooleWebSocket extends SwooleHttp
 {
