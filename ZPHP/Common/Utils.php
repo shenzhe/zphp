@@ -10,6 +10,10 @@ namespace ZPHP\Common;
 class Utils
 {
 
+    /**
+     * @return bool
+     * @desc 是否ajax请求
+     */
     public static function isAjax()
     {
         if (!empty($_REQUEST['ajax'])
@@ -20,5 +24,13 @@ class Utils
             return true;
         }
         return false;
+    }
+
+    /**
+     *
+     */
+    public static function getCurrentTime()
+    {
+
     }
 }
