@@ -85,7 +85,7 @@ class main implements IController
         \'ctrl_path\'=>\'ctrl\',
         \'project\'=>array(
             \'name\'=>\''.$project_name.'\',                 
-        	\'view_mode\'=>\'String\',   		
+        	\'view_mode\'=>\'Str\',   		
         	\'ctrl_name\'=>\'a\',				
         	\'method_name\'=>\'m\',				
         )

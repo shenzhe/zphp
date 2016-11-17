@@ -93,6 +93,11 @@ class Udp
         return $this->client->send($result);
     }
 
+    public function rawCall($sendData)
+    {
+        return $this->client->send($sendData);
+    }
+
     public function __call($name, $arguments)
     {
         if (empty($arguments[0])) {

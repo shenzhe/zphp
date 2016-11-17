@@ -22,18 +22,18 @@ class Tcp
 
     /**
      * Tcp constructor.
-     * @param $host
+     * @param $ip
      * @param $port
      * @param int $timeOut
      * @param array $config
      * @throws \Exception
      */
-    public function __construct($host, $port, $timeOut = 500, $config = array())
+    public function __construct($ip, $port, $timeOut = 500, $config = array())
     {
         if (empty($timeOut) || $timeOut < 1) {
             $timeOut = 500;
         }
-        $key = $host . ':' . $port . ':' . $timeOut;
+        $key = $ip . ':' . $port . ':' . $timeOut;
         if (!isset(self::$clients[$key])) {
             $client = new \swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
             if (empty($config)) {
@@ -68,7 +68,7 @@ class Tcp
             }
 
             $client->set($config);
-            $ret = $client->connect($host, $port, $timeOut / 1000);
+            $ret = $client->connect($ip, $port, $timeOut / 1000);
             if ($ret) {
                 self::$clients[$key] = $client;
                 self::$configs[$key] = $config;
@@ -109,8 +109,15 @@ class Tcp
         return $this->client->isConnected();
     }
 
-    public function call($method, $data = [])
+    /**
+     * @param $method
+     * @param array $params
+     * @return string
+     * @desc 远程rpc调用
+     */
+    public function call($method, $params = [])
     {
+        $startTime = microtime(true);
         $sendArr = [
             '_recv' => $this->sync,
             $this->config['method_name'] => $method,
@@ -118,9 +125,22 @@ class Tcp
         if ($this->api) {
             $sendArr[$this->config['ctrl_name']] = $this->api;
         }
-        $sendArr += $data;
-        $result = json_encode($sendArr);
-        $sendLen = $this->client->send(pack($this->config['package_length_type'], strlen($result)) . $result);
+        $sendArr += $params;
+        $result =  $this->rawCall(json_encode($sendArr));
+        $executeTime = microtime(true) - $startTime;
+        //@TODO 执行时间上报（带网络时间）
+        return $result;
+    }
+
+    /**
+     * @param $sendData
+     * @return string
+     * @throws \Exception
+     * @desc 直接发送原始远程rpc调用
+     */
+    public function rawCall($sendData)
+    {
+        $sendLen = $this->client->send(pack($this->config['package_length_type'], strlen($sendData)) . $sendData);
         if ($sendLen) {
             $recvData = $this->client->recv();
             if (is_null($recvData)) {
