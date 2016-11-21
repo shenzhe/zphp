@@ -10,6 +10,8 @@ namespace ZPHP\Client\Rpc;
 
 use ZPHP\Core\Config;
 
+use ZPHP\CLient\Monitor\Client as MClient;
+
 class Tcp
 {
     private static $clients = [];
@@ -126,9 +128,9 @@ class Tcp
             $sendArr[$this->config['ctrl_name']] = $this->api;
         }
         $sendArr += $params;
-        $result =  $this->rawCall(json_encode($sendArr));
+        $result = $this->rawCall(json_encode($sendArr));
         $executeTime = microtime(true) - $startTime;
-        //@TODO 执行时间上报（带网络时间）
+        MClient::clientDot($this->api . DS . $method, $executeTime);
         return $result;
     }
 
