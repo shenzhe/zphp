@@ -130,6 +130,7 @@ class Tcp
         $sendArr += $params;
         $result = $this->rawCall(json_encode($sendArr));
         $executeTime = microtime(true) - $startTime;
+
         MClient::clientDot($this->api . DS . $method, $executeTime);
         return $result;
     }

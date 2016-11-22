@@ -47,7 +47,7 @@ class Client
             return;
         }
         $client = new Udp($config['host'], $config['port'], $config['timeOut']);
-        $client->setApi('dot')->call('service',
+        $client->setApi('dot')->call('client',
             [
                 'api' => $api,
                 'time' => $time
