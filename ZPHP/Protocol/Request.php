@@ -15,23 +15,15 @@ class Request
     const REQUEST_ID_KEY = 'X-Request-Id';
 
     private static $_params;
-    private static $_ctrl = 'main\\main';
-
+    private static $_ctrl = 'main';
     private static $_method = 'main';
-
     private static $_view_mode = null;
-
     private static $_tpl_file = '';
-
     private static $_fd = null;
-
     private static $_long_server = 0;
     private static $_is_http = 1;
     private static $_request = null;
     private static $_socket = null;
-
-    private static $_request_method;
-
     private static $_headers = array();
 
     /**
@@ -60,10 +52,7 @@ class Request
         }
         self::$_tpl_file = \str_replace('\\', DS, self::$_ctrl) . DS . self::$_method . '.php';
 
-        $requestId = self::getHeader(self::REQUEST_ID_KEY);
-        if(empty($requestId)) {
-            $requestId = self::makeRequestId();
-        }
+        $requestId = self::getRequestId(true);
         self::addHeader(self::REQUEST_ID_KEY, $requestId);
         Response::addHeader(self::REQUEST_ID_KEY, $requestId);
     }
@@ -270,6 +259,11 @@ class Request
         self::$_headers[$key] = $val;
     }
 
+    public static function addHeaders(array $headers)
+    {
+        self::$_headers += $headers;
+    }
+
     public static function getHeader($key)
     {
         if (!empty(self::$_headers[$key])) {
@@ -293,12 +287,15 @@ class Request
 
     public static function makeRequestId()
     {
-        return sha1(uniqid('_'.mt_rand(1, 1000000), true));
+        return sha1(uniqid('_' . mt_rand(1, 1000000), true));
     }
 
-    public static function getRequestId()
+    public static function getRequestId($autoMake = false)
     {
-        return self::getHeader(self::REQUEST_ID_KEY);
+        $requestId = self::getHeader(self::REQUEST_ID_KEY);
+        if ($autoMake && empty($requestId)) {
+            $requestId = self::makeRequestId();
+        }
+        return $requestId;
     }
-
 }

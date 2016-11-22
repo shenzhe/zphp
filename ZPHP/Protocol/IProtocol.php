@@ -10,7 +10,9 @@ namespace ZPHP\Protocol;
 interface IProtocol
 {
     /**
-     *  解析不同方式传来的数据成统一的格式
+     * @param $data 原始数据
+     * @return mixed
+     * @desc 把原始数据流parse成框架统一数据格式
      */
     public function parse($data);
 
