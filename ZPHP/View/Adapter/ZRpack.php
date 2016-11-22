@@ -26,6 +26,7 @@ class ZRpack extends Base
         $pack->writeInt($this->model['rid']);
         $pack->writeString($data, $len);
         if (Request::isHttp()) {
+            Response::sendHttpHeader();
             Response::header("Content-Type", "application/zrpack; charset=utf-8");
         }
         if (Request::isLongServer()) {

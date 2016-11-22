@@ -17,6 +17,7 @@ class Amf extends Base
     public function display()
     {
         if (Request::isHttp()) {
+            Response::sendHttpHeader();
             Response::header('Content-Type', 'application/amf; charset=utf-8');
         }
         $data = \amf3_encode($this->model);

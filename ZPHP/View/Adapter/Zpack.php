@@ -21,6 +21,7 @@ class Zpack extends Base
         $pack->writeString(json_encode($this->model));
 
         if (Request::isHttp()) {
+            Response::sendHttpHeader();
             Response::header("Content-Type", "application/zpack; charset=utf-8");
         }
 

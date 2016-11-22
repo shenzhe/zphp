@@ -14,6 +14,8 @@ class Response
 {
     private static $_response = null;
 
+    private static $_headers = array();
+
     public static function setResponse($response)
     {
         self::$_response = $response;
@@ -71,6 +73,25 @@ class Response
         }
 
         \header("{$key}: {$val}");
+    }
+
+    public static function addHeader($key, $val)
+    {
+        self::$_headers[$key] = $val;
+    }
+
+    public static function getHeaders()
+    {
+        return self::$_headers;
+    }
+
+    public static function sendHttpHeader()
+    {
+        if (!empty(self::$_headers) && Request::isHttp()) {
+            foreach (self::$_headers as $key => $val) {
+                self::header($key, $val);
+            }
+        }
     }
 
     public static function status($code)

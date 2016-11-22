@@ -11,6 +11,9 @@ use ZPHP\Core\Config as ZConfig;
 
 class Request
 {
+
+    const REQUEST_ID_KEY = 'X-Request-Id';
+
     private static $_params;
     private static $_ctrl = 'main\\main';
 
@@ -28,6 +31,8 @@ class Request
     private static $_socket = null;
 
     private static $_request_method;
+
+    private static $_headers = array();
 
     /**
      * @var IProtocol
@@ -54,6 +59,13 @@ class Request
             throw new \Exception('ctrl or method no string');
         }
         self::$_tpl_file = \str_replace('\\', DS, self::$_ctrl) . DS . self::$_method . '.php';
+
+        $requestId = self::getHeader(self::REQUEST_ID_KEY);
+        if(empty($requestId)) {
+            $requestId = self::makeRequestId();
+        }
+        self::addHeader(self::REQUEST_ID_KEY, $requestId);
+        Response::addHeader(self::REQUEST_ID_KEY, $requestId);
     }
 
     public static function setParams($params)
@@ -251,6 +263,42 @@ class Request
 
         return $realip;
 
+    }
+
+    public static function addHeader($key, $val)
+    {
+        self::$_headers[$key] = $val;
+    }
+
+    public static function getHeader($key)
+    {
+        if (!empty(self::$_headers[$key])) {
+            return self::$_headers[$key];
+        }
+
+        if (self::isLongServer()) {
+            if (self::isHttp() && self::$_request) {
+                if (!empty(self::$_request->header[$key])) {
+                    return self::$_request->header[$key];
+                }
+            }
+        } else {
+            $key = 'HTTP_' . strtoupper(str_replace('-', '_', $key));
+            if (!empty($_SERVER[$key])) {
+                return $_SERVER[$key];
+            }
+        }
+        return null;
+    }
+
+    public static function makeRequestId()
+    {
+        return sha1(uniqid('_'.mt_rand(1, 1000000), true));
+    }
+
+    public static function getRequestId()
+    {
+        return self::getHeader(self::REQUEST_ID_KEY);
     }
 
 }
