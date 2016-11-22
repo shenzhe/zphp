@@ -11,8 +11,9 @@ namespace ZPHP\Client\Rpc;
 use ZPHP\Core\Config;
 
 use ZPHP\CLient\Monitor\Client as MClient;
+use ZPHP\Protocol\Request;
 
-class Tcp
+abstract class Tcp
 {
     private static $clients = [];
     private static $configs = [];
@@ -111,6 +112,8 @@ class Tcp
         return $this->client->isConnected();
     }
 
+    abstract function pack($sendArr);
+
     /**
      * @param $method
      * @param array $params
@@ -119,6 +122,7 @@ class Tcp
      */
     public function call($method, $params = [])
     {
+        Request::setRequestId();
         $startTime = microtime(true);
         $sendArr = [
             '_recv' => $this->sync,
@@ -128,7 +132,7 @@ class Tcp
             $sendArr[$this->config['ctrl_name']] = $this->api;
         }
         $sendArr += $params;
-        $result = $this->rawCall(json_encode($sendArr));
+        $result = $this->rawCall($this->pack($sendArr));
         $executeTime = microtime(true) - $startTime;
 
         MClient::clientDot($this->api . DS . $method, $executeTime);

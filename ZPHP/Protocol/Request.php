@@ -51,10 +51,7 @@ class Request
             throw new \Exception('ctrl or method no string');
         }
         self::$_tpl_file = \str_replace('\\', DS, self::$_ctrl) . DS . self::$_method . '.php';
-
-        $requestId = self::getRequestId(true);
-        self::addHeader(self::REQUEST_ID_KEY, $requestId);
-        Response::addHeader(self::REQUEST_ID_KEY, $requestId);
+        self::setRequestId();
     }
 
     public static function setParams($params)
@@ -264,6 +261,11 @@ class Request
         self::$_headers += $headers;
     }
 
+    public static function getHeaders()
+    {
+        return self::$_headers;
+    }
+
     public static function getHeader($key)
     {
         if (!empty(self::$_headers[$key])) {
@@ -297,5 +299,12 @@ class Request
             $requestId = self::makeRequestId();
         }
         return $requestId;
+    }
+
+    public static function setRequestId()
+    {
+        $requestId = self::getRequestId(true);
+        self::addHeader(self::REQUEST_ID_KEY, $requestId);
+        Response::addHeader(self::REQUEST_ID_KEY, $requestId);
     }
 }
