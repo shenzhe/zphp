@@ -113,6 +113,7 @@ abstract class Tcp
     }
 
     abstract function pack($sendArr);
+    abstract function unpack($result);
 
     /**
      * @param $method
@@ -136,7 +137,7 @@ abstract class Tcp
         $executeTime = microtime(true) - $startTime;
 
         MClient::clientDot($this->api . DS . $method, $executeTime);
-        return $result;
+        return $this->unpack($result);
     }
 
     /**
