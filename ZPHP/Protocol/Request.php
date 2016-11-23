@@ -301,9 +301,11 @@ class Request
         return $requestId;
     }
 
-    public static function setRequestId()
+    public static function setRequestId($reqeustId = null)
     {
-        $requestId = self::getRequestId(true);
+        if (empty($requestId)) {
+            $requestId = self::getRequestId(true);
+        }
         self::addHeader(self::REQUEST_ID_KEY, $requestId);
         Response::addHeader(self::REQUEST_ID_KEY, $requestId);
     }

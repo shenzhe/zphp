@@ -54,4 +54,24 @@ class Client
             ]
         );
     }
+
+    /**
+     * @param $api
+     * @param $time
+     * @desc task任务耗时
+     */
+    public static function taskDot($api, $time)
+    {
+        $config = ZConfig::get('monitor');
+        if (empty($config)) {
+            return;
+        }
+        $client = new Udp($config['host'], $config['port'], $config['timeOut']);
+        $client->setApi('dot')->call('task',
+            [
+                'api' => $api,
+                'time' => $time
+            ]
+        );
+    }
 }
