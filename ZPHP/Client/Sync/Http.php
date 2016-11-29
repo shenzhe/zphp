@@ -24,19 +24,19 @@ class Http
     }
 
     /**
-     * @param $url                  //目标地址
-     * @param $callback             //回调函数
-     * @param string $method        //请求method
+     * @param $url //目标地址
+     * @param $callback //回调函数
+     * @param string $method //请求method
      * @param null $data //method==post时, 表示post的数据
      * @param int $timeOut //超时时间,单位:ms
      * @param array $header //请求头信息
      * @return mixed
      * @throws \Exception
      */
-    public static function getByUrl($url, $callback, $method = 'GET', $data = null, $timeOut = 15000, $header = [])
+    public static function getByUrl($url, $callback, $method = 'GET', $data = null, $timeOut = 15000, $header = [], $needHeader = 0)
     {
         self::init();
-        curl_setopt(self::$ch, CURLOPT_HEADER, 0);
+        curl_setopt(self::$ch, CURLOPT_HEADER, $needHeader);
         curl_setopt(self::$ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         curl_setopt(self::$ch, CURLOPT_CONNECTTIMEOUT_MS, $timeOut);
         curl_setopt(self::$ch, CURLOPT_TIMEOUT_MS, $timeOut);
@@ -64,7 +64,7 @@ class Http
             }
         }
 
-        if(empty($header['User-Agent'])) {
+        if (empty($header['User-Agent'])) {
             curl_setopt(self::$ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:13.0) Gecko/20100101 Firefox/13.0.1');
         }
 
@@ -83,7 +83,7 @@ class Http
             }
         }
 
-        if(is_callable($callback)) {
+        if (is_callable($callback)) {
             return $callback($response);
         }
 

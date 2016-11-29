@@ -10,18 +10,20 @@ namespace ZPHP\Client\Rpc;
 
 use ZPHP\Core\Config;
 
-use ZPHP\CLient\Monitor\Client as MClient;
 use ZPHP\Protocol\Request;
 
 abstract class Tcp
 {
-    private static $clients = [];
-    private static $configs = [];
-    private $client;
-    private $api = '';
-    private $sync = 1;
+    protected static $clients = [];
+    protected static $configs = [];
+    protected $client;
+    protected $api = '';
+    protected $method = '';
+    protected $sendParams = [];
+    protected $startTime = 0;
+    protected $sync = 1;
 
-    private $config = [];
+    protected $config = [];
 
     /**
      * Tcp constructor.
@@ -113,6 +115,7 @@ abstract class Tcp
     }
 
     abstract function pack($sendArr);
+
     abstract function unpack($result);
 
     /**
@@ -124,19 +127,17 @@ abstract class Tcp
     public function call($method, $params = [])
     {
         Request::setRequestId();
-        $startTime = microtime(true);
-        $sendArr = [
+        $this->startTime = microtime(true);
+        $this->method = $method;
+        $this->sendParams = [
             '_recv' => $this->sync,
             $this->config['method_name'] => $method,
         ];
         if ($this->api) {
-            $sendArr[$this->config['ctrl_name']] = $this->api;
+            $this->sendParams[$this->config['ctrl_name']] = $this->api;
         }
-        $sendArr += $params;
-        $result = $this->rawCall($this->pack($sendArr));
-        $executeTime = microtime(true) - $startTime;
-
-        MClient::clientDot($this->api . DS . $method, $executeTime);
+        $this->sendParams += $params;
+        $result = $this->rawCall($this->pack($this->sendParams));
         return $this->unpack($result);
     }
 

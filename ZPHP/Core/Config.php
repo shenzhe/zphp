@@ -17,6 +17,7 @@ class Config
     private static $nextCheckTime = 0;
     private static $lastModifyTime = 0;
     private static $configPath;
+    private static $reloadPath;
 
     public static function load($configPath)
     {
@@ -24,16 +25,18 @@ class Config
         $config = array();
         if (!empty($files)) {
             foreach ($files as $file) {
+                \opcache_invalidate($file);
                 $config += include "{$file}";
             }
         }
         self::$config = $config;
-        if (Request::isLongServer()) {
-            self::$configPath = $configPath;
-            self::$nextCheckTime = time() + empty($config['project']['config_check_time']) ? 5 : $config['project']['config_check_time'];
-            self::$lastModifyTime = \filectime($configPath);
+        self::$configPath = $configPath;
+        if (!empty(self::$config['project']['auto_reload'])
+            && !empty(self::$config['project']['reload_path'])
+        ) {
+            self::mergePath(self::$config['project']['reload_path']);
         }
-        return $config;
+        return self::$config;
     }
 
     public static function loadFiles(array $files)
@@ -44,6 +47,34 @@ class Config
         }
         self::$config = $config;
         return $config;
+    }
+
+    public static function mergePath($path)
+    {
+        $files = Dir::tree($path, "/.php$/");
+        $config = array();
+        if (!empty($files)) {
+            foreach ($files as $file) {
+                \opcache_invalidate($file);
+                $config += include "{$file}";
+            }
+        }
+        self::$config = array_merge(self::$config + $config);
+        if (Request::isLongServer()) {
+            self::$reloadPath[$path] = $path;
+            self::$nextCheckTime = time() + empty($config['project']['config_check_time']) ? 5 : $config['project']['config_check_time'];
+            self::$lastModifyTime = \filectime($path);
+        }
+    }
+
+    public static function mergeFile($file)
+    {
+        $tmp = include "{$file}";
+        if (empty($tmp)) {
+            return false;
+        }
+        self::$config = array_merge(self::$config, $tmp);
+        return true;
     }
 
     public static function get($key, $default = null, $throw = false)
@@ -100,8 +131,11 @@ class Config
     {
         if (Request::isLongServer()) {
             if (self::$nextCheckTime < time()) {
-                if (self::$lastModifyTime < \filectime(self::$configPath)) {
-                    self::load(self::$configPath);
+                foreach (self::$reloadPath as $path) {
+                    \clearstatcache($path);
+                    if (self::$lastModifyTime < \filectime($path)) {
+                        self::mergePath($path);
+                    }
                 }
             }
         }
