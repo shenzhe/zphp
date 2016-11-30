@@ -52,14 +52,14 @@ class Config
     public static function mergePath($path)
     {
         $files = Dir::tree($path, "/.php$/");
-        $config = array();
         if (!empty($files)) {
+            $config = array();
             foreach ($files as $file) {
                 \opcache_invalidate($file);
                 $config += include "{$file}";
             }
+            self::$config = array_merge(self::$config, $config);
         }
-        self::$config = array_merge(self::$config + $config);
         if (Request::isLongServer()) {
             self::$reloadPath[$path] = $path;
             self::$nextCheckTime = time() + empty($config['project']['config_check_time']) ? 5 : $config['project']['config_check_time'];
