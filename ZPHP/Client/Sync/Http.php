@@ -24,65 +24,53 @@ class Http
     }
 
     /**
-     * @param $params = array(
-     *                      'url'=> '目标网址',
-     *                      'isPost'=>1,  //post方式
-     *                      'dataStr'=> array(  //参数
-     *                                      'k1'=>'v1',
-     *                                      'k2'=>'v2'
-     *                                  ),
-     *                      'cookieFile' => '/tmp/xxx',  //cookie文件路径
-     *                      'headers' => array( //自定义header请求头
-     *                                      'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36'
-     *                                  )
-     *                  )
-     *
+     * @param $url //目标地址
+     * @param $callback //回调函数
+     * @param string $method //请求method
+     * @param null $data //method==post时, 表示post的数据
+     * @param int $timeOut //超时时间,单位:ms
+     * @param array $header //请求头信息
      * @return mixed
      * @throws \Exception
-     * @desc 发起curl请求并获取结果
      */
-    public static function query($params)
+    public static function getByUrl($url, $callback, $method = 'GET', $data = null, $timeOut = 15000, $header = [], $needHeader = 0)
     {
         self::init();
-
-        curl_setopt(self::$ch, CURLOPT_HEADER, 0);
+        curl_setopt(self::$ch, CURLOPT_HEADER, $needHeader);
         curl_setopt(self::$ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt(self::$ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt(self::$ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt(self::$ch, CURLOPT_CONNECTTIMEOUT_MS, $timeOut);
+        curl_setopt(self::$ch, CURLOPT_TIMEOUT_MS, $timeOut);
         curl_setopt(self::$ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt(self::$ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        curl_setopt(self::$ch, CURLOPT_REFERER, $params['url']);
-        if (!empty($params['isPost'])) {
+        curl_setopt(self::$ch, CURLOPT_REFERER, $url);
+        if ('post' === strtolower($method)) {
             curl_setopt(self::$ch, CURLOPT_POST, true);
-            curl_setopt(self::$ch, CURLOPT_POSTFIELDS, http_build_query($params['dataStr']));
-            curl_setopt(self::$ch, CURLOPT_URL, $params['url']);
+            curl_setopt(self::$ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            curl_setopt(self::$ch, CURLOPT_URL, $url);
         } else {
-            if (!empty($params['dataStr'])) {
-                if (is_array($params['dataStr'])) {
-                    $dataStr = http_build_query($params['dataStr']);
+            if (!empty($data)) {
+                if (is_array($data)) {
+                    $dataStr = http_build_query($data);
                 } else {
-                    $dataStr = $params['dataStr'];
+                    $dataStr = $data;
                 }
-                if (strpos($params['url'], '?')) {
-                    curl_setopt(self::$ch, CURLOPT_URL, $params['url'] . '&' . $dataStr);
+                if (strpos($url, '?')) {
+                    curl_setopt(self::$ch, CURLOPT_URL, $url . '&' . $dataStr);
                 } else {
-                    curl_setopt(self::$ch, CURLOPT_URL, $params['url'] . '?' . $dataStr);
+                    curl_setopt(self::$ch, CURLOPT_URL, $url . '?' . $dataStr);
                 }
             } else {
-                curl_setopt(self::$ch, CURLOPT_URL, $params['url']);
+                curl_setopt(self::$ch, CURLOPT_URL, $url);
             }
         }
-        if (!empty($params['cookieFile'])) {
-            curl_setopt(self::$ch, CURLOPT_COOKIEFILE, $params['cookieFile']);
-        }
 
-        if(empty($params['headers']['User-Agent'])) {
+        if (empty($header['User-Agent'])) {
             curl_setopt(self::$ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:13.0) Gecko/20100101 Firefox/13.0.1');
         }
 
         $headers = [];
-        if (!empty($params['headers'])) {
-            $headers = array_merge($headers, $params['headers']);
+        if (!empty($header)) {
+            $headers = array_merge($headers, $header);
         }
 
         curl_setopt(self::$ch, CURLOPT_HTTPHEADER, $headers);
@@ -94,6 +82,11 @@ class Http
                 throw new \Exception(curl_error(self::$ch), -1);
             }
         }
+
+        if (is_callable($callback)) {
+            return $callback($response);
+        }
+
         return $response;
     }
 

@@ -9,6 +9,7 @@ namespace ZPHP\Common;
 
 use ZPHP\ZPHP;
 use ZPHP\Core\Config;
+use ZPHP\Protocol\Request;
 
 class Log
 {
@@ -24,7 +25,8 @@ class Log
             $dir = $logPath . DS . $t;
         }
         Dir::make($dir);
-        $str = \date('Y-m-d H:i:s', Config::get('now_time', time())) . self::SEPARATOR . \implode(self::SEPARATOR, array_map('ZPHP\Common\Log::myJson', $params));
+        $requestId = Request::getRequestId();
+        $str = \date('Y-m-d H:i:s', Config::get('now_time', time())) . self::SEPARATOR . $requestId . self::SEPARATOR . \implode(self::SEPARATOR, array_map('ZPHP\Common\Log::myJson', $params));
         $logFile = $dir . \DS . $type . '.log';
         \file_put_contents($logFile, $str . "\n", FILE_APPEND | LOCK_EX);
     }

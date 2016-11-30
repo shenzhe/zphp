@@ -40,6 +40,7 @@ class Xml extends Base
     public function display()
     {
         if (Request::isHttp()) {
+            Response::sendHttpHeader();
             Response::header("Content-Type", "text/xml; charset=utf-8");
         }
         $data = $this->xmlEncode();

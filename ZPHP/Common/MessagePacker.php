@@ -109,6 +109,9 @@ class MessagePacker
     public function readString()
     {
         $len = $this->readInt();
+        if(0 == $len) {
+            return null;
+        }
         $ret = unpack("a*ele", substr($this->data, $this->offset, $len));
         $this->offset += $len;
 
@@ -144,11 +147,9 @@ class MessagePacker
 
     public function getBuffer()
     {
-        $len = strlen($this->data);
-        if ($this->offset < $len) {
+        if ($this->offset < $this->dataLen) {
             return substr($this->data, $this->offset);
         }
-
         return null;
     }
 

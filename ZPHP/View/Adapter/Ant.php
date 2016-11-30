@@ -12,12 +12,14 @@ use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
 use ZPHP\View\Base;
 use ZPHP\Core\Config;
+use ZPHP\Common\MessagePacker;
 
-class Json extends Base
+class Ant extends Base
 {
     public function display()
     {
         $data = \json_encode($this->model, JSON_UNESCAPED_UNICODE);
+
         if (Request::isHttp()) {
             Response::sendHttpHeader();
             $params = Request::getParams();
@@ -28,9 +30,18 @@ class Json extends Base
             } else {
                 Response::header("Content-Type", "application/json; charset=utf-8");
             }
+
+            if (Request::isLongServer()) {
+                return $data;
+            }
         }
+
         if (Request::isLongServer()) {
-            return $data;
+            $message = new MessagePacker();
+            $header = Response::getHeaders();
+            $message->writeString(json_encode($header));
+            $message->writeString($data);
+            return $message->getData();
         }
         echo $data;
         return null;

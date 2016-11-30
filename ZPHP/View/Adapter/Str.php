@@ -17,6 +17,7 @@ class Str extends Base
     public function display()
     {
         if (Request::isHttp()) {
+            Response::sendHttpHeader();
             Response::header("Content-Type", "text/plain; charset=utf-8");
         }
 
