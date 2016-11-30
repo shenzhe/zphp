@@ -42,6 +42,7 @@ namespace ctrl\main;
 use ZPHP\Controller\IController,
     ZPHP\Core\Config,
     ZPHP\View;
+use ZPHP\Protocol\Request;
 
 class main implements IController
 {
@@ -60,7 +61,7 @@ class main implements IController
     {
         $project = Config::getField(\'project\', \'name\', \'zphp\');
         $data = $project." runing!\n";
-        $params = $this->_server->getParams();
+        $params = Request::getParams();
         if(!empty($params)) {
             foreach($params as $key=>$val) {
                 $data.= "key:{$key}=>{$val}\n";
