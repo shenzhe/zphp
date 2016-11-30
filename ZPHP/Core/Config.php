@@ -130,7 +130,7 @@ class Config
     public static function checkTime()
     {
         if (Request::isLongServer()) {
-            if (self::$nextCheckTime < time()) {
+            if (self::$nextCheckTime < time() && !empty(self::$reloadPath)) {
                 foreach (self::$reloadPath as $path) {
                     \clearstatcache($path);
                     if (self::$lastModifyTime < \filectime($path)) {
