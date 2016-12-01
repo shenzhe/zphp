@@ -157,10 +157,10 @@ class ZPHP
     {
         $error = \error_get_last();
         if (empty($error)) {
-            return;
+            return "";
         }
         if (!in_array($error['type'], array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR))) {
-            return;
+            return "";
         }
         Response::status('200');
         return Response::display(Formater::fatal($error));

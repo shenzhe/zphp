@@ -49,10 +49,16 @@ class Formater
                 $exceptionHash['trace'][] = $traceHash;
             }
         }
-
+        $exceptionHash['_view_mode'] = 'Json';
         return $exceptionHash;
     }
 
+    /**
+     * @param $exception \Exception | \Error
+     * @param bool $trace
+     * @return array
+     * @throws \Exception
+     */
     public static function exception($exception, $trace = true)
     {
         $code = $exception->getCode();
@@ -102,7 +108,7 @@ class Formater
                 $exceptionHash['trace'][] = $traceHash;
             }
         }
-
+        $exceptionHash['_view_mode'] = 'Json';
         return $exceptionHash;
     }
 
