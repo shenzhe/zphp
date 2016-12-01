@@ -25,7 +25,10 @@ class Config
         $config = array();
         if (!empty($files)) {
             foreach ($files as $file) {
-                \opcache_invalidate($file);
+                if( function_exists("opcache_invalidate" ) )
+                {
+                    \opcache_invalidate($file);
+                }
                 $config += include "{$file}";
             }
         }
