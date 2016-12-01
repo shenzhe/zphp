@@ -37,34 +37,38 @@ class Dir
      */
     public static function tree($dir, $filter = '', &$result = array(), $deep = false)
     {
-        $files = new \DirectoryIterator($dir);
-        foreach ($files as $file) {
-            if ($file->isDot()) {
-                continue;
-            }
-
-            $filename = $file->getFilename();
-            //过滤文件移动到下面  change by ahuo 2013-09-11 16:23
-            //if (!empty($filter) && !\preg_match($filter, $filename)) {
-            //  continue;
-            //}
-
-            if ($file->isDir()) {
-                if ($deep) {
-                    self::tree($dir . DS . $filename, $filter, $result, $deep);
-                }
-            } else {
-                if (!empty($filter) && !\preg_match($filter, $filename)) {
+        try {
+            $files = new \DirectoryIterator($dir);
+            foreach ($files as $file) {
+                if ($file->isDot()) {
                     continue;
                 }
-                if ($deep) {
-                    $result[$dir] = $filename;
+
+                $filename = $file->getFilename();
+                //过滤文件移动到下面  change by ahuo 2013-09-11 16:23
+                //if (!empty($filter) && !\preg_match($filter, $filename)) {
+                //  continue;
+                //}
+
+                if ($file->isDir()) {
+                    if ($deep) {
+                        self::tree($dir . DS . $filename, $filter, $result, $deep);
+                    }
                 } else {
-                    $result[] = $dir . DS . $filename;
+                    if (!empty($filter) && !\preg_match($filter, $filename)) {
+                        continue;
+                    }
+                    if ($deep) {
+                        $result[$dir] = $filename;
+                    } else {
+                        $result[] = $dir . DS . $filename;
+                    }
                 }
             }
+            return $result;
+        } catch (\Exception $e) {
+            return false;
         }
-        return $result;
     }
 
     /**
