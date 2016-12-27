@@ -43,13 +43,7 @@ class Dir
                 if ($file->isDot()) {
                     continue;
                 }
-
                 $filename = $file->getFilename();
-                //过滤文件移动到下面  change by ahuo 2013-09-11 16:23
-                //if (!empty($filter) && !\preg_match($filter, $filename)) {
-                //  continue;
-                //}
-
                 if ($file->isDir()) {
                     if ($deep) {
                         self::tree($dir . DS . $filename, $filter, $result, $deep);

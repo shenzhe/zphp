@@ -15,7 +15,7 @@ class Config
 
     private static $config;
     private static $nextCheckTime = 0;
-    private static $lastModifyTime = 0;
+    private static $lastModifyTime = [];
     private static $configPath;
     private static $reloadPath;
 
@@ -66,7 +66,7 @@ class Config
         if (Request::isLongServer()) {
             self::$reloadPath[$path] = $path;
             self::$nextCheckTime = time() + empty($config['project']['config_check_time']) ? 5 : $config['project']['config_check_time'];
-            self::$lastModifyTime = \filectime($path);
+            self::$lastModifyTime[$path] = \filectime($path);
         }
     }
 
@@ -136,7 +136,7 @@ class Config
             if (self::$nextCheckTime < time() && !empty(self::$reloadPath)) {
                 foreach (self::$reloadPath as $path) {
                     \clearstatcache($path);
-                    if (self::$lastModifyTime < \filectime($path)) {
+                    if (self::$lastModifyTime[$path] < \filectime($path)) {
                         self::mergePath($path);
                     }
                 }
