@@ -113,7 +113,7 @@ class ZPHP
 
     /**
      * @param $class
-     * @desc 自动加载类, ps当高并发情况下，is_file可能会导致cpu打满，可以取消掉is_file判断
+     * @desc 自动加载类, ps当高并发情况下，is_file可能会导致cpu打满，可以取消掉is_file判断, swoole模式无此问题
      */
     final public static function autoLoader($class)
     {
@@ -196,6 +196,10 @@ class ZPHP
         self::$libPath = Config::get('lib_path', self::$zPath . DS . 'lib');
         if ($run && Config::getField('project', 'debug_mode', 0)) {
             Debug::start();
+        }
+        $loadendHood = Config::get('loadend_hook');
+        if($loadendHood && is_callable($loadendHood)) {
+            call_user_func($loadendHood);
         }
         $appPath = Config::get('app_path', self::$appPath);
         self::setAppPath($appPath);
