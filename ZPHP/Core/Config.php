@@ -135,6 +135,9 @@ class Config
         if (Request::isLongServer()) {
             if (self::$nextCheckTime < time() && !empty(self::$reloadPath)) {
                 foreach (self::$reloadPath as $path) {
+                    if(!is_dir($path)) {
+                        continue;
+                    }
                     \clearstatcache($path);
                     if (self::$lastModifyTime[$path] < \filectime($path)) {
                         self::mergePath($path);

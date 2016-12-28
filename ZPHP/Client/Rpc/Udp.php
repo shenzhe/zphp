@@ -39,14 +39,8 @@ class Udp
         $key = $host . ':' . $port . ':' . $timeOut;
         if (!isset(self::$clients[$key])) {
             $client = new \swoole_client(SWOOLE_SOCK_UDP, SWOOLE_SOCK_SYNC);
-            $ret = $client->connect($host, $port, $timeOut / 1000);
-            if ($ret) {
-                self::$clients[$key] = $client;
-                self::$configs[$key] = $config;
-            } else {
-                throw new \Exception('connect server error', -1);
-            }
             $this->api = Config::getField('project', 'default_ctrl_name');
+            self::$configs[$key] = [$ip, $port];
         }
         $this->client = self::$clients[$key];
         $this->config = self::$configs[$key];
@@ -89,13 +83,12 @@ class Udp
             $sendArr[$this->config['ctrl_name']] = $this->api;
         }
         $sendArr += $data;
-        $result = json_encode($sendArr);
-        return $this->client->send($result);
+        return $this->rawCall(json_encode($sendArr));
     }
 
     public function rawCall($sendData)
     {
-        return $this->client->send($sendData);
+        return $this->client->sendto($this->config[0], $this->config[1], $sendData);
     }
 
     public function __call($name, $arguments)
