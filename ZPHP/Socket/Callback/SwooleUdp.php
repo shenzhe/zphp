@@ -11,5 +11,5 @@ abstract class SwooleUdp extends Swoole
         throw new \Exception('udp server must use onPacker');
     }
 
-    abstract public function onPacket($serv, $data, $clientInfo);
+    abstract public function doPacket($serv, $data, $clientInfo);
 }

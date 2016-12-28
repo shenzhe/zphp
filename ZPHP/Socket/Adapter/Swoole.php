@@ -128,7 +128,7 @@ class Swoole implements IServer
                 break;
             case self::TYPE_UDP:
                 array_pop($handlerArray);
-                $this->serv->on('Packet', array($this->client, 'onPacket'));
+                $this->serv->on('Packet', array($this->client, 'doPacket'));
                 break;
         }
 
