@@ -7,6 +7,7 @@
 
 namespace ZPHP;
 
+use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
 use ZPHP\Core\Config;
 use ZPHP\Common\Debug;
@@ -192,6 +193,7 @@ class ZPHP
             self::setConfigPath($configPath);
         }
         \spl_autoload_register(__CLASS__ . '::autoLoader');
+        Request::setRequestTime();
         Config::load(self::getConfigPath());
         self::$libPath = Config::get('lib_path', self::$zPath . DS . 'lib');
         if ($run && Config::getField('project', 'debug_mode', 0)) {

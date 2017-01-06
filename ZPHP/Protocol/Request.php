@@ -54,7 +54,6 @@ class Request
         }
         self::$_tpl_file = \str_replace('\\', DS, self::$_ctrl) . DS . self::$_method . '.php';
         self::setRequestId();
-        self::setRequestTime();
     }
 
     public static function setParams($params)
@@ -331,8 +330,12 @@ class Request
         self::addHeader($key, $time);
     }
 
-    public static function getRequestTime()
+    public static function getRequestTime($clear = false)
     {
-        return self::$_request_time;
+        $time = self::$_request_time;
+        if ($clear) {
+            self::$_request_time = null;
+        }
+        return $time;
     }
 }
