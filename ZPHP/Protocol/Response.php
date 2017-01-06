@@ -18,6 +18,8 @@ class Response
 
     private static $_respone_time = null;
 
+    private static $_execute_time = 0;
+
     const RESPONSE_TIME_KEY = 'X-Run-Time';
 
     public static function setResponse($response)
@@ -30,6 +32,12 @@ class Response
         return self::$_response;
     }
 
+    /**
+     * @param $model
+     * @return mixed
+     * @throws \Exception
+     * @desc reponse数据格式输出
+     */
     public static function display($model)
     {
         if (null === $model || false === $model) {
@@ -68,10 +76,16 @@ class Response
         $view->setModel($model);
         self::$_respone_time = microtime(true);
         $key = Config::getField('project', 'response_time_key', self::RESPONSE_TIME_KEY);
-        self::addHeader($key, self::$_respone_time - Request::getRequestTime(true));
+        self::$_execute_time = self::$_respone_time - Request::getRequestTime(true);
+        self::addHeader($key, self::$_execute_time);
         return $view->display();
     }
 
+    /**
+     * @param $key
+     * @param $val
+     * @desc 发送http头
+     */
     public static function header($key, $val)
     {
         if (self::$_response) {
@@ -82,16 +96,28 @@ class Response
         \header("{$key}: {$val}");
     }
 
+    /**
+     * @param $key
+     * @param $val
+     * @desc 添加一个response头
+     */
     public static function addHeader($key, $val)
     {
         self::$_headers[$key] = $val;
     }
 
+    /**
+     * @return array
+     * @desc 获取所有response待发响应头
+     */
     public static function getHeaders()
     {
         return self::$_headers;
     }
 
+    /**
+     * @desc 发送所有http response header头
+     */
     public static function sendHttpHeader()
     {
         if (!empty(self::$_headers) && Request::isHttp()) {
@@ -101,6 +127,10 @@ class Response
         }
     }
 
+    /**
+     * @param $code
+     * @desc 设置响应状态码
+     */
     public static function status($code)
     {
         if (self::$_response) {
@@ -112,6 +142,16 @@ class Response
 
     }
 
+    /**
+     * @param $key
+     * @param string $value
+     * @param int $expire
+     * @param string $path
+     * @param string $domain
+     * @param bool $secure
+     * @param bool $httponly
+     * @desc 设置cookie
+     */
     public static function setcookie($key, $value = '', $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false)
     {
         if (self::$_response) {
@@ -122,6 +162,16 @@ class Response
 
     }
 
+    /**
+     * @param $key
+     * @param string $value
+     * @param int $expire
+     * @param string $path
+     * @param string $domain
+     * @param bool $secure
+     * @param bool $httponly
+     * @desc 设置原始cookie
+     */
     public static function setrawcookie($key, $value = '', $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false)
     {
         if (self::$_response) {
@@ -130,9 +180,22 @@ class Response
         \setrawcookie($key, $value, $expire, $path, $domain, $secure, $httponly);
     }
 
+    /**
+     * @return null
+     * @desc 返回response响应的时间戳
+     */
     public static function getReponseTime()
     {
         return self::$_respone_time;
+    }
+
+    /**
+     * @return int
+     * @desc 返回一次请求的执行时间
+     */
+    public static function getExecuteTime()
+    {
+        return self::$_execute_time;
     }
 
 }

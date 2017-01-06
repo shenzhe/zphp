@@ -33,6 +33,14 @@ class Request
      */
     private static $_server;
 
+    /**
+     * @param $ctrl
+     * @param $method
+     * @param array $params
+     * @param null $viewMode
+     * @throws \Exception
+     * @desc 请求初始化
+     */
     public static function init($ctrl, $method, array $params, $viewMode = null)
     {
         if ($ctrl) {
@@ -56,11 +64,21 @@ class Request
         self::setRequestId();
     }
 
+    /**
+     * @param $params
+     * @desc 设置请求参数数组
+     */
     public static function setParams($params)
     {
         self::$_params = $params;
     }
 
+    /**
+     * @param $key
+     * @param $val
+     * @param bool $set
+     * @desc 批量添加请求参数
+     */
     public static function addParams($key, $val, $set = true)
     {
         if ($set || !isset(self::$_params[$key])) {
@@ -68,61 +86,109 @@ class Request
         }
     }
 
+    /**
+     * @return mixed
+     * @desc 获取请求参数数组
+     */
     public static function getParams()
     {
         return self::$_params;
     }
 
+    /**
+     * @param $ctrlName
+     * @desc 设置控制器类
+     */
     public static function setCtrl($ctrlName)
     {
         self::$_ctrl = $ctrlName;
     }
 
+    /**
+     * @return string
+     * @desc 获取控制器类
+     */
     public static function getCtrl()
     {
         return self::$_ctrl;
     }
 
+    /**
+     * @param $methodName
+     * @desc 设置执行的方法 eg:$ctrl->$method();
+     */
     public static function setMethod($methodName)
     {
         self::$_method = $methodName;
     }
 
+    /**
+     * @return string
+     * @desc 获取执行的方法
+     */
     public static function getMethod()
     {
         return self::$_method;
     }
 
+    /**
+     * @param $tplFile
+     * @desc 设置模板文件
+     */
     public static function setTplFile($tplFile)
     {
         self::$_tpl_file = $tplFile;
     }
 
+    /**
+     * @return string
+     * @desc 获取模板文件
+     */
     public static function getTplFile()
     {
         return self::$_tpl_file;
     }
 
+    /**
+     * @param $viewMode
+     * @desc 设置view模式
+     */
     public static function setViewMode($viewMode)
     {
         self::$_view_mode = $viewMode;
     }
 
+    /**
+     * @return null
+     * @desc 获取view模式
+     */
     public static function getViewMode()
     {
         return self::$_view_mode;
     }
 
+    /**
+     * @param $fd
+     * @desc 设置fd (swoole模式)
+     */
     public static function setFd($fd)
     {
         self::$_fd = $fd;
     }
 
+    /**
+     * @return null
+     * @desc 获取fd (swoole模式)
+     */
     public static function getFd()
     {
         return self::$_fd;
     }
 
+    /**
+     * @return bool
+     * @desc 是否ajax请求
+     */
     public static function isAjax()
     {
 
@@ -152,61 +218,110 @@ class Request
         return false;
     }
 
+    /**
+     * @param $server
+     * @desc 设置protocal对像
+     */
     public static function setServer($server)
     {
         self::$_server = $server;
     }
 
+    /**
+     * @return IProtocol
+     * @desc 获取protocal对像
+     */
     public static function getServer()
     {
         return self::$_server;
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     * @desc 解析请求体
+     */
     public static function parse($data)
     {
         return self::$_server->parse($data);
     }
 
+    /**
+     * @param int $tag
+     * @desc 设置为长驻服务(swoole模式)
+     */
     public static function setLongServer($tag = 1)
     {
         self::$_long_server = $tag;
     }
 
+    /**
+     * @return int
+     * @desc 是否长驻服务 (swoole模式)
+     */
     public static function isLongServer()
     {
         return self::$_long_server;
     }
 
+    /**
+     * @param int $tag
+     * @desc 是否swoole_http运行 (swoole模式)
+     */
     public static function setHttpServer($tag = 1)
     {
         self::$_is_http = $tag;
     }
 
+    /**
+     * @return int
+     * @desc 是否http请求
+     */
     public static function isHttp()
     {
         return self::$_is_http;
     }
 
+    /**
+     * @param $request
+     * @desc 设置http_request对像(swoole模式)
+     */
     public static function setRequest($request)
     {
         self::$_request = $request;
     }
 
+    /**
+     * @return null
+     * @desc 获取http_request对像(swoole模式)
+     */
     public static function getRequest()
     {
         return self::$_request;
     }
 
+    /**
+     * @param $socket
+     * @desc 设置swoole_server对像(swoole模式)
+     */
     public static function setSocket($socket)
     {
         self::$_socket = $socket;
     }
 
+    /**
+     * @return null
+     * @desc 获取swoole_server对像(swoole模式)
+     */
     public static function getSocket()
     {
         return self::$_socket;
     }
 
+    /**
+     * @return mixed
+     * @desc 获取请求方法名
+     */
     public static function getRequestMethod()
     {
         if (self::isLongServer() && self::isHttp() && self::$_request) {
@@ -215,6 +330,10 @@ class Request
         return $_SERVER['REQUEST_METHOD'];
     }
 
+    /**
+     * @return string
+     * @desc 获取pathinfo
+     */
     public static function getPathInfo()
     {
         if (self::isLongServer() && self::isHttp() && self::$_request) {
@@ -223,6 +342,10 @@ class Request
         return isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
     }
 
+    /**
+     * @return string
+     * @desc 获取客户端ip
+     */
     public static function getClientIp()
     {
         $realip = '';
@@ -253,21 +376,39 @@ class Request
 
     }
 
+    /**
+     * @param $key
+     * @param $val
+     * @desc 添加一个请求头
+     */
     public static function addHeader($key, $val)
     {
         self::$_headers[$key] = $val;
     }
 
+    /**
+     * @param array $headers
+     * @desc 添加一批请求头
+     */
     public static function addHeaders(array $headers)
     {
         self::$_headers += $headers;
     }
 
+    /**
+     * @return array
+     * @desc 获取所有待发的请求头
+     */
     public static function getHeaders()
     {
         return self::$_headers;
     }
 
+    /**
+     * @param $key
+     * @return mixed|null
+     * @desc 跟据key获取请求头信息
+     */
     public static function getHeader($key)
     {
         if (!empty(self::$_headers[$key])) {
@@ -289,11 +430,20 @@ class Request
         return null;
     }
 
+    /**
+     * @return string
+     * @desc 生成请求id
+     */
     public static function makeRequestId()
     {
         return sha1(uniqid('_' . mt_rand(1, 1000000), true));
     }
 
+    /**
+     * @param bool $autoMake
+     * @return mixed|null|string
+     * @desc 获取请求id
+     */
     public static function getRequestId($autoMake = false)
     {
         $requestId = self::getHeader(self::REQUEST_ID_KEY);
@@ -303,6 +453,10 @@ class Request
         return $requestId;
     }
 
+    /**
+     * @param null $reqeustId
+     * @desc 设置请求唯一id
+     */
     public static function setRequestId($reqeustId = null)
     {
         if (empty($requestId)) {
@@ -313,6 +467,10 @@ class Request
         Response::addHeader($requestIdKey, $requestId);
     }
 
+    /**
+     * @param null $time
+     * @desc 设置请求开始时间
+     */
     public static function setRequestTime($time = null)
     {
         if (!empty(self::$_request_time)) {
@@ -330,6 +488,11 @@ class Request
         self::addHeader($key, $time);
     }
 
+    /**
+     * @param bool $clear
+     * @return null
+     * @desc 获取请求开始时间
+     */
     public static function getRequestTime($clear = false)
     {
         $time = self::$_request_time;
