@@ -320,8 +320,11 @@ class Request
             return;
         }
         if (empty($time)) {
-            if(!empty($_REQUEST['']))
-            $time = microtime(true);
+            if (!empty($_REQUEST['REQUEST_TIME_FLOAT'])) {
+                $time = $_REQUEST['REQUEST_TIME_FLOAT'];
+            } else {
+                $time = microtime(true);
+            }
         }
         self::$_request_time = $time;
         $key = ZConfig::getField('project', 'request_time_key', self::REQUEST_TIME_KEY);
