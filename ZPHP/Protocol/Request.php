@@ -13,6 +13,7 @@ class Request
 {
 
     const REQUEST_ID_KEY = 'X-Request-Id';
+    const REQUEST_TIME_KEY = 'X-Request-Time';
 
     private static $_params;
     private static $_ctrl = 'main';
@@ -25,6 +26,7 @@ class Request
     private static $_request = null;
     private static $_socket = null;
     private static $_headers = array();
+    private static $_request_time = null;
 
     /**
      * @var IProtocol
@@ -52,6 +54,7 @@ class Request
         }
         self::$_tpl_file = \str_replace('\\', DS, self::$_ctrl) . DS . self::$_method . '.php';
         self::setRequestId();
+        self::setRequestTime();
     }
 
     public static function setParams($params)
@@ -306,7 +309,27 @@ class Request
         if (empty($requestId)) {
             $requestId = self::getRequestId(true);
         }
-        self::addHeader(self::REQUEST_ID_KEY, $requestId);
-        Response::addHeader(self::REQUEST_ID_KEY, $requestId);
+        $requestIdKey = ZConfig::getField('project', 'request_id_key', self::REQUEST_ID_KEY);
+        self::addHeader($requestIdKey, $requestId);
+        Response::addHeader($requestIdKey, $requestId);
+    }
+
+    public static function setRequestTime($time = null)
+    {
+        if (!empty(self::$_request_time)) {
+            return;
+        }
+        if (empty($time)) {
+            if(!empty($_REQUEST['']))
+            $time = microtime(true);
+        }
+        self::$_request_time = $time;
+        $key = ZConfig::getField('project', 'request_time_key', self::REQUEST_TIME_KEY);
+        self::addHeader($key, $time);
+    }
+
+    public static function getRequestTime()
+    {
+        return self::$_request_time;
     }
 }

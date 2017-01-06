@@ -16,6 +16,10 @@ class Response
 
     private static $_headers = array();
 
+    private static $_respone_time = null;
+
+    const RESPONSE_TIME_KEY = 'X-Run-Time';
+
     public static function setResponse($response)
     {
         self::$_response = $response;
@@ -62,6 +66,9 @@ class Response
             $view->setTpl($_tpl_file);
         }
         $view->setModel($model);
+        self::$_respone_time = microtime(true);
+        $key = ZConfig::getField('project', 'response_time_key', self::RESPONSE_TIME_KEY);
+        self::header($key, self::$_respone_time - Request::getRequestTime());
         return $view->display();
     }
 
@@ -121,6 +128,11 @@ class Response
             self::$_response->rawcookie($key, $value, $expire, $path, $domain, $secure, $httponly);
         }
         \setrawcookie($key, $value, $expire, $path, $domain, $secure, $httponly);
+    }
+
+    public static function getReponseTime()
+    {
+        return self::$_respone_time;
     }
 
 }
