@@ -16,7 +16,7 @@ class Response
 
     private static $_headers = array();
 
-    private static $_respone_time = null;
+    private static $_response_time = null;
 
     private static $_execute_time = 0;
 
@@ -25,12 +25,18 @@ class Response
     public static function setResponse($response)
     {
         self::$_response = $response;
+        if ($response) {
+            self::$_headers = array();
+            self::$_response_time = 0;
+            self::$_execute_time = 0;
+        }
     }
 
     public static function getResponse()
     {
         return self::$_response;
     }
+
 
     /**
      * @param $model
@@ -74,9 +80,9 @@ class Response
             $view->setTpl($_tpl_file);
         }
         $view->setModel($model);
-        self::$_respone_time = microtime(true);
+        self::$_response_time = microtime(true);
         $key = Config::getField('project', 'response_time_key', self::RESPONSE_TIME_KEY);
-        self::$_execute_time = self::$_respone_time - Request::getRequestTime(true);
+        self::$_execute_time = self::$_response_time - Request::getRequestTime(true);
         self::addHeader($key, self::$_execute_time);
         return $view->display();
     }
@@ -184,9 +190,9 @@ class Response
      * @return null
      * @desc 返回response响应的时间戳
      */
-    public static function getReponseTime()
+    public static function getResponseTime()
     {
-        return self::$_respone_time;
+        return self::$_response_time;
     }
 
     /**

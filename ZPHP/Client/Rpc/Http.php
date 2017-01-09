@@ -28,6 +28,8 @@ abstract class Http
 
     protected $config = [];
 
+    protected $httpMethod = 'GET';
+
     /**
      * Tcp constructor.
      * @param $host
@@ -105,6 +107,7 @@ abstract class Http
         }
         $this->sendParams += $params;
         $result = $this->rawCall($this->pack($this->sendParams));
+        $this->httpMethod = 'GET';
         return $this->unpack($result);
     }
 
@@ -116,7 +119,15 @@ abstract class Http
      */
     public function rawCall($sendData)
     {
-        return HttpClient::getByUrl($this->uri, null, 'GET', $sendData, $this->timeOut, Request::getHeaders(), 1);
+        return HttpClient::getByUrl($this->uri, null, $this->httpMethod, $sendData, $this->timeOut, Request::getHeaders(), 1);
+    }
+
+    public function setHttpMethod($method)
+    {
+        if ($method) {
+            $this->httpMethod = $method;
+        }
+        return $this;
     }
 
     public function __call($name, $arguments)

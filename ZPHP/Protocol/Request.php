@@ -61,6 +61,7 @@ class Request
             throw new \Exception('ctrl or method no string');
         }
         self::$_tpl_file = \str_replace('\\', DS, self::$_ctrl) . DS . self::$_method . '.php';
+        self::$_headers = array();
         self::setRequestId();
     }
 
@@ -289,6 +290,9 @@ class Request
     public static function setRequest($request)
     {
         self::$_request = $request;
+        if($request) {
+            self::$_request_time = 0;
+        }
     }
 
     /**
