@@ -42,6 +42,7 @@ abstract class Udp
             $client = new \swoole_client(SWOOLE_SOCK_UDP, SWOOLE_SOCK_SYNC);
             $this->api = Config::getField('project', 'default_ctrl_name');
             self::$configs[$key] = [$ip, $port];
+            self::$clients[$key] = $client;
         }
         $this->client = self::$clients[$key];
         $this->config = self::$configs[$key];
