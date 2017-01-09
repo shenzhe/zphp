@@ -10,16 +10,17 @@ namespace ZPHP\Client\Rpc;
 
 use ZPHP\Core\Config;
 
-class Udp
+abstract class Udp
 {
     private static $clients = [];
     private static $configs = [];
     /**
      * @var \swoole_client
      */
-    private $client;
-    private $api = '';
-    private $sync = 1;
+    protected $client;
+    protected $api = '';
+    protected $method = '';
+    protected $sync = 1;
 
     private $config = [];
 
@@ -73,8 +74,13 @@ class Udp
         return $this->client->isConnected();
     }
 
+    abstract function pack($sendArr);
+
+    abstract function unpack($result);
+
     public function call($method, $data = [])
     {
+        $this->method = $method;
         $sendArr = [
             '_recv' => $this->sync,
             $this->config['method_name'] => $method,
@@ -83,7 +89,7 @@ class Udp
             $sendArr[$this->config['ctrl_name']] = $this->api;
         }
         $sendArr += $data;
-        return $this->rawCall(json_encode($sendArr));
+        return $this->rawCall($this->pack($sendArr));
     }
 
     public function rawCall($sendData)
