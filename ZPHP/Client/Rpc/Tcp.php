@@ -53,13 +53,13 @@ abstract class Tcp
                 ];
                 $socketConfig = Config::get('socket');
                 if (!empty($socketConfig)) {
-                    foreach ($config as $key => &$val) {
-                        if (isset($socketConfig[$key])) {
-                            $val = $socketConfig[$key];
+                    foreach ($config as $k => &$v) {
+                        if (isset($socketConfig[$k])) {
+                            $v = $socketConfig[$k];
                         }
                     }
                 }
-                unset($val);
+                unset($v);
             } else {
                 $config = $config + [
                         'open_length_check' => true,
@@ -152,7 +152,7 @@ abstract class Tcp
         $sendLen = $this->client->send(pack($this->config['package_length_type'], strlen($sendData)) . $sendData);
         if ($sendLen) {
             $recvData = $this->client->recv();
-            if (is_null($recvData)) {
+            if (false === $recvData && is_null($recvData)) {
                 throw new \Exception('receive data error', -1);
             }
             return substr($recvData, $this->config['package_body_offset']);
