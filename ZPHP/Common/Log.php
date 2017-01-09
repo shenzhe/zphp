@@ -26,7 +26,7 @@ class Log
         }
         Dir::make($dir);
         $requestId = Request::getRequestId();
-        $str = \date('Y-m-d H:i:s', Config::get('now_time', time())) . self::SEPARATOR . $requestId . self::SEPARATOR . \implode(self::SEPARATOR, array_map('ZPHP\Common\Log::myJson', $params));
+        $str = \date('Y-m-d H:i:s', Config::get('now_time', time())) . self::SEPARATOR . Request::getCtrl() . '.' . Request::getMethod() . self::SEPARATOR . $requestId . self::SEPARATOR . \implode(self::SEPARATOR, array_map('ZPHP\Common\Log::myJson', $params));
         $logFile = $dir . \DS . $type . '.log';
         \file_put_contents($logFile, $str . "\n", FILE_APPEND | LOCK_EX);
     }
