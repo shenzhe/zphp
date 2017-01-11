@@ -43,7 +43,20 @@ abstract class Udp
         if (!isset(self::$clients[$key])) {
             $client = new \swoole_client(SWOOLE_SOCK_UDP, SWOOLE_SOCK_SYNC);
             $this->api = Config::getField('project', 'default_ctrl_name');
-            self::$configs[$key] = [$ip, $port];
+            if (empty($config)) {
+                $config = [
+                    'ctrl_name' => 'a',
+                    'method_name' => 'm',
+                ];
+            } else {
+                $config += [
+                    'ctrl_name' => 'a',
+                    'method_name' => 'm',
+                ];
+            }
+            $config['ip'] = $ip;
+            $config['port'] = $port;
+            self::$configs[$key] = $config;
             self::$clients[$key] = $client;
         }
         $this->client = self::$clients[$key];
@@ -105,7 +118,7 @@ abstract class Udp
 
     public function rawCall($sendData)
     {
-        return $this->client->sendto($this->config[0], $this->config[1], $sendData);
+        return $this->client->sendto($this->config['ip'], $this->config['port'], $sendData);
     }
 
     public function __call($name, $arguments)
