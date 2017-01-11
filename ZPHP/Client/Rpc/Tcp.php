@@ -27,6 +27,8 @@ abstract class Tcp
 
     protected $isDot = 1;
 
+    protected $key = '';
+
     /**
      * Tcp constructor.
      * @param $ip
@@ -42,40 +44,7 @@ abstract class Tcp
         }
         $key = $ip . ':' . $port . ':' . $timeOut;
         if (!isset(self::$clients[$key]) || !self::$clients[$key]->isConnected()) {
-            $client = new \swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
-            if (empty($config)) {
-                $config = [
-                    'open_length_check' => true,
-                    'package_length_type' => 'N',
-                    'package_length_offset' => 0,       //第N个字节是包长度的值
-                    'package_body_offset' => 4,       //第几个字节开始计算长度
-                    'package_max_length' => 2000000,  //协议最大长度
-                    'ctrl_name' => 'a',
-                    'method_name' => 'm',
-                ];
-                $socketConfig = Config::get('socket');
-                if (!empty($socketConfig)) {
-                    foreach ($config as $k => &$v) {
-                        if (isset($socketConfig[$k])) {
-                            $v = $socketConfig[$k];
-                        }
-                    }
-                }
-                unset($v);
-            } else {
-                $config = $config + [
-                        'open_length_check' => true,
-                        'package_length_type' => 'N',
-                        'package_length_offset' => 0,       //第N个字节是包长度的值
-                        'package_body_offset' => 4,       //第几个字节开始计算长度
-                        'package_max_length' => 2000000,  //协议最大长度
-                        'ctrl_name' => 'a',
-                        'method_name' => 'm',
-                    ];
-            }
-
-            $client->set($config);
-            $ret = $client->connect($ip, $port, $timeOut / 1000);
+            $ret = $this->connect($ip, $port, $timeOut, $config);
             if ($ret) {
                 self::$clients[$key] = $client;
                 self::$configs[$key] = $config;
@@ -87,8 +56,47 @@ abstract class Tcp
         }
         $this->client = self::$clients[$key];
         $this->config = self::$configs[$key];
+        $this->key = $key;
         $this->isDot = 1;
         return true;
+    }
+
+    public function connect($ip, $port, $timeOut, $config)
+    {
+        $client = new \swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
+        if (empty($config)) {
+            $config = [
+                'open_length_check' => true,
+                'package_length_type' => 'N',
+                'package_length_offset' => 0,       //第N个字节是包长度的值
+                'package_body_offset' => 4,       //第几个字节开始计算长度
+                'package_max_length' => 2000000,  //协议最大长度
+                'ctrl_name' => 'a',
+                'method_name' => 'm',
+            ];
+            $socketConfig = Config::get('socket');
+            if (!empty($socketConfig)) {
+                foreach ($config as $k => &$v) {
+                    if (isset($socketConfig[$k])) {
+                        $v = $socketConfig[$k];
+                    }
+                }
+            }
+            unset($v);
+        } else {
+            $config = $config + [
+                    'open_length_check' => true,
+                    'package_length_type' => 'N',
+                    'package_length_offset' => 0,       //第N个字节是包长度的值
+                    'package_body_offset' => 4,       //第几个字节开始计算长度
+                    'package_max_length' => 2000000,  //协议最大长度
+                    'ctrl_name' => 'a',
+                    'method_name' => 'm',
+                ];
+        }
+
+        $client->set($config);
+        return $client->connect($ip, $port, $timeOut / 1000);
     }
 
     public function setApi($api)
@@ -167,6 +175,13 @@ abstract class Tcp
             }
             return substr($recvData, $this->config['package_body_offset']);
         }
+        list($ip, $port, $timeOut) = explode(':', $this->key);
+        if ($this->connect($ip, $port, $timeOut, $this->config)) {
+            $this->client = self::$clients[$key];
+            return $this->rawCall($sendData);
+        }
+        unset(self::$clients[$this->key]);
+        unset(self::$configs[$this->key]);
         throw new \Exception("send error", $this->client->errCode);
     }
 
