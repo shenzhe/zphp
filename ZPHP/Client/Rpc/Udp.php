@@ -54,7 +54,7 @@ abstract class Udp
                     'method_name' => 'm',
                 ];
             }
-            $config['ip'] = $ip;
+            $config['host'] = $host;
             $config['port'] = $port;
             self::$configs[$key] = $config;
             self::$clients[$key] = $client;
@@ -118,7 +118,7 @@ abstract class Udp
 
     public function rawCall($sendData)
     {
-        return $this->client->sendto($this->config['ip'], $this->config['port'], $sendData);
+        return $this->client->sendto($this->config['host'], $this->config['port'], $sendData);
     }
 
     public function __call($name, $arguments)
