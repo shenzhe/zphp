@@ -41,7 +41,7 @@ abstract class Tcp
             $timeOut = 500;
         }
         $key = $ip . ':' . $port . ':' . $timeOut;
-        if (!isset(self::$clients[$key])) {
+        if (!isset(self::$clients[$key]) || !self::$clients[$key]->isConnected()) {
             $client = new \swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
             if (empty($config)) {
                 $config = [
