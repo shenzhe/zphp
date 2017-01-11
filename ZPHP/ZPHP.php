@@ -199,9 +199,9 @@ class ZPHP
         if ($run && Config::getField('project', 'debug_mode', 0)) {
             Debug::start();
         }
-        $loadendHood = Config::get('loadend_hook');
-        if($loadendHood && is_callable($loadendHood)) {
-            call_user_func($loadendHood);
+        $loadendHooK = Config::get('loadend_hook');
+        if($loadendHooK && is_callable($loadendHooK)) {
+            call_user_func($loadendHooK);
         }
         $appPath = Config::get('app_path', self::$appPath);
         self::setAppPath($appPath);

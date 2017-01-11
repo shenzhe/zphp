@@ -30,6 +30,8 @@ abstract class Http
 
     protected $httpMethod = 'GET';
 
+    protected $isDot = 1;
+
     /**
      * Tcp constructor.
      * @param $host
@@ -83,6 +85,12 @@ abstract class Http
         return true;
     }
 
+    public function setDot($dot = 1)
+    {
+        $this->isDot = $dot;
+        return $this;
+    }
+
     abstract function pack($sendArr);
 
     abstract function unpack($result);
@@ -106,9 +114,10 @@ abstract class Http
             $this->sendParams[$this->config['ctrl_name']] = $this->api;
         }
         $this->sendParams += $params;
-        $result = $this->rawCall($this->pack($this->sendParams));
+        $result = $this->unpack($this->rawCall($this->pack($this->sendParams)));
         $this->httpMethod = 'GET';
-        return $this->unpack($result);
+        $this->isDot = 1;
+        return $result;
     }
 
     /**

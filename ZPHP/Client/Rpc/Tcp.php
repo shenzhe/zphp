@@ -25,6 +25,8 @@ abstract class Tcp
 
     protected $config = [];
 
+    protected $isDot = 1;
+
     /**
      * Tcp constructor.
      * @param $ip
@@ -114,6 +116,12 @@ abstract class Tcp
         return $this->client->isConnected();
     }
 
+    public function setDot($dot = 1)
+    {
+        $this->isDot = $dot;
+        return $this;
+    }
+
     abstract function pack($sendArr);
 
     abstract function unpack($result);
@@ -137,8 +145,9 @@ abstract class Tcp
             $this->sendParams[$this->config['ctrl_name']] = $this->api;
         }
         $this->sendParams += $params;
-        $result = $this->rawCall($this->pack($this->sendParams));
-        return $this->unpack($result);
+        $result = $this->unpack($this->rawCall($this->pack($this->sendParams)));
+        $this->isDot = 1;
+        return $result;
     }
 
     /**

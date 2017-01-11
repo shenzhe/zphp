@@ -24,6 +24,8 @@ abstract class Udp
 
     private $config = [];
 
+    protected $isDot = 1;
+
     /**
      * Tcp constructor.
      * @param $host
@@ -75,6 +77,12 @@ abstract class Udp
         return $this->client->isConnected();
     }
 
+    public function setDot($dot = 1)
+    {
+        $this->isDot = $dot;
+        return $this;
+    }
+
     abstract function pack($sendArr);
 
     abstract function unpack($result);
@@ -90,7 +98,9 @@ abstract class Udp
             $sendArr[$this->config['ctrl_name']] = $this->api;
         }
         $sendArr += $data;
-        return $this->rawCall($this->pack($sendArr));
+        $result = $this->rawCall($this->pack($sendArr));
+        $this->isDot = 1;
+        return $result;
     }
 
     public function rawCall($sendData)
