@@ -46,6 +46,7 @@ abstract class Tcp
         if (!isset(self::$clients[$key]) || !self::$clients[$key]->isConnected()) {
             $ret = $this->connect($ip, $port, $timeOut, $config);
             if ($ret) {
+                list($client, $config) = $ret;
                 self::$clients[$key] = $client;
                 self::$configs[$key] = $config;
             } else {
@@ -96,7 +97,11 @@ abstract class Tcp
         }
 
         $client->set($config);
-        return $client->connect($ip, $port, $timeOut / 1000);
+        $ret = $client->connect($ip, $port, $timeOut / 1000);
+        if ($ret) {
+            return [$client, $config];
+        }
+        return $ret;
     }
 
     public function setApi($api)
