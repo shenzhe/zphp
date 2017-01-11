@@ -50,7 +50,7 @@ abstract class Tcp
                 self::$clients[$key] = $client;
                 self::$configs[$key] = $config;
             } else {
-                throw new \Exception('connect server error', -1);
+                throw new \Exception('connect server: ' . $ip . ':' . $port . ' error', -1);
             }
 
             $this->api = Config::getField('project', 'default_ctrl_name');
