@@ -60,6 +60,7 @@ abstract class Http
         }
         $this->api = Config::getField('project', 'default_ctrl_name');
         $this->config = $config;
+        $this->isDot = 1;
         return true;
     }
 

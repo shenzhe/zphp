@@ -87,6 +87,7 @@ abstract class Tcp
         }
         $this->client = self::$clients[$key];
         $this->config = self::$configs[$key];
+        $this->isDot = 1;
         return true;
     }
 

@@ -48,6 +48,7 @@ abstract class Udp
         }
         $this->client = self::$clients[$key];
         $this->config = self::$configs[$key];
+        $this->isDot = 1;
         return true;
     }
 
@@ -98,8 +99,7 @@ abstract class Udp
             $sendArr[$this->config['ctrl_name']] = $this->api;
         }
         $sendArr += $data;
-        $result = $this->rawCall($this->pack($sendArr));
-        $this->isDot = 1;
+        $result = $this->unpack($this->rawCall($this->pack($sendArr)));
         return $result;
     }
 
