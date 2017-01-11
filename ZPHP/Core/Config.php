@@ -25,8 +25,7 @@ class Config
         $config = array();
         if (!empty($files)) {
             foreach ($files as $file) {
-                if( function_exists("opcache_invalidate" ) )
-                {
+                if (Request::isLongServer() && function_exists("opcache_invalidate")) {
                     \opcache_invalidate($file);
                 }
                 $config += include "{$file}";
@@ -58,7 +57,9 @@ class Config
         if (!empty($files)) {
             $config = array();
             foreach ($files as $file) {
-                \opcache_invalidate($file);
+                if (Request::isLongServer() && function_exists("opcache_invalidate")) {
+                    \opcache_invalidate($file);
+                }
                 $config += include "{$file}";
             }
             self::$config = array_merge(self::$config, $config);
@@ -135,7 +136,7 @@ class Config
         if (Request::isLongServer()) {
             if (self::$nextCheckTime < time() && !empty(self::$reloadPath)) {
                 foreach (self::$reloadPath as $path) {
-                    if(!is_dir($path)) {
+                    if (!is_dir($path)) {
                         continue;
                     }
                     \clearstatcache($path);
