@@ -14,7 +14,7 @@ class Formater
     {
         $exceptionHash = array(
             'className' => $name,
-            'message' => $error['message'],
+            'message' => '[type:' . $error['type'] . '] ' . $error['message'],
             'code' => ZConfig::getField('project', 'default_exception_code', -1),
             'file' => $error['file'],
             'line' => $error['line'],
