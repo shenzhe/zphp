@@ -13,7 +13,7 @@ use ZPHP\Protocol\Response;
 use ZPHP\View\Base;
 use ZPHP\Common\MessagePacker;
 
-class ZRpack extends Base
+class Zrpack extends Base
 {
     public function display()
     {

@@ -11,6 +11,13 @@ use ZPHP\Core\Config as ZConfig;
 
 class Factory
 {
+    private static $_map = [
+        'Hprose' => 1,
+        'Php' => 1,
+        'React' => 1,
+        'Swoole' => 1,
+    ];
+
     public static function getInstance($adapter = 'Swoole', $config = null)
     {
         if (empty($config)) {
@@ -19,7 +26,8 @@ class Factory
                 $adapter = $config['adapter'];
             }
         }
-        if (is_file(__DIR__ . DS . 'Adapter' . DS . $adapter . '.php')) {
+        $adapter = ucfirst(strtolower($adapter));
+        if (isset(self::$_map[$adapter])) {
             $className = __NAMESPACE__ . "\\Adapter\\{$adapter}";
         } else {
             $className = $adapter;

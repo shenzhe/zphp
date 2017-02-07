@@ -9,9 +9,18 @@ use ZPHP\Core\Factory as CFactory;
 
 class Factory
 {
+    private static $_map = [
+        'Cli' => 1,
+        'Hprose' => 1,
+        'Http' => 1,
+        'Rpc' => 1,
+        'Socket' => 1,
+    ];
+
     public static function getInstance($adapter = 'Http')
     {
-        if (is_file(__DIR__ . DS . 'Adapter' . DS . $adapter . '.php')) {
+        $adapter = ucfirst(strtolower($adapter));
+        if (isset(self::$_map[$adapter])) {
             $className = __NAMESPACE__ . "\\Adapter\\{$adapter}";
         } else {
             $className = $adapter;

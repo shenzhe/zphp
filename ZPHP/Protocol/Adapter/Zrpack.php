@@ -14,7 +14,7 @@ use ZPHP\Cache\Factory as ZCache;
 use ZPHP\Common\Route as ZRoute;
 use ZPHP\Protocol\Request;
 
-class ZRpack implements IProtocol
+class Zrpack implements IProtocol
 {
     private $_cache;
 
