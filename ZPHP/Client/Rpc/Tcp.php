@@ -29,6 +29,8 @@ abstract class Tcp
 
     protected $key = '';
 
+    protected static $multiClients = [];
+
     /**
      * Tcp constructor.
      * @param $ip
@@ -59,6 +61,9 @@ abstract class Tcp
         $this->config = self::$configs[$key];
         $this->key = $key;
         $this->isDot = 1;
+//        if (is_null(self::$multiClients)) {
+//            self::$multiClients = new \SplObjectStorage();
+//        }
         return true;
     }
 
@@ -188,6 +193,65 @@ abstract class Tcp
         unset(self::$clients[$this->key]);
         unset(self::$configs[$this->key]);
         throw new \Exception("send error", $this->client->errCode);
+    }
+
+    /**
+     * @param $method
+     * @param array $params
+     * @return null
+     * @desc 发起一个并行请求
+     */
+    public function multiCall($method, $params = [])
+    {
+        $requestId = Request::setRequestId();
+        $this->startTime = microtime(true);
+        $this->method = $method;
+        $this->sendParams = [
+            '_recv' => $this->sync,
+            $this->config['method_name'] => $method,
+        ];
+        if ($this->api) {
+            $this->sendParams[$this->config['ctrl_name']] = $this->api;
+        }
+        $this->sendParams += $params;
+        $sendLen = $this->client->send(pack($this->config['package_length_type'], strlen($sendData)) . $sendData);
+        if ($sendLen) {
+            self::$multiClients[$requestId] = $this->client;
+        }
+        return $requestId;
+    }
+
+    /**
+     * @param int $timeOut 超时时间
+     * @param int $retry   超时重试次数
+     * @return array       key=>request value=>new Result
+     * @desc 得到并行请求的返回结果
+     */
+    public function multiReceive($timeOut = 1000, $retry = 1)
+    {
+        $results = [];
+        while (!empty(self::$multiClients)) {
+            if ($retry < 1) {
+                break;
+            }
+            $read = array_values(self::$multiClients);
+            $write = $error = array();
+            $n = \swoole_client_select($read, $write, $error, $timeOut / 1000);
+            if ($n > 0) {
+                foreach ($read as $requestId => $c) {
+                    $recvData = $c->recv();
+                    if (false === $recvData && is_null($recvData)) {
+                        $results[$requestId] = null;
+                    } else {
+                        $results[$requestId] = $this->unpack(substr($recvData, $this->config['package_body_offset']));
+                    }
+                    unset(self::$multiClients[$requestId]);
+                }
+            }
+            $retry--;
+        }
+        self::$multiClients = [];
+        return $results;
     }
 
     public function __call($name, $arguments)

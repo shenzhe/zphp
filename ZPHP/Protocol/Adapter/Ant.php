@@ -21,7 +21,7 @@ class Ant implements IProtocol
         $message = new MessagePacker($_data);
         $headers = json_decode($message->readString(), true);
         if (is_array($headers)) {
-            Request::addHeaders($headers);
+            Request::addHeaders($headers, true);
         }
         $data = json_decode($message->readString(), true);
         $apn = Config::getField('project', 'ctrl_name', 'a');
