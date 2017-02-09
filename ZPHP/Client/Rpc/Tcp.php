@@ -61,9 +61,6 @@ abstract class Tcp
         $this->config = self::$configs[$key];
         $this->key = $key;
         $this->isDot = 1;
-//        if (is_null(self::$multiClients)) {
-//            self::$multiClients = new \SplObjectStorage();
-//        }
         return true;
     }
 
@@ -148,7 +145,7 @@ abstract class Tcp
     /**
      * @param $method
      * @param array $params
-     * @return string
+     * @return mixed
      * @desc 远程rpc调用
      */
     public function call($method, $params = [])
@@ -196,6 +193,16 @@ abstract class Tcp
     }
 
     /**
+     * @desc 关闭tcp连接
+     */
+    public function close()
+    {
+        $this->client->close();
+        unset(self::$clients[$this->key]);
+        unset(self::$configs[$this->key]);
+    }
+
+    /**
      * @param $method
      * @param array $params
      * @return null
@@ -223,7 +230,7 @@ abstract class Tcp
 
     /**
      * @param int $timeOut 超时时间
-     * @param int $retry   超时重试次数
+     * @param int $retry 超时重试次数
      * @return array       key=>request value=>new Result
      * @desc 得到并行请求的返回结果
      */
