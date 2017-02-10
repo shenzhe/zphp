@@ -10,6 +10,7 @@ use ZPHP\Core\Factory as CFactory;
 class Factory
 {
     private static $_map = [
+        'Ant' => 1,
         'Cli' => 1,
         'Hprose' => 1,
         'Http' => 1,
