@@ -462,10 +462,10 @@ class Request
     }
 
     /**
-     * @param null $reqeustId
+     * @param null $requestId
      * @desc 设置请求唯一id
      */
-    public static function setRequestId($reqeustId = null)
+    public static function setRequestId($requestId = null)
     {
         if (empty($requestId)) {
             $requestId = self::getRequestId(true);
