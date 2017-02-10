@@ -25,7 +25,7 @@ abstract class Swoole implements ICallback
          * @var $server \swoole_server
          */
         $server = func_get_args()[0];
-        $ip = ZConfig::getField('socket', 'ip');
+        $ip = ZConfig::getField('socket', 'host');
         $port = ZConfig::getField('socket', 'port');
         swoole_set_process_name(ZConfig::get('project_name') .
             ' server running ' .
@@ -35,7 +35,7 @@ abstract class Swoole implements ICallback
         if (!empty($pidPath)) {
             file_put_contents($pidPath . DS . ZConfig::get('project_name') . '_master.pid', $server->master_pid);
         }
-        if('Ant' == ZConfig::get('project', 'server_type')) {
+        if ('Ant' == ZConfig::get('project', 'server_type')) {
             $callback = ZConfig::getField('soa', 'register_callback', 'socket\Handler\Soa::register');
         } else {
             $callback = ZConfig::getField('soa', 'register_callback');
@@ -62,7 +62,7 @@ abstract class Swoole implements ICallback
                 unlink($filename);
             }
         }
-        if('Ant' == ZConfig::get('project', 'server_type')) {
+        if ('Ant' == ZConfig::get('project', 'server_type')) {
             $callback = ZConfig::getField('soa', 'drop_callback', 'socket\Handler\Soa::drop');
         } else {
             $callback = ZConfig::getField('soa', 'drop_callback');
