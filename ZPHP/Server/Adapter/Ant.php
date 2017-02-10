@@ -24,7 +24,7 @@ class Ant implements IServer
         }
         $socket = SFactory::getInstance(Config::getField('socket', 'adapter', 'Swoole'), $config);
         if (method_exists($socket, 'setClient')) {
-            $client = CFactory::getInstance(Config::getField('client_class', 'socket\Tcp'));
+            $client = CFactory::getInstance(Config::getField('socket', 'client_class', 'socket\Tcp'));
             $socket->setClient($client);
         }
         Request::setServer(ZProtocol::getInstance(Config::getField('socket', 'protocol', 'Ant')));
