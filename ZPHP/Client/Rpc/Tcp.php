@@ -184,7 +184,7 @@ abstract class Tcp
         }
         list($ip, $port, $timeOut) = explode(':', $this->key);
         if ($this->connect($ip, $port, $timeOut, $this->config)) {
-            $this->client = self::$clients[$key];
+            $this->client = self::$clients[$this->key];
             return $this->rawCall($sendData);
         }
         unset(self::$clients[$this->key]);
