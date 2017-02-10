@@ -195,6 +195,24 @@ class ZPHP
         \spl_autoload_register(__CLASS__ . '::autoLoader');
         Request::setRequestTime();
         Config::load(self::getConfigPath());
+        $serverMode = Config::get('server_mode', 'Http');
+        if ('Ant' == $serverMode) { //ant模式的约定
+            self::$libPath = Config::get('lib_path', []);
+            if (is_array(self::$libPath)) {
+                self::$libPath += [
+                    'ant-lib' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-lib',
+                    'ant-rpc' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-rpc',
+                ];
+            } else {
+                self::$libPath = [self::$libPath];
+                self::$libPath += [
+                    'ant-lib' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-lib',
+                    'ant-rpc' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-rpc',
+                ];
+            }
+        } else {
+            self::$libPath = Config::get('lib_path', self::$zPath . DS . 'lib');
+        }
         if ($run && Config::getField('project', 'debug_mode', 0)) {
             Debug::start();
         }
@@ -212,21 +230,7 @@ class ZPHP
         }
         $timeZone = Config::get('time_zone', 'Asia/Shanghai');
         \date_default_timezone_set($timeZone);
-        $serverMode = Config::get('server_mode', 'Http');
-        if ('Ant' == $serverMode) { //ant模式的约定
-            if (is_array(self::$libPath)) {
-                self::$libPath += [
-                    'ant-lib' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-lib',
-                    'ant-rpc' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-rpc',
-                ];
-            } else {
-                self::$libPath = [self::$libPath];
-                self::$libPath += [
-                    'ant-lib' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-lib',
-                    'ant-rpc' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-rpc',
-                ];
-            }
-        }
+
         $service = Server\Factory::getInstance($serverMode);
         if ($run) {
             $service->run();
