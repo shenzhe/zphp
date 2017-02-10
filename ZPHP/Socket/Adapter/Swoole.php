@@ -7,6 +7,7 @@
 
 namespace ZPHP\Socket\Adapter;
 
+use ZPHP\Core\Config;
 use ZPHP\Socket\IServer;
 use ZPHP\Socket\Callback;
 
@@ -20,6 +21,7 @@ class Swoole implements IServer
     const TYPE_HTTP = 'http';
     const TYPE_HTTPS = 'https';
     const TYPE_WEBSOCKET = 'ws';
+    const TYPE_WEBSOCKETS = 'wss';
 
     public function __construct(array $config)
     {
@@ -29,30 +31,65 @@ class Swoole implements IServer
         $this->config = $config;
         $socketType = empty($config['server_type']) ? self::TYPE_TCP : strtolower($config['server_type']);
         $this->config['server_type'] = $socketType;
+        $workMode = empty($config['work_mode']) ? SWOOLE_PROCESS : $config['work_mode'];
+        $ssl = 0;
+        if (!empty($this->config['ssl_cert_file']) && !empty($this->config['ssl_key_file'])) {
+            $ssl = SWOOLE_SSL;
+        }
         switch ($socketType) {
             case self::TYPE_TCP:
-                $this->serv = new \swoole_server($config['host'], $config['port'], $config['work_mode'], SWOOLE_SOCK_TCP);
+                $this->serv = new \swoole_server($config['host'], $config['port'], $workMode, SWOOLE_SOCK_TCP | $ssl);
                 break;
             case self::TYPE_UDP:
-                $this->serv = new \swoole_server($config['host'], $config['port'], $config['work_mode'], SWOOLE_SOCK_UDP);
+                $this->serv = new \swoole_server($config['host'], $config['port'], $workMode, SWOOLE_SOCK_UDP | $ssl);
                 break;
             case self::TYPE_HTTP:
-                $this->serv = new \swoole_http_server($config['host'], $config['port'], $config['work_mode']);
+                $this->serv = new \swoole_http_server($config['host'], $config['port'], $workMode);
                 break;
             case self::TYPE_HTTPS:
-                $this->serv = new \swoole_http_server($config['host'], $config['port'], $config['work_mode'], \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
+                if (!$ssl) {
+                    throw new \Exception("https must set ssl_cert_file && ssl_key_file");
+                }
+                $this->serv = new \swoole_http_server($config['host'], $config['port'], $workMode, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
                 break;
             case self::TYPE_WEBSOCKET:
-                $this->serv = new \swoole_websocket_server($config['host'], $config['port'], $config['work_mode']);
+                $this->serv = new \swoole_websocket_server($config['host'], $config['port'], $workMode);
                 break;
-
+            case self::TYPE_WEBSOCKETS:
+                if (!$ssl) {
+                    throw new \Exception("https must set ssl_cert_file && ssl_key_file");
+                }
+                $this->serv = new \swoole_websocket_server($config['host'], $config['port'], $workMode, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
+                break;
         }
 
-        if (!empty($config['addlisten']) && $socketType != self::TYPE_UDP && SWOOLE_PROCESS == $config['work_mode']) {
+        if (!empty($config['addlisten']) && $socketType != self::TYPE_UDP && SWOOLE_PROCESS == $workMode) {
             $this->serv->addlistener($config['addlisten']['ip'], $config['addlisten']['port'], SWOOLE_SOCK_UDP);
         }
 
-        $this->serv->set($config);
+        if ('Ant' == Config::get('server_mode')) {
+            if (!isset($this->config['open_length_check'])) {
+                $this->config += [
+                    'open_length_check' => true,
+                    'package_length_type' => 'N',
+                    'package_length_offset' => 0,       //第N个字节是包长度的值
+                    'package_body_offset' => 4,       //第几个字节开始计算长度
+                    'package_max_length' => 2000000,  //协议最大长度
+                ];
+                Config::set('socket', $this->config);
+                Config::set('project', Config::get('project', []) + [
+                        'default_ctrl_name' => 'main',
+                        'protocol' => 'Ant',
+                        'view_mode' => 'Ant',
+                        'exception_handler' => 'common\MyException::exceptionHandler',
+                        'fatal_handler' => 'common\MyException::fatalHandler',
+                        'error_handler' => 'common\MyException::errorHandler',
+                    ]
+                );
+            }
+        }
+
+        $this->serv->set($this->config);
     }
 
     public function setClient($client)
@@ -62,6 +99,7 @@ class Swoole implements IServer
         }
         switch ($this->config['server_type']) {
             case self::TYPE_WEBSOCKET:
+            case self::TYPE_WEBSOCKETS:
                 if (!($client instanceof Callback\SwooleWebSocket)) {
                     throw new \Exception('client must instanceof ZPHP\Socket\Callback\SwooleWebSocket');
                 }
@@ -115,6 +153,7 @@ class Swoole implements IServer
                 $this->serv->on('Request', array($this->client, 'doRequest'));
                 break;
             case self::TYPE_WEBSOCKET:
+            case self::TYPE_WEBSOCKETS:
                 if (method_exists($this->client, 'onHandShake')) {
                     $this->serv->on('HandShake', array($this->client, 'onHandShake'));
                 }
@@ -144,7 +183,6 @@ class Swoole implements IServer
             } else {
                 call_user_func($this->config['start_hook']);
             }
-
         }
         $this->serv->start();
     }
