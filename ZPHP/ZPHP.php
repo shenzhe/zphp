@@ -33,7 +33,7 @@ class ZPHP
     private static $configPath = 'default';
     private static $appPath = 'apps';
     private static $zPath;
-    private static $libPath = 'lib';
+    private static $libPath = [];
     private static $classPath = array();
 
     /**
@@ -195,12 +195,11 @@ class ZPHP
         \spl_autoload_register(__CLASS__ . '::autoLoader');
         Request::setRequestTime();
         Config::load(self::getConfigPath());
-        self::$libPath = Config::get('lib_path', self::$zPath . DS . 'lib');
         if ($run && Config::getField('project', 'debug_mode', 0)) {
             Debug::start();
         }
         $loadendHooK = Config::get('loadend_hook');
-        if($loadendHooK && is_callable($loadendHooK)) {
+        if ($loadendHooK && is_callable($loadendHooK)) {
             call_user_func($loadendHooK);
         }
         $appPath = Config::get('app_path', self::$appPath);
@@ -214,6 +213,20 @@ class ZPHP
         $timeZone = Config::get('time_zone', 'Asia/Shanghai');
         \date_default_timezone_set($timeZone);
         $serverMode = Config::get('server_mode', 'Http');
+        if ('Ant' == $serverMode) { //ant模式的约定
+            if (is_array(self::$libPath)) {
+                self::$libPath += [
+                    'ant-lib' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-lib',
+                    'ant-rpc' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-rpc',
+                ];
+            } else {
+                self::$libPath = [self::$libPath];
+                self::$libPath += [
+                    'ant-lib' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-lib',
+                    'ant-rpc' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-rpc',
+                ];
+            }
+        }
         $service = Server\Factory::getInstance($serverMode);
         if ($run) {
             $service->run();
