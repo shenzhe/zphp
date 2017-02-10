@@ -28,14 +28,14 @@ abstract class Swoole implements ICallback
         $ip = ZConfig::getField('socket', 'host');
         $port = ZConfig::getField('socket', 'port');
         swoole_set_process_name(ZConfig::get('project_name') .
-            ' server running ' .
+            ZConfig::get('server_mode') . ' server running ' .
             ZConfig::getField('socket', 'server_type', 'tcp') . '://' . $ip . ':' . $port
             . " time:" . date('Y-m-d H:i:s') . "  master:" . $server->master_pid);
         $pidPath = ZConfig::getField('project', 'pid_path');
         if (!empty($pidPath)) {
             file_put_contents($pidPath . DS . ZConfig::get('project_name') . '_master.pid', $server->master_pid);
         }
-        if ('Ant' == ZConfig::get('project', 'server_type')) {
+        if ('Ant' == ZConfig::get('server_mode')) {
             $callback = ZConfig::getField('soa', 'register_callback', 'socket\Handler\Soa::register');
         } else {
             $callback = ZConfig::getField('soa', 'register_callback');
@@ -62,7 +62,7 @@ abstract class Swoole implements ICallback
                 unlink($filename);
             }
         }
-        if ('Ant' == ZConfig::get('project', 'server_type')) {
+        if ('Ant' == ZConfig::get('server_mode')) {
             $callback = ZConfig::getField('soa', 'drop_callback', 'socket\Handler\Soa::drop');
         } else {
             $callback = ZConfig::getField('soa', 'drop_callback');
@@ -80,7 +80,7 @@ abstract class Swoole implements ICallback
     public function onManagerStart($server)
     {
         swoole_set_process_name(ZConfig::get('project_name') .
-            ' server manager:' . $server->manager_pid);
+            ZConfig::get('server_mode') . ' server manager:' . $server->manager_pid);
         $pidPath = ZConfig::getField('project', 'pid_path');
         if (!empty($pidPath)) {
             file_put_contents($pidPath . DS . ZConfig::get('project_name') . '_manager.pid', $server->manager_pid);
