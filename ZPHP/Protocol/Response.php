@@ -12,6 +12,9 @@ use ZPHP\View\Factory as ZView;
 
 class Response
 {
+    /**
+     * @var \swoole_http_response
+     */
     private static $_response = null;
 
     private static $_headers = array();

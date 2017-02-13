@@ -391,16 +391,23 @@ class Request
 
     /**
      * @param array $headers
-     * @param bool $init
+     * @param bool $init //是否初始化
+     * @param bool $set //是否覆盖
+     * @return array
      * @desc 添加一批请求头
      */
-    public static function addHeaders(array $headers, $init = false)
+    public static function addHeaders(array $headers, $init = false, $set = false)
     {
         if ($init) {
             self::$_headers = $headers;
         } else {
-            self::$_headers += $headers;
+            if ($set) {
+                self::$_headers = $headers + self::$_headers;
+            } else {
+                self::$_headers += $headers;
+            }
         }
+        return self::$_headers;
     }
 
     /**
@@ -462,10 +469,11 @@ class Request
     }
 
     /**
-     * @param null $reqeustId
+     * @param null $requestId
+     * @return mixed|null|string
      * @desc 设置请求唯一id
      */
-    public static function setRequestId($reqeustId = null)
+    public static function setRequestId($requestId = null)
     {
         if (empty($requestId)) {
             $requestId = self::getRequestId(true);
@@ -473,17 +481,44 @@ class Request
         $requestIdKey = ZConfig::getField('project', 'request_id_key', self::REQUEST_ID_KEY);
         self::addHeader($requestIdKey, $requestId);
         Response::addHeader($requestIdKey, $requestId);
-        return $reqeustId;
+        return $requestId;
+    }
+
+    /**
+     * @param int $timeOut
+     * @return bool
+     * @desc 检测请求是否已超时
+     */
+    public static function checkRequestTimeOut($timeOut = 0)
+    {
+        $key = ZConfig::getField('project', 'request_time_key', self::REQUEST_TIME_KEY);
+        if (!isset(self::$_headers[$key])) {
+            return false;
+        }
+
+        if (!$timeOut) {
+            if (!isset(self::$_headers['X-Request-Timeout'])) {
+                $timeOut = self::$_headers['X-Request-Timeout'];
+            }
+        }
+
+        if ($timeOut <= 0) {
+            return false;
+        }
+
+        $startTime = self::$_headers[$key];
+        $nowTime = microtime(true);
+        return $nowTime - $startTime > $timeOut;
     }
 
     /**
      * @param null $time
-     * @desc 设置请求开始时间
+     * @return bool
      */
     public static function setRequestTime($time = null)
     {
         if (!empty(self::$_request_time)) {
-            return;
+            return false;
         }
         if (empty($time)) {
             if (!empty($_REQUEST['REQUEST_TIME_FLOAT'])) {
@@ -495,6 +530,7 @@ class Request
         self::$_request_time = $time;
         $key = ZConfig::getField('project', 'request_time_key', self::REQUEST_TIME_KEY);
         self::addHeader($key, $time);
+        return true;
     }
 
     /**

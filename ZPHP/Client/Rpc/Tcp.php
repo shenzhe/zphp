@@ -22,13 +22,10 @@ abstract class Tcp
     protected $sendParams = [];
     protected $startTime = 0;
     protected $sync = 1;
-
     protected $config = [];
-
     protected $isDot = 1;
-
     protected $key = '';
-
+    protected $timeOut = 0;
     protected static $multiClients = [];
 
     /**
@@ -60,6 +57,7 @@ abstract class Tcp
         $this->client = self::$clients[$key];
         $this->config = self::$configs[$key];
         $this->key = $key;
+        $this->timeOut = $timeOut;
         $this->isDot = 1;
         return true;
     }
