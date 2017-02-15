@@ -76,6 +76,13 @@ class Pdo
      *    }
      * @param null $dbName
      */
+    /**
+     * Pdo constructor.
+     * @param null $config
+     * @param null $className
+     * @param null $dbName
+     * @throws \Exception
+     */
     public function __construct($config = null, $className = null, $dbName = null)
     {
         if (empty($config)) {
