@@ -59,7 +59,7 @@ class Formater
      * @return array
      * @throws \Exception
      */
-    public static function exception($exception, $trace = true)
+    public static function exception($exception, $trace = true, $args = true)
     {
         $code = $exception->getCode();
         $message = $exception->getMessage();
@@ -78,7 +78,7 @@ class Formater
             'line' => $exception->getLine(),
             'userAgent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'trace' => array(),
-            'server' => $_SERVER,
+            'server' => ZConfig::get('server_mode') == 'Http' ? $_SERVER : '',
         );
 
         if ($trace) {
@@ -99,9 +99,11 @@ class Formater
                     $traceHash['type'] = $traceItem['type'];
                 }
 
-                if (!empty($traceItem['args'])) {
-                    foreach ($traceItem['args'] as $argsItem) {
-                        $traceHash['args'][] = \var_export($argsItem, true);
+                if ($args) {
+                    if (!empty($traceItem['args'])) {
+                        foreach ($traceItem['args'] as $argsItem) {
+                            $traceHash['args'][] = \var_export($argsItem, true);
+                        }
                     }
                 }
 
