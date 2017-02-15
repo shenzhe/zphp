@@ -16,9 +16,9 @@ class Pdo
      * @var \PDO
      */
     private $pdo;
-    private $dbName;
-    private $tableName;
-    private $className;
+    protected $dbName;
+    protected $tableName;
+    protected $className;
     private $config;
     private $lastTime;
     private $lastSql;
