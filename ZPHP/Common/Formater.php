@@ -71,7 +71,7 @@ class Formater
         }
 
         $exceptionHash = array(
-            'className' => 'Exception',
+            'className' => get_class($exception),
             'message' => $message,
             'code' => $code,
             'file' => $exception->getFile(),
