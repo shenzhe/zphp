@@ -106,6 +106,7 @@ class Config
 
     public static function getField($key, $field, $default = null, $throw = false)
     {
+        self::checkTime();
         $result = isset(self::$config[$key][$field]) ? self::$config[$key][$field] : $default;
         if ($throw && is_null($result)) {
             throw new \Exception("{key} config empty");
