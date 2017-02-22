@@ -26,6 +26,8 @@ abstract class Udp
 
     protected $isDot = 1;
 
+    protected $startTime = 0;
+
     /**
      * Tcp constructor.
      * @param $host
@@ -103,6 +105,7 @@ abstract class Udp
 
     public function call($method, $data = [])
     {
+        $this->startTime = microtime(true);
         $this->method = $method;
         $sendArr = [
             '_recv' => $this->sync,
