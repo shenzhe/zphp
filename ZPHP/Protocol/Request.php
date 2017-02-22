@@ -497,7 +497,7 @@ class Request
         }
 
         if (!$timeOut) {
-            if (!isset(self::$_headers['X-Request-Timeout'])) {
+            if (!empty(self::$_headers['X-Request-Timeout'])) {
                 $timeOut = self::$_headers['X-Request-Timeout'];
             }
         }
