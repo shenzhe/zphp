@@ -56,6 +56,7 @@ class Formater
     /**
      * @param $exception \Exception | \Error
      * @param bool $trace
+     * @param bool $args
      * @return array
      * @throws \Exception
      */
@@ -102,7 +103,7 @@ class Formater
                 if ($args) {
                     if (!empty($traceItem['args'])) {
                         foreach ($traceItem['args'] as $argsItem) {
-                            $traceHash['args'][] = \var_export($argsItem, true);
+                            $traceHash['args'][] = \preg_replace('/[^(\x20-\x7F)]*/', '', \var_export($argsItem, true));
                         }
                     }
                 }

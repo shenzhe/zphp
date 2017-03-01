@@ -16,6 +16,9 @@ abstract class Tcp
 {
     protected static $clients = [];
     protected static $configs = [];
+    /**
+     * @var \swoole_client
+     */
     protected $client;
     protected $api = '';
     protected $method = '';
@@ -176,7 +179,7 @@ abstract class Tcp
         if ($sendLen) {
             $recvData = $this->client->recv();
             if (false === $recvData && is_null($recvData)) {
-                throw new \Exception('receive data error', -1);
+                throw new \Exception('[code:' . $this->client->errCode . '] receive data error', -1);
             }
             return substr($recvData, $this->config['package_body_offset']);
         }
@@ -187,7 +190,7 @@ abstract class Tcp
         }
         unset(self::$clients[$this->key]);
         unset(self::$configs[$this->key]);
-        throw new \Exception("send error", $this->client->errCode);
+        throw new \Exception('[code:' . $this->client->errCode . '] send error', -1);
     }
 
     /**
