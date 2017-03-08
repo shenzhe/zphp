@@ -71,6 +71,9 @@ class Task
             case 'clear':
                 $phpCache->clear();
                 break;
+            case 'all':
+                return $phpCache->all();
+                break;
         }
     }
 

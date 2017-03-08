@@ -109,4 +109,12 @@ class Task implements ICache
             'type' => 'clear'
         ]), $this->tid);
     }
+
+    public function all()
+    {
+        $server = Request::getSocket();
+        return $server->taskwait($this->packData([
+            'type' => 'all'
+        ]), $this->tid);
+    }
 }

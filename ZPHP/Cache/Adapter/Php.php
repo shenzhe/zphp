@@ -103,4 +103,9 @@ class Php implements ICache
     {
         return $this->_cache = array();
     }
+
+    public function all()
+    {
+        return $this->_cache;
+    }
 }
