@@ -18,11 +18,16 @@ class Ant implements IProtocol
     {
         $ctrlName = Config::getField('project', 'default_ctrl_name', 'main\\main');
         $methodName = Config::getField('project', 'default_method_name', 'main');
-        $message = json_decode($_data, true);
-        if (is_array($message[0])) {
-            Request::addHeaders($message[0], true);
+        if (Request::isHttp()) {
+            $data = $_data;
+            Request::addHeaders(Request::getRequest()->header, true);
+        } else {
+            $message = json_decode($_data, true);
+            if (is_array($message[0])) {
+                Request::addHeaders($message[0], true);
+            }
+            $data = is_array($message[1]) ? $message[1] : [];
         }
-        $data = is_array($message[1]) ? $message[1] : [];
         $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {
