@@ -1,4 +1,5 @@
 <?php
+
 namespace ZPHP\Common;
 
 use ZPHP\Core\Config as ZConfig;
@@ -133,7 +134,7 @@ class Route
         $ctrlName = ZConfig::getField('project', 'ctrl_name', 'a');
         $methodName = ZConfig::getField('project', 'method_name', 'm');
         if (empty($appUrl)) {
-            $appUrl = '/';
+            $appUrl = $_SERVER['HTTP_HOST'];
         } else {
             if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") {
                 $appUrl = 'https://' . $appUrl;
