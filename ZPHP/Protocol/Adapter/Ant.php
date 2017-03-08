@@ -16,7 +16,7 @@ class Ant implements IProtocol
 {
     public function parse($_data)
     {
-        $ctrlName = Config::getField('project', 'default_ctrl_name', 'main\\main');
+        $ctrlName = Config::getField('project', 'default_ctrl_name', 'main');
         $methodName = Config::getField('project', 'default_method_name', 'main');
         if (Request::isHttp()) {
             $data = $_data;

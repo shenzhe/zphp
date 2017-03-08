@@ -54,9 +54,7 @@ class Request
             self::$_method = ZConfig::getField('project', 'default_method_name', self::$_method);
         }
         self::$_params = $params;
-        if ($viewMode) {
-            self::$_view_mode = $viewMode;
-        }
+        self::$_view_mode = $viewMode;
         if (!is_string(self::$_ctrl) || !is_string(self::$_method)) {
             throw new \Exception('ctrl or method no string');
         }
