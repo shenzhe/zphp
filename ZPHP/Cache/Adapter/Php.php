@@ -34,9 +34,10 @@ class Php implements ICache
             throw new \Exception("{$key} exitst");
         }
         $timeOut = $timeOut ? (time() + $timeOut) : 0;
-        return $this->_cache[$key] = array(
+        $this->_cache[$key] = array(
             $value, $timeOut
         );
+        return true;
     }
 
     public function set($key, $value, $timeOut = 0)

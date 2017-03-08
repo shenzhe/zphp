@@ -313,7 +313,7 @@ class Request
     }
 
     /**
-     * @return null
+     * @return \swoole_server
      * @desc 获取swoole_server对像(swoole模式)
      */
     public static function getSocket()

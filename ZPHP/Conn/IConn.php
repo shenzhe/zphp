@@ -36,13 +36,13 @@ interface IConn
     public function delete($fd, $uid, $old);
 
     //获取指定fd的buff信息，用于粘包处理
-    public function getBuff($fd, $prev);
+    public function getBuff($fd, $prev = 'prev');
 
     //存入指定fd粘包处理后多有的包数据
-    public function setBuff($fd, $data, $prev);
+    public function setBuff($fd, $data, $prev = 'prev');
 
     //清除指定fd粘包处理后多有的包数据
-    public function delBuff($fd, $prev);
+    public function delBuff($fd, $prev = 'prev');
 
     //清除库
     public function clear();
