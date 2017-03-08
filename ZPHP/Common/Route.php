@@ -135,12 +135,11 @@ class Route
         $methodName = ZConfig::getField('project', 'method_name', 'm');
         if (empty($appUrl)) {
             $appUrl = $_SERVER['HTTP_HOST'];
+        }
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") {
+            $appUrl = 'https://' . $appUrl;
         } else {
-            if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") {
-                $appUrl = 'https://' . $appUrl;
-            } else {
-                $appUrl = 'http://' . $appUrl;
-            }
+            $appUrl = 'http://' . $appUrl;
         }
         $routes = ZConfig::get('route', false);
         if (!empty($routes)) {
