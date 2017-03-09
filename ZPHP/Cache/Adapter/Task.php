@@ -72,7 +72,7 @@ class Task implements ICache
         return $server->taskwait($this->packData([
             'type' => 'get',
             'key' => $key
-        ]), $this->tid);
+        ]), 0.01, $this->tid);
     }
 
     public function delete($key)
@@ -115,6 +115,6 @@ class Task implements ICache
         $server = Request::getSocket();
         return $server->taskwait($this->packData([
             'type' => 'all'
-        ]), $this->tid);
+        ]), 0.01, $this->tid);
     }
 }

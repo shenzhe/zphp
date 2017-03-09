@@ -45,7 +45,7 @@ class Task implements IConn
         return $server->taskwait($this->packData([
             'type' => 'getUid',
             'fd' => $fd
-        ]), $this->tid);
+        ]), 0.01, $this->tid);
     }
 
     public function add($uid, $fd)
@@ -84,7 +84,7 @@ class Task implements IConn
         return $server->taskwait($this->packData([
             'type' => 'getChannel',
             'channel' => $channel,
-        ]), $this->tid);
+        ]), 0.01, $this->tid);
     }
 
     public function get($uid)
@@ -93,7 +93,7 @@ class Task implements IConn
         return $server->taskwait($this->packData([
             'type' => 'get',
             'uid' => $uid,
-        ]), $this->tid);
+        ]), 0.01, $this->tid);
     }
 
     public function uphb($uid)
@@ -133,7 +133,7 @@ class Task implements IConn
         return $server->taskwait($this->packData([
             'type' => 'getBuff',
             'fd' => $fd,
-        ]), $this->tid);
+        ]), 0.01, $this->tid);
     }
 
     public function setBuff($fd, $data, $prev = 'buff')
