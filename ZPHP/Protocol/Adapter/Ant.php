@@ -10,7 +10,7 @@ namespace ZPHP\Protocol\Adapter;
 use ZPHP\Core\Config;
 use ZPHP\Protocol\IProtocol;
 use ZPHP\Protocol\Request;
-use ZPHP\Common\MessagePacker;
+use ZPHP\Common\Route as ZRoute;
 
 class Ant implements IProtocol
 {
@@ -20,7 +20,19 @@ class Ant implements IProtocol
         $methodName = Config::getField('project', 'default_method_name', 'main');
         if (Request::isHttp()) {
             $data = $_data;
-            Request::addHeaders(Request::getRequest()->header, true);
+//            Request::addHeaders(Request::getRequest()->header, true);
+            $pathInfo = Request::getPathInfo();
+            if (!empty($pathInfo) && '/' !== $pathInfo) {
+                $routeMap = ZRoute::match(Config::get('route', false), $pathInfo);
+                if (is_array($routeMap)) {
+                    $ctrlName = \str_replace('/', '\\', $routeMap[0]);
+                    $methodName = $routeMap[1];
+                    if (!empty($routeMap[2]) && is_array($routeMap[2])) {
+                        //参数优先
+                        $data = $data + $routeMap[2];
+                    }
+                }
+            }
         } else {
             $message = json_decode($_data, true);
             if (is_array($message[0])) {
