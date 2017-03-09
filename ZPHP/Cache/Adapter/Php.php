@@ -108,4 +108,14 @@ class Php implements ICache
     {
         return $this->_cache;
     }
+
+    public function load($workerId)
+    {
+        \ZPHP\Manager\Task::load($workerId, 'cache');
+    }
+
+    public function flush($workerId)
+    {
+        \ZPHP\Manager\Task::flush($workerId, 'cache', $this->_cache);
+    }
 }

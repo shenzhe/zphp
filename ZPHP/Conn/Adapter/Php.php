@@ -190,4 +190,14 @@ class Php implements IConn
 
         return null;
     }
+
+    public function load($workerId)
+    {
+        \ZPHP\Manager\Task::load($workerId, 'conn');
+    }
+
+    public function flush($workerId)
+    {
+        \ZPHP\Manager\Task::flush($workerId, 'conn', $this->_cache);
+    }
 }

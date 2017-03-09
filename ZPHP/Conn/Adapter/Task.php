@@ -163,4 +163,22 @@ class Task implements IConn
             'type' => 'clear',
         ]), $this->tid);
     }
+
+    public function flush()
+    {
+        $server = Request::getSocket();
+        $server->task($this->packData([
+            'type' => 'flush',
+            'workerId' => $this->tid,
+        ]), $this->tid);
+    }
+
+    public function load()
+    {
+        $server = Request::getSocket();
+        $server->task($this->packData([
+            'type' => 'load',
+            'workerId' => $this->tid,
+        ]), $this->tid);
+    }
 }

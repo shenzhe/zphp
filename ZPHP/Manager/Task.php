@@ -11,6 +11,7 @@ namespace ZPHP\Manager;
 
 use ZPHP\Cache\Factory as ZCache;
 use ZPHP\Conn\Factory as ZConn;
+use ZPHP\ZPHP;
 
 class Task
 {
@@ -48,7 +49,7 @@ class Task
     public static function cache($data)
     {
         $input = json_decode($data, true);
-        $phpCache = ZCache::getInstance('Php', ['_prefix' => 'task_']);
+        $phpCache = ZCache::getInstance('Php', ['_prefix' => self::$map['cache']]);
         switch ($input['type']) {
             case 'add':
                 $phpCache->add($input['key'], $input['value'], $input['ttl']);
@@ -74,13 +75,19 @@ class Task
             case 'all':
                 return $phpCache->all();
                 break;
+            case 'load':
+                $phpCache->load($input['workerId']);
+                break;
+            case 'flush':
+                $phpCache->flush($input['workerId']);
+                break;
         }
     }
 
     public static function conn($data)
     {
         $input = json_decode($data, true);
-        $conn = ZConn::getInstance('Php');
+        $conn = ZConn::getInstance('Php', ['_prefix' => self::$map['conn']]);
         switch ($input['type']) {
             case 'get':
                 return $conn->get($input['uid']);
@@ -118,6 +125,35 @@ class Task
             case 'getBuff':
                 return $conn->getBuff($input['fd']);
                 break;
+            case 'load':
+                $conn->load($input['workerId']);
+                break;
+            case 'flush':
+                $conn->flush($input['workerId']);
+                break;
         }
+    }
+
+    public static function flush($workerId, $type, $data)
+    {
+        $dir = ZPHP::getRootPath() . DS . 'tmp';
+        if (!is_dir($dir)) {
+            if (!mkdir($dir)) {
+                return false;
+            }
+        }
+        $filename = $dir . DS . '_tmp_' . $workerId . '_' . $type . '.tmp';
+        file_put_contents($filename, serialize($data));
+    }
+
+    public static function load($workerId, $type)
+    {
+        $filename = ZPHP::getRootPath() . DS . 'tmp' . DS . '_tmp_' . $workerId . '_' . $type . '.tmp';
+        if (is_file($filename)) {
+            $data = unserialize(file_get_contents($filename));
+            unlink($filename);
+            return $data;
+        }
+        return false;
     }
 }
