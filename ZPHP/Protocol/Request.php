@@ -338,7 +338,7 @@ class Request
     public static function getPathInfo()
     {
         if (self::isLongServer() && self::isHttp() && self::$_request) {
-            return isset(self::$_request->header['path_info']) ? self::$_request->header['path_info'] : '';
+            return isset(self::$_request->server['path_info']) ? self::$_request->server['path_info'] : '';
         }
         return isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
     }
