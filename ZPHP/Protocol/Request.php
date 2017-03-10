@@ -544,4 +544,12 @@ class Request
         }
         return $time;
     }
+
+    public static function getHttpMethod()
+    {
+        if (self::isLongServer() && self::isHttp() && self::$_request) {
+            return isset(self::$_request->server['request_method']) ? self::$_request->server['request_method'] : '';
+        }
+        return isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+    }
 }
