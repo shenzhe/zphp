@@ -20,7 +20,7 @@ abstract class Udp
     protected $client;
     protected $api = '';
     protected $method = '';
-    protected $sync = 1;
+    protected $isSync = 0;
 
     private $config = [];
 
@@ -64,6 +64,7 @@ abstract class Udp
         $this->client = self::$clients[$key];
         $this->config = self::$configs[$key];
         $this->isDot = 1;
+        $this->isSync = 0;
         return true;
     }
 
@@ -73,9 +74,9 @@ abstract class Udp
         return $this;
     }
 
-    public function noSync()
+    public function sync()
     {
-        $this->sync = 0;
+        $this->isSync = 1;
         return $this;
     }
 
@@ -108,20 +109,31 @@ abstract class Udp
         $this->startTime = microtime(true);
         $this->method = $method;
         $sendArr = [
-            '_recv' => $this->sync,
+            '_recv' => $this->isSync,
             $this->config['method_name'] => $method,
         ];
         if ($this->api) {
             $sendArr[$this->config['ctrl_name']] = $this->api;
         }
         $sendArr += $data;
-        $result = $this->unpack($this->rawCall($this->pack($sendArr)));
-        return $result;
+        if ($this->isSync) {
+            $this->rawCall($this->pack($sendArr));
+            $result = $this->unpack($this->client->recv());
+            $this->isSync = 0;
+            return $result;
+        }
+        return null;
     }
 
     public function rawCall($sendData)
     {
-        return $this->client->sendto($this->config['host'], $this->config['port'], $sendData);
+        $this->client->sendto($this->config['host'], $this->config['port'], $sendData);
+    }
+
+    public function ping()
+    {
+        $this->rawCall('ant-ping');
+        return $this->client->recv();
     }
 
     public function __call($name, $arguments)

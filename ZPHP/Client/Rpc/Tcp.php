@@ -193,6 +193,11 @@ abstract class Tcp
         throw new \Exception('[code:' . $this->client->errCode . '] send error', -1);
     }
 
+    public function ping()
+    {
+        return $this->rawCall('ant-ping');
+    }
+
     /**
      * @desc 关闭tcp连接
      */

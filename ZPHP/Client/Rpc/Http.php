@@ -132,6 +132,11 @@ abstract class Http
         return HttpClient::getByUrl($this->uri, null, $this->httpMethod, $sendData, $this->timeOut, Request::getHeaders(), 1);
     }
 
+    public function ping()
+    {
+        return HttpClient::getByUrl($this->uri . '/ant-ping');
+    }
+
     public function setHttpMethod($method)
     {
         if ($method) {

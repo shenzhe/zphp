@@ -30,10 +30,11 @@ class Http
      * @param null $data //method==post时, 表示post的数据
      * @param int $timeOut //超时时间,单位:ms
      * @param array $header //请求头信息
+     * @param int $needHeader //是否需要请求头信息
      * @return mixed
      * @throws \Exception
      */
-    public static function getByUrl($url, $callback, $method = 'GET', $data = null, $timeOut = 15000, $header = [], $needHeader = 0)
+    public static function getByUrl($url, $callback = null, $method = 'GET', $data = null, $timeOut = 15000, $header = [], $needHeader = 0)
     {
         self::init();
         curl_setopt(self::$ch, CURLOPT_HEADER, $needHeader);
@@ -83,7 +84,7 @@ class Http
             }
         }
 
-        if (is_callable($callback)) {
+        if ($callback && is_callable($callback)) {
             return $callback($response);
         }
 
