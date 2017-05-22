@@ -5,7 +5,6 @@
  *
  */
 
-
 namespace ZPHP\View\Adapter;
 
 use ZPHP\Protocol\Request;
@@ -27,10 +26,10 @@ class Xml extends Base
     {
         $xml = "";
         foreach ($data as $key => $val) {
-            \is_numeric(\substr($key, 0, 1)) && $key = "item id=\"$key\"";
+            is_numeric(substr($key, 0, 1)) && $key = "item id=\"$key\"";
             $xml .= "<{$key}>";
-            $xml .= (\is_array($val) || \is_object($val)) ? $this->dataToXml($val) : $val;
-            list($key) = \explode(' ', $key);
+            $xml .= (is_array($val) || is_object($val)) ? $this->dataToXml($val) : $val;
+            list($key) = explode(' ', $key);
             $xml .= "</{$key}>\n";
         }
 
@@ -51,7 +50,5 @@ class Xml extends Base
 
         echo $data;
         return null;
-
-
     }
 }

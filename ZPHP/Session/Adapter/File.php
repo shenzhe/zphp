@@ -4,7 +4,6 @@
  * Date: 13-6-17
  */
 
-
 namespace ZPHP\Session\Adapter;
 
 use ZPHP\ZPHP;

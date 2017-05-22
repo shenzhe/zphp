@@ -19,7 +19,7 @@ class Ant extends Base
     {
         //http服务，请求头需处理
         if (Request::isHttp()) {
-            $data = \json_encode($this->model, JSON_UNESCAPED_UNICODE);
+            $data = json_encode($this->model, JSON_UNESCAPED_UNICODE);
             Response::sendHttpHeader();
             $params = Request::getParams();
             $key = Config::getField('project', 'jsonp', 'jsoncallback');
@@ -40,11 +40,11 @@ class Ant extends Base
 
         //长驻服务，数据直接返回
         if (Request::isLongServer()) {
-            return \json_encode([Response::getHeaders(), $this->model], JSON_UNESCAPED_UNICODE);
+            return json_encode([Response::getHeaders(), $this->model], JSON_UNESCAPED_UNICODE);
         }
 
         //正常的php服务，直接echo
-        echo \json_encode($this->model, JSON_UNESCAPED_UNICODE);
+        echo json_encode($this->model, JSON_UNESCAPED_UNICODE);
         return null;
 
     }

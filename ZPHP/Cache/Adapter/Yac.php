@@ -22,7 +22,7 @@ class Yac implements ICache
 
     public function enable()
     {
-        return \extension_loaded('yac');
+        return extension_loaded('yac');
     }
 
     public function selectDb($db)
@@ -60,7 +60,7 @@ class Yac implements ICache
         if (empty($data)) {
             $this->yac->set($key, $step);
         }
-        if (!\is_numeric($data)) {
+        if (!is_numeric($data)) {
             throw new \Exception("value no numeric");
         }
         return $this->yac->set($key, ($data + $step));
@@ -69,7 +69,7 @@ class Yac implements ICache
     public function decrement($key, $step = 1)
     {
         $data = $this->yac->get($key);
-        if (!\is_numeric($data)) {
+        if (!is_numeric($data)) {
             throw new \Exception("value no numeric");
         }
         return $this->yac->set($key, ($data - $step));

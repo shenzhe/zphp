@@ -18,13 +18,13 @@ class Dir
      */
     public static function make($dir, $mode = 0755)
     {
-        if (\is_dir($dir) || \mkdir($dir, $mode, true)) {
+        if (is_dir($dir) || mkdir($dir, $mode, true)) {
             return true;
         }
-        if (!self::make(\dirname($dir), $mode)) {
+        if (!self::make(dirname($dir), $mode)) {
             return false;
         }
-        return \mkdir($dir, $mode);
+        return mkdir($dir, $mode);
     }
 
     /**
@@ -49,7 +49,7 @@ class Dir
                         self::tree($dir . DS . $filename, $filter, $result, $deep);
                     }
                 } else {
-                    if (!empty($filter) && !\preg_match($filter, $filename)) {
+                    if (!empty($filter) && !preg_match($filter, $filename)) {
                         continue;
                     }
                     if ($deep) {
@@ -79,16 +79,16 @@ class Dir
                 continue;
             }
             $filename = $file->getFilename();
-            if (!empty($filter) && !\preg_match($filter, $filename)) {
+            if (!empty($filter) && !preg_match($filter, $filename)) {
                 continue;
             }
             if ($file->isDir()) {
                 self::del($dir . DS . $filename);
             } else {
-                \unlink($dir . DS . $filename);
+                unlink($dir . DS . $filename);
             }
         }
-        return \rmdir($dir);
+        return rmdir($dir);
     }
 
 }

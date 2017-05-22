@@ -67,7 +67,7 @@ abstract class Tcp
 
     public function connect($ip, $port, $timeOut, $config)
     {
-        $client = new \swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
+        $client = new swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
         if (empty($config)) {
             $config = [
                 'open_length_check' => true,
@@ -249,7 +249,7 @@ abstract class Tcp
             }
             $read = array_values(self::$multiClients);
             $write = $error = array();
-            $n = \swoole_client_select($read, $write, $error, $timeOut / 1000);
+            $n = swoole_client_select($read, $write, $error, $timeOut / 1000);
             if ($n > 0) {
                 foreach ($read as $requestId => $c) {
                     $recvData = $c->recv();

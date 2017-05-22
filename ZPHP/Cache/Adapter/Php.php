@@ -86,7 +86,7 @@ class Php implements ICache
     public function decrement($key, $step = 1)
     {
         if (!empty($this->_cache[$key][0])) {
-            if (!\is_numeric($this->_cache[$key][0])) {
+            if (!is_numeric($this->_cache[$key][0])) {
                 throw new \Exception("value no numeric");
             }
             $this->_cache[$key][0] -= $step;

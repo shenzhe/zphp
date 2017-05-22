@@ -47,7 +47,7 @@ class Swoole implements IConn
             'types' => array('ALL' => 1)
         );
 
-        $this->table->set($this->getKey($uid), \json_encode($data));
+        $this->table->set($this->getKey($uid), json_encode($data));
         $this->table->hSet($this->getKey('ALL'), $uid, $fd);
     }
 

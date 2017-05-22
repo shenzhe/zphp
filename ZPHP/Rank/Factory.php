@@ -4,6 +4,7 @@
  * Date: 13-6-17
  *
  */
+
 namespace ZPHP\Rank;
 
 use ZPHP\Core\Factory as CFactory;

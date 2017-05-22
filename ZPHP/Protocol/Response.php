@@ -4,7 +4,6 @@
  * Date: 13-6-17
  */
 
-
 namespace ZPHP\Protocol;
 
 use ZPHP\Core\Config;
@@ -102,7 +101,7 @@ class Response
             return;
         }
 
-        \header("{$key}: {$val}");
+        header("{$key}: {$val}");
     }
 
     /**
@@ -147,7 +146,7 @@ class Response
             return;
         }
 
-        \http_response_code($code);
+        http_response_code($code);
 
     }
 
@@ -167,7 +166,7 @@ class Response
             self::$_response->cookie($key, $value, $expire, $path, $domain, $secure, $httponly);
             return;
         }
-        \setcookie($key, $value, $expire, $path, $domain, $secure, $httponly);
+        setcookie($key, $value, $expire, $path, $domain, $secure, $httponly);
 
     }
 
@@ -186,7 +185,7 @@ class Response
         if (self::$_response) {
             self::$_response->rawcookie($key, $value, $expire, $path, $domain, $secure, $httponly);
         }
-        \setrawcookie($key, $value, $expire, $path, $domain, $secure, $httponly);
+        setrawcookie($key, $value, $expire, $path, $domain, $secure, $httponly);
     }
 
     /**
@@ -206,5 +205,4 @@ class Response
     {
         return self::$_execute_time;
     }
-
 }

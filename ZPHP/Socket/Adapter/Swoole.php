@@ -25,7 +25,7 @@ class Swoole implements IServer
 
     public function __construct(array $config)
     {
-        if (!\extension_loaded('swoole')) {
+        if (!extension_loaded('swoole')) {
             throw new \Exception("no swoole extension. get: https://github.com/swoole/swoole-src");
         }
         $this->config = $config;
@@ -38,28 +38,28 @@ class Swoole implements IServer
         }
         switch ($socketType) {
             case self::TYPE_TCP:
-                $this->serv = new \swoole_server($config['host'], $config['port'], $workMode, SWOOLE_SOCK_TCP | $ssl);
+                $this->serv = new swoole_server($config['host'], $config['port'], $workMode, SWOOLE_SOCK_TCP | $ssl);
                 break;
             case self::TYPE_UDP:
-                $this->serv = new \swoole_server($config['host'], $config['port'], $workMode, SWOOLE_SOCK_UDP | $ssl);
+                $this->serv = new swoole_server($config['host'], $config['port'], $workMode, SWOOLE_SOCK_UDP | $ssl);
                 break;
             case self::TYPE_HTTP:
-                $this->serv = new \swoole_http_server($config['host'], $config['port'], $workMode);
+                $this->serv = new swoole_http_server($config['host'], $config['port'], $workMode);
                 break;
             case self::TYPE_HTTPS:
                 if (!$ssl) {
                     throw new \Exception("https must set ssl_cert_file && ssl_key_file");
                 }
-                $this->serv = new \swoole_http_server($config['host'], $config['port'], $workMode, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
+                $this->serv = new swoole_http_server($config['host'], $config['port'], $workMode, SWOOLE_SOCK_TCP | SWOOLE_SSL);
                 break;
             case self::TYPE_WEBSOCKET:
-                $this->serv = new \swoole_websocket_server($config['host'], $config['port'], $workMode);
+                $this->serv = new swoole_websocket_server($config['host'], $config['port'], $workMode);
                 break;
             case self::TYPE_WEBSOCKETS:
                 if (!$ssl) {
                     throw new \Exception("https must set ssl_cert_file && ssl_key_file");
                 }
-                $this->serv = new \swoole_websocket_server($config['host'], $config['port'], $workMode, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
+                $this->serv = new swoole_websocket_server($config['host'], $config['port'], $workMode, SWOOLE_SOCK_TCP | SWOOLE_SSL);
                 break;
         }
 

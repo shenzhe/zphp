@@ -13,7 +13,6 @@ use ZPHP\Log\Base;
 use ZPHP\Core\Config as ZConfig;
 use ZPHP\Common\WebSocketClient;
 
-
 class WebSocket extends Base
 {
 
@@ -41,7 +40,7 @@ class WebSocket extends Base
     {
         $logLevel = ZConfig::getField('project', 'log_level', Level::ALL);
         if (Level::$levels[$level] & $logLevel) {
-            $str = $level . self::SEPARATOR . $message . self::SEPARATOR . \implode(self::SEPARATOR, array_map('\ZPHP\Common\Log::myJson', $context));
+            $str = $level . self::SEPARATOR . $message . self::SEPARATOR . implode(self::SEPARATOR, array_map('\ZPHP\Common\Log::myJson', $context));
             if (!$this->_client) {
                 $this->_client = new WebSocketClient($this->_config['host'], $this->_config['port']);
                 $this->_client->connect();

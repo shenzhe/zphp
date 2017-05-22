@@ -1,12 +1,10 @@
 <?php
 
-
 namespace ZPHP\Socket\Callback;
 
 use ZPHP\Socket\ICallback;
 use ZPHP\Core\Config as ZConfig;
 use ZPHP\Protocol;
-
 
 abstract class Swoole implements ICallback
 {

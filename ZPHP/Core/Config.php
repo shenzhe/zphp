@@ -140,7 +140,7 @@ class Config
                     if (!is_dir($path)) {
                         continue;
                     }
-                    \clearstatcache($path);
+                    clearstatcache($path);
                     if (self::$lastModifyTime[$path] < \filectime($path)) {
                         self::mergePath($path);
                     }

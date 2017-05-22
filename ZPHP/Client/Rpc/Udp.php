@@ -43,7 +43,7 @@ abstract class Udp
         }
         $key = $host . ':' . $port . ':' . $timeOut;
         if (!isset(self::$clients[$key])) {
-            $client = new \swoole_client(SWOOLE_SOCK_UDP, SWOOLE_SOCK_SYNC);
+            $client = new swoole_client(SWOOLE_SOCK_UDP, SWOOLE_SOCK_SYNC);
             $this->api = Config::getField('project', 'default_ctrl_name');
             if (empty($config)) {
                 $config = [

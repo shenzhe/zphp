@@ -3,6 +3,7 @@
  * User: shenzhe
  * Date: 13-6-17
  */
+
 namespace ZPHP\Session;
 
 use ZPHP\Core\Factory as CFactory;

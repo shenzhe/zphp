@@ -1,8 +1,6 @@
 <?php
 
-
 namespace ZPHP\Socket\Callback;
-
 
 abstract class SwooleWebSocket extends SwooleHttp
 {

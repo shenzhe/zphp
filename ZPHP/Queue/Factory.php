@@ -4,6 +4,7 @@
  * Date: 13-6-17
  * 对列接口
  */
+
 namespace ZPHP\Queue;
 
 use ZPHP\Core\Factory as CFactory;

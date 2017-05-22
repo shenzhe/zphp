@@ -5,7 +5,6 @@
  *
  */
 
-
 namespace ZPHP\View\Adapter;
 
 use ZPHP\Protocol\Request;
@@ -17,7 +16,7 @@ class Zrpack extends Base
 {
     public function display()
     {
-        $jsonData = \json_encode($this->model);
+        $jsonData = json_encode($this->model);
         $data = gzencode($jsonData);
         $pack = new MessagePacker();
         $len = strlen($data);
@@ -37,5 +36,4 @@ class Zrpack extends Base
         echo $pack->getData();
         return null;
     }
-
 }

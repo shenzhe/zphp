@@ -12,14 +12,14 @@ namespace ZPHP\Client\Sync;
 class Http
 {
     /**
-     * @var curl_init
+     * @var resource $ch
      */
     public static $ch;
 
     public static function init()
     {
         if (empty(self::$ch)) {
-            self::$ch = \curl_init();
+            self::$ch = curl_init();
         }
     }
 

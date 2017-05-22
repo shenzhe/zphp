@@ -49,7 +49,7 @@ class Yac implements IConn
             'types' => array('ALL' => 1)
         );
 
-        $this->yac->set($this->getKey($uid), \json_encode($data));
+        $this->yac->set($this->getKey($uid), json_encode($data));
         $this->upChannel($uid, $fd);
     }
 

@@ -3,8 +3,8 @@
  * User: shenzhe
  * Date: 13-6-17
  */
-namespace ZPHP\Queue\Adapter;
 
+namespace ZPHP\Queue\Adapter;
 
 use ZPHP\Queue\IQueue;
 

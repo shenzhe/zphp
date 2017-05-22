@@ -12,7 +12,6 @@ use ZPHP\Core\Config as ZConfig;
 use ZPHP\Protocol\Request;
 use ZPHP\Protocol\Response;
 
-
 class Swoole
 {
 

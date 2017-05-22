@@ -5,13 +5,11 @@
  * 所需要库地址： https://github.com/reactphp/react
  */
 
-
 namespace ZPHP\Socket\Adapter;
 
 use ZPHP\Socket\IServer;
-
-use React\EventLoop\Factory as eventLoop,
-    React\Socket\Server as server;
+use React\EventLoop\Factory as eventLoop;
+use React\Socket\Server as server;
 
 class React implements IServer
 {

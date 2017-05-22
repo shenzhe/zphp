@@ -61,7 +61,7 @@ class Http
         $method = strtoupper($method);
         $urlInfo['method'] = $method;
         $urlInfo['data'] = $data;
-        \swoole_async_dns_lookup($urlInfo['host'], function ($host, $ip) use ($urlInfo, $callback, $timeOut, $header) {
+        swoole_async_dns_lookup($urlInfo['host'], function ($host, $ip) use ($urlInfo, $callback, $timeOut, $header) {
             if ('GET' == $urlInfo['method']) {
                 self::getByIp($ip, $urlInfo['port'], $urlInfo['ssl'], $urlInfo['path'], $callback, $timeOut, $header, $host);
             } else if ('POST' == $urlInfo['method']) {
@@ -85,21 +85,21 @@ class Http
     public static function getByIp($ip, $port, $ssl, $path, $callback, $timeOut = 15000, $header = [], $host = null)
     {
         self::check();
-        $cli = new \swoole_http_client($ip, $port, $ssl);
+        $cli = new swoole_http_client($ip, $port, $ssl);
         $cli->setHeaders($header + [
                 'Host' => $host ? $host : $ip,
                 "User-Agent" => 'ZPHP-ASYNCHTTPCLIENT-' . \ZPHP\ZPHP::VERSION,
                 'Accept' => '*/*',
                 'Accept-Encoding' => 'gzip',
             ]);
-        $timeId = \swoole_timer_after($timeOut, function () use ($cli, $callback) {
+        $timeId = swoole_timer_after($timeOut, function () use ($cli, $callback) {
             $cli->close();
             if (is_callable($callback)) {
                 $callback(null, 1);
             }
         });
         $cli->get($path, function ($cli) use ($timeId, $callback) {
-            \swoole_timer_clear($timeId);
+            swoole_timer_clear($timeId);
             $cli->close();
             if (is_callable($callback)) {
                 $callback($cli);
@@ -121,14 +121,14 @@ class Http
     public static function postByIp($ip, $port, $ssl, $path, $data, $callback, $timeOut = 15000, $header = [], $host = null)
     {
         self::check();
-        $cli = new \swoole_http_client($ip, $port, $ssl);
+        $cli = new swoole_http_client($ip, $port, $ssl);
         $cli->setHeaders($header + [
                 'Host' => $host ? $host : $ip,
                 "User-Agent" => 'ZPHP-ASYNCHTTPCLIENT-' . \ZPHP\ZPHP::VERSION,
                 'Accept' => '*/*',
                 'Accept-Encoding' => 'gzip',
             ]);
-        $timeId = \swoole_timer_after($timeOut, function () use ($cli, $callback) {
+        $timeId = swoole_timer_after($timeOut, function () use ($cli, $callback) {
             $cli->close();
             if (is_callable($callback)) {
                 $callback($cli, 1);
@@ -136,7 +136,7 @@ class Http
         });
         $cli->post($path, $data, function ($cli) use ($timeId, $callback) {
 
-            \swoole_timer_clear($timeId);
+            swoole_timer_clear($timeId);
             $cli->close();
             if (is_callable($callback)) {
                 $callback($cli);

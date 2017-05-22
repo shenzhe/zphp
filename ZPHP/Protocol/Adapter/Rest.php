@@ -4,7 +4,6 @@
  * Date: 13-6-17
  */
 
-
 namespace ZPHP\Protocol\Adapter;
 
 use ZPHP\Core\Config;
@@ -24,14 +23,14 @@ class Rest implements IProtocol
         $ctrlName = Config::getField('project', 'default_ctrl_name', 'main\\main');
         $apn = Config::getField('project', 'ctrl_name', 'a');
         if (isset($data[$apn])) {
-            $ctrlName = \str_replace('/', '\\', $data[$apn]);
+            $ctrlName = str_replace('/', '\\', $data[$apn]);
         }
 
         $pathInfo = Request::getPathInfo();
         if (!empty($pathInfo) && '/' !== $pathInfo) {
             $routeMap = ZRoute::match(Config::get('route', false), $pathInfo);
             if (is_array($routeMap)) {
-                $ctrlName = \str_replace('/', '\\', $routeMap[0]);
+                $ctrlName = str_replace('/', '\\', $routeMap[0]);
                 if (!empty($routeMap[2]) && is_array($routeMap[2])) {
                     //参数优先
                     $data = $data + $routeMap[2];
