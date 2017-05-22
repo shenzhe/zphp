@@ -5,7 +5,6 @@
  *
  */
 
-
 namespace ZPHP\View\Adapter;
 
 use ZPHP\Protocol\Request;
@@ -30,9 +29,5 @@ class Zpack extends Base
         }
         echo $pack->getData();
         return null;
-
-
     }
-
-
 }

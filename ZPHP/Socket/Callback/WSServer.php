@@ -11,7 +11,6 @@ use ZPHP\Core\Config as ZConfig;
 use \HttpParser;
 use ZPHP\Conn\Factory as ZConn;
 
-
 abstract class WSServer implements ICallback
 {
     const OPCODE_CONTINUATION_FRAME = 0x0;
@@ -55,7 +54,7 @@ abstract class WSServer implements ICallback
     {
         $this->log('server start, swoole version: ' . SWOOLE_VERSION);
 
-        \swoole_set_process_name(ZConfig::get('project_name', 'websocket') . ":master,tcp://" . ZConfig::getField('socket', 'host') . ":" . ZConfig::getField('socket', 'port'));
+        swoole_set_process_name(ZConfig::get('project_name', 'websocket') . ":master,tcp://" . ZConfig::getField('socket', 'host') . ":" . ZConfig::getField('socket', 'port'));
     }
 
     public function onConnect()
@@ -96,7 +95,7 @@ abstract class WSServer implements ICallback
     }
 
     /**
-     *
+     * @inheritdoc
      */
     public function onReceive()
     {
@@ -495,7 +494,7 @@ abstract class WSServer implements ICallback
 
     public function onManagerStart()
     {
-        \swoole_set_process_name(ZConfig::get('project_name', 'websocket') . ":manager");
+        swoole_set_process_name(ZConfig::get('project_name', 'websocket') . ":manager");
     }
 
 
@@ -521,4 +520,3 @@ abstract class WSServer implements ICallback
         echo $msg . "\n";
     }
 }
-

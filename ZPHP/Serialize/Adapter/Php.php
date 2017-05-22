@@ -10,11 +10,11 @@ class Php
 {
     public function serialize($data)
     {
-        return \serialize($data);
+        return serialize($data);
     }
 
     public function unserialize($data)
     {
-        return \unserialize($data);
+        return unserialize($data);
     }
 }

@@ -4,11 +4,11 @@
  * Date: 13-6-17
  *
  */
+
 namespace ZPHP\View;
 
 abstract class Base implements IView
 {
-
     protected $model;
 
     public function setModel($model)
@@ -26,11 +26,10 @@ abstract class Base implements IView
 
     public function render()
     {
-        \ob_start();
+        ob_start();
         $this->display();
-        $content = \ob_get_contents();
-        \ob_end_clean();
+        $content = ob_get_contents();
+        ob_end_clean();
         return $content;
     }
-
 }

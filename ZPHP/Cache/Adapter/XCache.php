@@ -13,7 +13,7 @@ class XCache implements ICache
 {
     public function enable()
     {
-        return \function_exists('xcache_set');
+        return function_exists('xcache_set');
     }
 
     public function selectDb($db)
@@ -23,39 +23,39 @@ class XCache implements ICache
 
     public function add($key, $value, $timeOut = 0)
     {
-        if (\xcache_isset($key)) {
+        if (xcache_isset($key)) {
             return false;
         }
-        return \xcache_set($key, $value, $timeOut);
+        return xcache_set($key, $value, $timeOut);
     }
 
     public function set($key, $value, $timeOut = 0)
     {
-        return \xcache_set($key, $value, $timeOut);
+        return xcache_set($key, $value, $timeOut);
     }
 
     public function get($key)
     {
-        return \xcache_get($key);
+        return xcache_get($key);
     }
 
     public function delete($key)
     {
-        return \xcache_unset($key);
+        return xcache_unset($key);
     }
 
     public function increment($key, $step = 1)
     {
-        return \xcache_inc($key, $step);
+        return xcache_inc($key, $step);
     }
 
     public function decrement($key, $step = 1)
     {
-        return \xcache_dec($key, $step);
+        return xcache_dec($key, $step);
     }
 
     public function clear()
     {
-        return \xcache_unset_by_prefix('');
+        return xcache_unset_by_prefix('');
     }
 }

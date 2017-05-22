@@ -12,7 +12,6 @@ use ZPHP\Log\Level;
 use ZPHP\Log\Base;
 use ZPHP\Core\Config as ZConfig;
 
-
 class File extends Base
 {
 
@@ -39,13 +38,13 @@ class File extends Base
     {
         $logLevel = ZConfig::getField('project', 'log_level', Level::ALL);
         if (Level::$levels[$level] & $logLevel) {
-            $str = $level . self::SEPARATOR . $message . self::SEPARATOR . \implode(self::SEPARATOR, array_map('\ZPHP\Common\Log::myJson', $context));
+            $str = $level . self::SEPARATOR . $message . self::SEPARATOR . implode(self::SEPARATOR, array_map('\ZPHP\Common\Log::myJson', $context));
             if ($this->_config['type_file']) {
                 $logFile = $this->_config['dir'] . \DS . $level . '.' . $this->_config['suffix'];
             } else {
                 $logFile = $this->_config['dir'] . \DS . ZConfig::getField('project', 'project_name', 'log') . '.' . $this->_config['suffix'];
             }
-            \file_put_contents($logFile, $str . "\n", FILE_APPEND | LOCK_EX);
+            file_put_contents($logFile, $str . "\n", FILE_APPEND | LOCK_EX);
         }
         return false;
     }

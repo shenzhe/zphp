@@ -4,7 +4,6 @@
  * Date: 13-6-17
  */
 
-
 namespace ZPHP\Protocol\Adapter;
 
 use ZPHP\Core\Config;
@@ -32,12 +31,12 @@ class Zpack implements IProtocol
         }
         $packData = new MessagePacker($_data);
         $packLen = $packData->readInt();
-        $dataLen = \strlen($_data);
+        $dataLen = strlen($_data);
         if ($packLen > $dataLen) {
             $this->_buffer[$fd] = $_data;
             return false;
         } elseif ($packLen < $dataLen) {
-            $this->_buffer[$fd] = \substr($_data, $packLen, $dataLen - $packLen);
+            $this->_buffer[$fd] = substr($_data, $packLen, $dataLen - $packLen);
         } else {
             if (!empty($this->_buffer[$fd])) {
                 unset($this->_buffer[$fd]);
@@ -45,7 +44,7 @@ class Zpack implements IProtocol
         }
         $packData->resetOffset();
         $params = $packData->readString();
-        $data = \json_decode($params, true);
+        $data = json_decode($params, true);
         $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($params[$apn])) {

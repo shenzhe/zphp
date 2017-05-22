@@ -4,7 +4,6 @@
  * Date: 13-6-17
  */
 
-
 namespace ZPHP\Protocol\Adapter;
 
 use ZPHP\Core\Config;
@@ -42,7 +41,7 @@ class Zrpack implements IProtocol
         }
         $packData = new MessagePacker($_data);
         $packLen = $packData->readInt();
-        $dataLen = \strlen($_data);
+        $dataLen = strlen($_data);
         if ($packLen > $dataLen) {
             $this->_cache->set($fd, $_data);
             return false;
@@ -55,7 +54,7 @@ class Zrpack implements IProtocol
         $pathinfo = Config::getField('cmdlist', $data['_cmd']);
         $data['_rid'] = $packData->readInt();
         $params = $packData->readString();
-        $unpackData = \json_decode(gzdecode($params), true);
+        $unpackData = json_decode(gzdecode($params), true);
         if (!empty($unpackData) && \is_array($unpackData)) {
             $data += $unpackData;
         }

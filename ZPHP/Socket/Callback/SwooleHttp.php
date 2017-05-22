@@ -1,10 +1,8 @@
 <?php
 
-
 namespace ZPHP\Socket\Callback;
 
 use ZPHP\Protocol;
-
 
 abstract class SwooleHttp extends Swoole
 {

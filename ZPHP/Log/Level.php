@@ -8,7 +8,6 @@
 
 namespace ZPHP\Log;
 
-
 class Level
 {
     const EMERGENCY = 'emergency';

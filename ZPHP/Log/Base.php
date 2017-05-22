@@ -8,7 +8,6 @@
 
 namespace ZPHP\Log;
 
-
 abstract class Base
 {
 

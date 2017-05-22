@@ -4,7 +4,6 @@
  * Date: 13-6-17
  */
 
-
 namespace ZPHP\Protocol\Adapter;
 
 use ZPHP\Core\Config;
@@ -24,11 +23,11 @@ class Cli implements IProtocol
     {
         $ctrlName = Config::getField('project', 'default_ctrl_name', 'main\\main');
         $methodName = Config::getField('project', 'default_method_name', 'main');
-        \parse_str(array_pop($_data), $data);
+        parse_str(array_pop($_data), $data);
         $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {
-            $ctrlName = \str_replace('/', '\\', $data[$apn]);
+            $ctrlName = str_replace('/', '\\', $data[$apn]);
         }
         if (isset($data[$mpn])) {
             $methodName = $data[$mpn];

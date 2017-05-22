@@ -121,7 +121,7 @@ class ZPHP
         if (isset(self::$classPath[$class])) {
             return;
         }
-        $baseClasspath = \str_replace('\\', DS, $class) . '.php';
+        $baseClasspath = str_replace('\\', DS, $class) . '.php';
         $libs = array(
             self::$rootPath . DS . self::$appPath,
             self::$zPath
@@ -156,7 +156,7 @@ class ZPHP
      */
     final public static function fatalHandler()
     {
-        $error = \error_get_last();
+        $error = error_get_last();
         if (empty($error)) {
             return "";
         }
@@ -192,7 +192,7 @@ class ZPHP
         if (!empty($configPath)) {
             self::setConfigPath($configPath);
         }
-        \spl_autoload_register(__CLASS__ . '::autoLoader');
+        spl_autoload_register(__CLASS__ . '::autoLoader');
         Request::setRequestTime();
         Config::load(self::getConfigPath());
         $serverMode = Config::get('server_mode', 'Http');
@@ -223,13 +223,13 @@ class ZPHP
         $appPath = Config::get('app_path', self::$appPath);
         self::setAppPath($appPath);
         $eh = Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler');
-        \set_exception_handler($eh);
-        \register_shutdown_function(Config::getField('project', 'fatal_handler', __CLASS__ . '::fatalHandler'));
+        set_exception_handler($eh);
+        register_shutdown_function(Config::getField('project', 'fatal_handler', __CLASS__ . '::fatalHandler'));
         if (Config::getField('project', 'error_handler')) {
-            \set_error_handler(Config::getField('project', 'error_handler'));
+            set_error_handler(Config::getField('project', 'error_handler'));
         }
         $timeZone = Config::get('time_zone', 'Asia/Shanghai');
-        \date_default_timezone_set($timeZone);
+        date_default_timezone_set($timeZone);
 
         $service = Server\Factory::getInstance($serverMode);
         if ($run) {

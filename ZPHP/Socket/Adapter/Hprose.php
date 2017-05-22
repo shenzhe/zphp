@@ -17,7 +17,7 @@ class Hprose implements IServer
 
     public function __construct(array $config)
     {
-        if (!\extension_loaded('swoole')) {
+        if (!extension_loaded('swoole')) {
             throw new \Exception("no swoole extension. get: https://github.com/swoole/swoole-src");
         }
         $this->config = $config;

@@ -5,7 +5,6 @@
  * Json view
  */
 
-
 namespace ZPHP\View\Adapter;
 
 use ZPHP\Protocol\Request;
@@ -17,7 +16,7 @@ class Json extends Base
 {
     public function display()
     {
-        $data = \json_encode($this->model, JSON_UNESCAPED_UNICODE);
+        $data = json_encode($this->model, JSON_UNESCAPED_UNICODE);
         if (Request::isHttp()) {
             Response::sendHttpHeader();
             $params = Request::getParams();
@@ -33,9 +32,7 @@ class Json extends Base
             return $data;
         }
         echo $data;
+
         return null;
-
     }
-
-
 }

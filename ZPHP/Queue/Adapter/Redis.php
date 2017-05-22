@@ -3,6 +3,7 @@
  * User: shenzhe
  * Date: 13-6-17
  */
+
 namespace ZPHP\Queue\Adapter;
 
 use ZPHP\Manager;
@@ -39,5 +40,4 @@ class Redis implements IQueue
     {
         return $this->redis->lAll($key);
     }
-
 }

@@ -20,7 +20,7 @@ class Amf extends Base
             Response::sendHttpHeader();
             Response::header('Content-Type', 'application/amf; charset=utf-8');
         }
-        $data = \amf3_encode($this->model);
+        $data = amf3_encode($this->model);
         if (Request::isLongServer()) {
             return $data;
         }

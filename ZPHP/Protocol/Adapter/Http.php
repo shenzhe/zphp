@@ -4,7 +4,6 @@
  * Date: 13-6-17
  */
 
-
 namespace ZPHP\Protocol\Adapter;
 
 use ZPHP\Core\Config;
@@ -16,7 +15,8 @@ class Http implements IProtocol
 {
     /**
      * 直接 parse $_REQUEST
-     * @param $_data
+     *
+     * @param array $data
      * @return bool
      */
     public function parse($data)
@@ -26,7 +26,7 @@ class Http implements IProtocol
         $apn = Config::getField('project', 'ctrl_name', 'a');
         $mpn = Config::getField('project', 'method_name', 'm');
         if (isset($data[$apn])) {
-            $ctrlName = \str_replace('/', '\\', $data[$apn]);
+            $ctrlName = str_replace('/', '\\', $data[$apn]);
         }
         if (isset($data[$mpn])) {
             $methodName = $data[$mpn];

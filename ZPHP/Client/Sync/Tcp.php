@@ -36,7 +36,7 @@ class Tcp
      */
     public function __construct($ip, $port)
     {
-        $client = new \swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
+        $client = new swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
         $client->connect($ip, $port);
         $config = [
             'open_length_check' => true,

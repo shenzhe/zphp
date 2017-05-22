@@ -1,6 +1,5 @@
 <?php
 
-
 namespace ZPHP\Socket\Callback;
 
 abstract class Hprose extends Swoole

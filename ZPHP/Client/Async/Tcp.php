@@ -36,7 +36,7 @@ class Tcp
             throw new \Exception('must long server', -1);
         }
 
-        $client = new \swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
+        $client = new swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
         $client->connect($ip, $port);
         return $client;
     }

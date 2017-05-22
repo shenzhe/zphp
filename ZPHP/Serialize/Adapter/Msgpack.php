@@ -10,11 +10,11 @@ class Msgpack
 {
     public function serialize($data)
     {
-        return \msgpack_pack($data);
+        return msgpack_pack($data);
     }
 
     public function unserialize($data)
     {
-        return \msgpack_unpack($data);
+        return msgpack_unpack($data);
     }
 }

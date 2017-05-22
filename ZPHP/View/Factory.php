@@ -4,6 +4,7 @@
  * Date: 13-6-17
  *
  */
+
 namespace ZPHP\View;
 
 use ZPHP\Core\Factory as CFactory;
