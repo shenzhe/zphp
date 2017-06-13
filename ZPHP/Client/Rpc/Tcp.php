@@ -227,6 +227,7 @@ abstract class Tcp
             $this->sendParams[$this->config['ctrl_name']] = $this->api;
         }
         $this->sendParams += $params;
+        $sendData = $this->pack($this->sendParams);
         $sendLen = $this->client->send(pack($this->config['package_length_type'], strlen($sendData)) . $sendData);
         if ($sendLen) {
             self::$multiClients[$requestId] = $this->client;
