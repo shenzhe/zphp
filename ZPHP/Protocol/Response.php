@@ -85,7 +85,10 @@ class Response
         $view->setModel($model);
         self::$_response_time = microtime(true);
         $key = Config::getField('project', 'response_time_key', self::RESPONSE_TIME_KEY);
-        self::$_execute_time = self::$_response_time - Request::getRequestTime(true);
+        $startTime = Request::getRequestTime(true);
+        self::$_execute_time = self::$_response_time - $startTime;
+        self::addHeader($key . '-Start', $startTime);
+        self::addHeader($key . '-End', self::$_response_time);
         self::addHeader($key, self::$_execute_time);
         return $view->display();
     }
