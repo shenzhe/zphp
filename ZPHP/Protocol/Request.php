@@ -26,7 +26,7 @@ class Request
     private static $_request = null;
     private static $_socket = null;
     private static $_headers = array();
-    private static $_request_time = null;
+    private static $_request_time = 0;
 
     /**
      * @var IProtocol
@@ -479,6 +479,7 @@ class Request
         $requestIdKey = ZConfig::getField('project', 'request_id_key', self::REQUEST_ID_KEY);
         self::addHeader($requestIdKey, $requestId);
         Response::addHeader($requestIdKey, $requestId);
+        self::setRequestTime();
         return $requestId;
     }
 
@@ -540,7 +541,7 @@ class Request
     {
         $time = self::$_request_time;
         if ($clear) {
-            self::$_request_time = null;
+            self::$_request_time = 0;
         }
         return $time;
     }
