@@ -21,6 +21,8 @@ abstract class Udp
     protected $api = '';
     protected $method = '';
     protected $isSync = 0;
+    protected $key = '';
+    protected $timeOut = 0;
 
     private $config = [];
 
@@ -65,6 +67,8 @@ abstract class Udp
         $this->config = self::$configs[$key];
         $this->isDot = 1;
         $this->isSync = 0;
+        $this->key = $key;
+        $this->timeOut = $timeOut;
         return true;
     }
 
