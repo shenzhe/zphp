@@ -23,6 +23,11 @@ class Task implements ICache
     public $tid = 0;
     const _PRE = '_TASK_CACHE_';
 
+    public function __construct($config = null)
+    {
+
+    }
+
     public function enable()
     {
         if (!Request::isLongServer()) { //不是常驻服务

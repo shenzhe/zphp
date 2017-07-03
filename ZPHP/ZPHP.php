@@ -12,6 +12,7 @@ use ZPHP\Protocol\Response;
 use ZPHP\Core\Config;
 use ZPHP\Common\Debug;
 use ZPHP\Common\Formater;
+use ZPHP\Common\Log;
 
 class ZPHP
 {
@@ -148,6 +149,7 @@ class ZPHP
      */
     final public static function exceptionHandler($exception)
     {
+        Log::info('exception', $exception);
         return Response::display(Formater::exception($exception));
     }
 
@@ -164,6 +166,7 @@ class ZPHP
             return "";
         }
         Response::status('200');
+        Log::info('fatal', $error);
         return Response::display(Formater::fatal($error));
     }
 
@@ -212,6 +215,7 @@ class ZPHP
             }
         } else {
             self::$libPath = Config::get('lib_path', self::$zPath . DS . 'lib');
+
         }
         if ($run && Config::getField('project', 'debug_mode', 0)) {
             Debug::start();
@@ -222,11 +226,16 @@ class ZPHP
         }
         $appPath = Config::get('app_path', self::$appPath);
         self::setAppPath($appPath);
-        $eh = Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler');
-        \set_exception_handler($eh);
-        \register_shutdown_function(Config::getField('project', 'fatal_handler', __CLASS__ . '::fatalHandler'));
-        if (Config::getField('project', 'error_handler')) {
-            \set_error_handler(Config::getField('project', 'error_handler'));
+        if ('Ant' == $serverMode) { //ant模式的约定
+            \set_exception_handler(Config::getField('project', 'exception_handler', 'exceptionHandler\BaseException::exceptionHandler'));
+            \register_shutdown_function(Config::getField('project', 'fatal_handler', 'exceptionHandler\BaseException::fatalHandler'));
+            \set_error_handler(Config::getField('project', 'error_handler'), 'exceptionHandler\BaseException::errorHandler');
+        } else {
+            \set_exception_handler(Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler'));
+            \register_shutdown_function(Config::getField('project', 'fatal_handler', __CLASS__ . '::fatalHandler'));
+            if (Config::getField('project', 'error_handler')) {
+                \set_error_handler(Config::getField('project', 'error_handler'));
+            }
         }
         $timeZone = Config::get('time_zone', 'Asia/Shanghai');
         \date_default_timezone_set($timeZone);
