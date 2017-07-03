@@ -229,7 +229,7 @@ class ZPHP
         if ('Ant' == $serverMode) { //ant模式的约定
             \set_exception_handler(Config::getField('project', 'exception_handler', 'exceptionHandler\BaseException::exceptionHandler'));
             \register_shutdown_function(Config::getField('project', 'fatal_handler', 'exceptionHandler\BaseException::fatalHandler'));
-            \set_error_handler(Config::getField('project', 'error_handler'), 'exceptionHandler\BaseException::errorHandler');
+            \set_error_handler(Config::getField('project', 'error_handler', 'exceptionHandler\BaseException::errorHandler'));
         } else {
             \set_exception_handler(Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler'));
             \register_shutdown_function(Config::getField('project', 'fatal_handler', __CLASS__ . '::fatalHandler'));
