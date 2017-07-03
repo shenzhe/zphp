@@ -33,10 +33,17 @@ class Ant implements IProtocol
                     }
                 }
             }
+            $header = Request::getRequest()->header;
+            if (!is_array($header)) {
+                $header = [];
+            }
+            Request::addHeaders($header, true);
         } else {
             $message = json_decode($_data, true);
             if (is_array($message[0])) {
                 Request::addHeaders($message[0], true);
+            } else {
+                Request::addHeaders([], true);
             }
             $data = is_array($message[1]) ? $message[1] : [];
         }
