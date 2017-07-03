@@ -41,7 +41,7 @@ abstract class Swoole implements ICallback
             $callback = ZConfig::getField('soa', 'register_callback');
         }
         if (!empty($callback)) {
-            call_user_func($callback, $server);
+            echo call_user_func($callback, $server);
         }
     }
 
@@ -68,7 +68,7 @@ abstract class Swoole implements ICallback
             $callback = ZConfig::getField('soa', 'drop_callback');
         }
         if (!empty($callback)) {
-            call_user_func($callback, $server);
+            echo call_user_func($callback, $server);
         }
     }
 

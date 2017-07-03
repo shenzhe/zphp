@@ -226,16 +226,10 @@ class ZPHP
         }
         $appPath = Config::get('app_path', self::$appPath);
         self::setAppPath($appPath);
-        if ('Ant' == $serverMode) { //ant模式的约定
-            \set_exception_handler(Config::getField('project', 'exception_handler', 'exceptionHandler\BaseException::exceptionHandler'));
-            \register_shutdown_function(Config::getField('project', 'fatal_handler', 'exceptionHandler\BaseException::fatalHandler'));
-            \set_error_handler(Config::getField('project', 'error_handler', 'exceptionHandler\BaseException::errorHandler'));
-        } else {
-            \set_exception_handler(Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler'));
-            \register_shutdown_function(Config::getField('project', 'fatal_handler', __CLASS__ . '::fatalHandler'));
-            if (Config::getField('project', 'error_handler')) {
-                \set_error_handler(Config::getField('project', 'error_handler'));
-            }
+        \set_exception_handler(Config::getField('project', 'exception_handler', __CLASS__ . '::exceptionHandler'));
+        \register_shutdown_function(Config::getField('project', 'fatal_handler', __CLASS__ . '::fatalHandler'));
+        if (Config::getField('project', 'error_handler')) {
+            \set_error_handler(Config::getField('project', 'error_handler'));
         }
         $timeZone = Config::get('time_zone', 'Asia/Shanghai');
         \date_default_timezone_set($timeZone);
