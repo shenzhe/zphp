@@ -39,7 +39,11 @@ class Ant implements IProtocol
             }
             Request::addHeaders($header, true);
         } else {
-            $message = json_decode($_data, true);
+            if (class_exists('swoole_serialize')) {
+                $message = \swoole_serialize::unpack($_data);
+            } else {
+                $message = json_decode($_data, true);
+            }
             if (is_array($message[0])) {
                 Request::addHeaders($message[0], true);
             } else {
