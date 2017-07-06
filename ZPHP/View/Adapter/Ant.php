@@ -40,6 +40,9 @@ class Ant extends Base
 
         //长驻服务，数据直接返回
         if (Request::isLongServer()) {
+            if (class_exists('swoole_serialize')) {
+                return \swoole_serialize::pack([Response::getHeaders(), $this->model]);
+            }
             return \json_encode([Response::getHeaders(), $this->model], JSON_UNESCAPED_UNICODE);
         }
 
