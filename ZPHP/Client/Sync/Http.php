@@ -20,6 +20,8 @@ class Http
     {
         if (empty(self::$ch)) {
             self::$ch = \curl_init();
+        } else {
+            \curl_reset(self::$ch);
         }
     }
 
