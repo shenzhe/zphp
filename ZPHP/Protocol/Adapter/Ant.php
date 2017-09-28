@@ -60,7 +60,7 @@ class Ant implements IProtocol
             $methodName = $data[$mpn];
         }
 
-        Request::init($ctrlName, $methodName, $data, Config::getField('project', 'view_mode', 'Json'));
+        Request::init($ctrlName, $methodName, $data, Config::getField('project', 'view_mode', 'Ant'));
         return true;
     }
 }
