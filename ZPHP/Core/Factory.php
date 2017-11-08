@@ -9,6 +9,12 @@ class Factory
 {
     private static $instances = array();
 
+    /**
+     * @param $className
+     * @param null $params
+     * @return mixed
+     * @throws \Exception
+     */
     public static function getInstance($className, $params = null)
     {
         $keyName = $className;

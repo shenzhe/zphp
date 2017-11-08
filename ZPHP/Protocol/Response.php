@@ -49,6 +49,23 @@ class Response
      */
     public static function display($model)
     {
+        self::$_response_time = microtime(true);
+        $key = Config::getField('project', 'response_time_key', self::RESPONSE_TIME_KEY);
+        $startTime = Request::getRequestTime(true);
+        self::$_execute_time = self::$_response_time - $startTime;
+        self::addHeader($key . '-Start', $startTime);
+        self::addHeader($key . '-End', self::$_response_time);
+        self::addHeader($key, self::$_execute_time);
+        return self::getContent($model);
+    }
+
+    /**
+     * @param $model
+     * @return mixed
+     * @throws \Exception
+     */
+    public static function getContent($model)
+    {
         if (null === $model || false === $model) {
             return $model;
         }
@@ -83,13 +100,6 @@ class Response
             $view->setTpl($_tpl_file);
         }
         $view->setModel($model);
-        self::$_response_time = microtime(true);
-        $key = Config::getField('project', 'response_time_key', self::RESPONSE_TIME_KEY);
-        $startTime = Request::getRequestTime(true);
-        self::$_execute_time = self::$_response_time - $startTime;
-        self::addHeader($key . '-Start', $startTime);
-        self::addHeader($key . '-End', self::$_response_time);
-        self::addHeader($key, self::$_execute_time);
         return $view->display();
     }
 
