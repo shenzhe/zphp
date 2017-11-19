@@ -201,21 +201,23 @@ class ZPHP
         $serverMode = Config::get('server_mode', 'Http');
         if ('Ant' == $serverMode) { //ant模式的约定
             self::$libPath = Config::get('lib_path', []);
-            if (is_array(self::$libPath)) {
-                self::$libPath += [
-                    'ant-lib' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-lib',
-                    'ant-rpc' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-rpc',
-                ];
-            } else {
-                self::$libPath = [self::$libPath];
-                self::$libPath += [
-                    'ant-lib' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-lib',
-                    'ant-rpc' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-rpc',
-                ];
+            $antLibPath = ZPHP::getRootPath() . DS . '..' . DS . 'ant-lib';
+            if (is_dir($antLibPath)) {   //compsoer方式，此目录并不存在，不需要加到libpath
+                if (is_array(self::$libPath)) {
+                    self::$libPath += [
+                        'ant-lib' => $antLibPath,
+                        'ant-rpc' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-rpc',
+                    ];
+                } else {
+                    self::$libPath = [self::$libPath];
+                    self::$libPath += [
+                        'ant-lib' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-lib',
+                        'ant-rpc' => ZPHP::getRootPath() . DS . '..' . DS . 'ant-rpc',
+                    ];
+                }
             }
         } else {
             self::$libPath = Config::get('lib_path', self::$zPath . DS . 'lib');
-
         }
         if ($run && Config::getField('project', 'debug_mode', 0)) {
             Debug::start();
