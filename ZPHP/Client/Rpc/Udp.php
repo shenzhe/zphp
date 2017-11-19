@@ -60,6 +60,7 @@ abstract class Udp
             }
             $config['host'] = $host;
             $config['port'] = $port;
+            $client->connect($host, $port, $timeOut / 1000);
             self::$configs[$key] = $config;
             self::$clients[$key] = $client;
         }

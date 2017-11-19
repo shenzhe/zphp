@@ -6,6 +6,12 @@ use ZPHP\Core\Config as ZConfig;
 
 class Factory
 {
+    /**
+     * @param string $adapter
+     * @param null $config
+     * @return mixed
+     * @throws \Exception
+     */
     public static function getInstance($adapter = 'File', $config = null)
     {
         if (empty($config)) {

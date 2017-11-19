@@ -12,44 +12,92 @@ namespace ZPHP\Log;
 abstract class Base
 {
 
+    /**
+     * @param $message
+     * @param array $context
+     * @return bool
+     * @throws \Exception
+     */
     public function emergency($message, array $context = array())
     {
-        $this->log(Level::EMERGENCY, $message, $context);
+        return $this->log(Level::EMERGENCY, $message, $context);
     }
 
+    /**
+     * @param $message
+     * @param array $context
+     * @return bool
+     * @throws \Exception
+     */
     public function alert($message, array $context = array())
     {
-        $this->log(Level::ALERT, $message, $context);
+        return $this->log(Level::ALERT, $message, $context);
     }
 
+    /**
+     * @param $message
+     * @param array $context
+     * @return bool
+     * @throws \Exception
+     */
     public function critical($message, array $context = array())
     {
-        $this->log(Level::CRITICAL, $message, $context);
+        return $this->log(Level::CRITICAL, $message, $context);
     }
 
+    /**
+     * @param $message
+     * @param array $context
+     * @return bool
+     * @throws \Exception
+     */
     public function error($message, array $context = array())
     {
-        $this->log(Level::ERROR, $message, $context);
+        return $this->log(Level::ERROR, $message, $context);
     }
 
+    /**
+     * @param $message
+     * @param array $context
+     * @return bool
+     * @throws \Exception
+     */
     public function warning($message, array $context = array())
     {
-        $this->log(Level::WARNING, $message, $context);
+        return $this->log(Level::WARNING, $message, $context);
     }
 
+    /**
+     * @param $message
+     * @param array $context
+     * @return bool
+     * @throws \Exception
+     */
     public function notice($message, array $context = array())
     {
-        $this->log(Level::NOTICE, $message, $context);
+        return $this->log(Level::NOTICE, $message, $context);
     }
 
+    /**
+     * @param $message
+     * @param array $context
+     * @return bool
+     * @throws \Exception
+     */
     public function info($message, array $context = array())
     {
-        $this->log(Level::INFO, $message, $context);
+        return $this->log(Level::INFO, $message, $context);
     }
 
+    /**
+     * @param $message
+     * @param array $context
+     * @return bool
+     * @throws \Exception
+     */
     public function debug($message, array $context = array())
     {
-        $this->log(Level::DEBUG, $message, $context);
+        return $this->log(Level::DEBUG, $message, $context);
     }
 
     /**

@@ -33,10 +33,21 @@ class Ant implements IProtocol
                     }
                 }
             }
+            $header = Request::getRequest()->header;
+            if (!is_array($header)) {
+                $header = [];
+            }
+            Request::addHeaders($header, true);
         } else {
-            $message = json_decode($_data, true);
+            if (class_exists('swoole_serialize')) {
+                $message = \swoole_serialize::unpack($_data);
+            } else {
+                $message = json_decode($_data, true);
+            }
             if (is_array($message[0])) {
                 Request::addHeaders($message[0], true);
+            } else {
+                Request::addHeaders([], true);
             }
             $data = is_array($message[1]) ? $message[1] : [];
         }
@@ -49,7 +60,7 @@ class Ant implements IProtocol
             $methodName = $data[$mpn];
         }
 
-        Request::init($ctrlName, $methodName, $data, Config::getField('project', 'view_mode', 'Json'));
+        Request::init($ctrlName, $methodName, $data, Config::getField('project', 'view_mode', 'Ant'));
         return true;
     }
 }
