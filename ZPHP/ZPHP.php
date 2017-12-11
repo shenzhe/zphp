@@ -149,8 +149,9 @@ class ZPHP
      */
     final public static function exceptionHandler($exception)
     {
-        Log::info('exception', $exception);
-        return Response::display(Formater::exception($exception));
+        $ret = Formater::exception($exception);
+        Log::info('exception', $ret);
+        return Response::display($ret);
     }
 
     /**
@@ -166,8 +167,9 @@ class ZPHP
             return "";
         }
         Response::status('200');
-        Log::info('fatal', $error);
-        return Response::display(Formater::fatal($error));
+        $ret = Formater::fatal($error);
+        Log::info('fatal', $ret);
+        return Response::display($ret);
     }
 
     /**

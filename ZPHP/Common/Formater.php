@@ -42,7 +42,7 @@ class Formater
 
                 if (!empty($traceItem['args'])) {
                     foreach ($traceItem['args'] as $argsItem) {
-                        $traceHash['args'][] = \var_export($argsItem, true);
+                        $traceHash['args'][] = \preg_replace('/[^(\x20-\x7F)]*/', '', \var_export($argsItem, true));
                     }
                 }
 
