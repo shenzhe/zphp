@@ -48,7 +48,11 @@ class Http
         curl_setopt(self::$ch, CURLOPT_REFERER, $url);
         if ('post' === strtolower($method)) {
             curl_setopt(self::$ch, CURLOPT_POST, true);
-            curl_setopt(self::$ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            if (is_array($data)) {
+                curl_setopt(self::$ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            } else {
+                curl_setopt(self::$ch, CURLOPT_POSTFIELDS, $data);
+            }
             curl_setopt(self::$ch, CURLOPT_URL, $url);
         } else {
             if (!empty($data)) {
